@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Configurar Escuchadores de Eventos
   setupPanAndZoom();
   setupDrawerListeners();
+  setupLightboxListeners();
   setupSearchListener();
   setupTutorial();
   
@@ -122,8 +123,9 @@ function toggleNodeCompletion(nodeId) {
 }
 
 function updateProgressUI() {
-  const conceptMapWithoutSatellites = conceptMap.filter(node => !node.isSatellite);
-  const total = conceptMapWithoutSatellites.length;
+  const mainNodes = conceptMap.filter(node => !node.type || node.type === 'satellite-logo');
+  const trackable = mainNodes.filter(node => node.type !== 'satellite-logo');
+  const total = trackable.length;
   const completed = appState.completedNodes.length;
   const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
   
@@ -138,10 +140,11 @@ function updateProgressUI() {
 
 function renderNodes() {
   nodesContainer.innerHTML = '';
-  let nodeIndicator = 0
-  conceptMap.forEach((node, index) => {
-    if (!node.isSatellite) {
-      nodeIndicator = nodeIndicator + 1
+  let nodeIndicator = 0;
+  conceptMap.forEach((node) => {
+    const isSatellite = node.type === 'satellite-logo' || node.type === 'satellite-image';
+    if (!isSatellite) {
+      nodeIndicator++;
     }
     const chapterObj = chapters.find(c => c.id === node.chapter);
     const neonColor = chapterObj ? chapterObj.color : 'var(--neon-cian)';
@@ -153,31 +156,38 @@ function renderNodes() {
       nodeEl.classList.add('completed');
     }
     nodeEl.setAttribute('data-id', node.id);
-    nodeEl.setAttribute('data-search-text', `${node.title} ${node.summary}`.toLowerCase());
+    nodeEl.setAttribute('data-search-text', `${node.title} ${node.summary || ''}`.toLowerCase());
     
-    // Asignar variables personalizadas de CSS para estilos dinámicos de neón
     nodeEl.style.left = `${node.coords.x}px`;
     nodeEl.style.top = `${node.coords.y}px`;
     nodeEl.style.setProperty('--neon-color', neonColor);
     nodeEl.style.setProperty('--neon-rgb', neonRgb);
     
-    // Contenido del Nodo
-    if (!node.isSatellite) {
-    nodeEl.innerHTML = `
-      <div class="node-indicator">${nodeIndicator}</div>
-      <span class="node-title">${node.title.split('. ')[1] || node.title}</span>
-    `;
+    if (!isSatellite) {
+      nodeEl.innerHTML = `
+        <div class="node-indicator">${nodeIndicator}</div>
+        <span class="node-title">${node.title.split('. ')[1] || node.title}</span>
+      `;
     } else {
+      // Para satellite-image añadimos el hint de lupa
+      const zoomHint = node.type === 'satellite-image'
+        ? `<span class="node-image-hint">🔍</span>`
+        : '';
       nodeEl.innerHTML = `
         <img src="${node.logoUrl}" alt="${node.title}" class="node-logo">
         <span class="node-title">${node.title.split('. ')[1] || node.title}</span>
+        ${zoomHint}
       `;
-    }      
-    // Evento de clic en nodo
+    }
+    
     nodeEl.addEventListener('click', (e) => {
       e.stopPropagation();
-      openDrawer(node);
-    })
+      if (node.type === 'satellite-image') {
+        openLightbox(node);
+      } else {
+        openDrawer(node);
+      }
+    });
     
     nodesContainer.appendChild(nodeEl);
   });
@@ -630,23 +640,20 @@ function openDrawer(node) {
     transitionCard.style.display = 'none';
   }
 
-  if (node.isImageOnly || node.isSatellite){
-    // Ocultar pestañas de nivel
-    document.querySelector('.drawer-tabs').style.display = 'none';
-    
-    // Ocultar el check de completado
-    document.querySelector('.completion-card').style.display = 'none';
-  } else {
-    // Resetear a pestaña básica
-    appState.activeTab = 'basic';
-    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-    document.getElementById('tab-basic-btn').classList.add('active');
-    
-    // Mostrar pestañas
-    document.querySelector('.drawer-tabs').style.display = 'flex';
-
-    // Mostrar el check de completado
-    document.querySelector('.completion-card').style.display = 'flex';
+  if (node.type === 'satellite-logo' || !node.type) {
+    if (node.type === 'satellite-logo') {
+      // Satélite con logo: resetear a basic (solo tienen ese nivel) y ocultar tabs/checkbox
+      appState.activeTab = 'basic';
+      document.querySelector('.drawer-tabs').style.display = 'none';
+      document.querySelector('.completion-card').style.display = 'none';
+    } else {
+      // Nodo conceptual normal: resetear a pestaña básica
+      appState.activeTab = 'basic';
+      document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-basic-btn').classList.add('active');
+      document.querySelector('.drawer-tabs').style.display = 'flex';
+      document.querySelector('.completion-card').style.display = 'flex';
+    }
   }
   
   // Renderizar
@@ -683,6 +690,180 @@ function closeDrawer() {
   drawer.classList.remove('active');
   drawer.setAttribute('aria-hidden', 'true');
   drawerOverlay.style.display = 'none';
+}
+
+// ==========================================================================
+// 🖼️  LIGHTBOX — VISOR DE IMÁGENES CON ZOOM Y PAN
+// ==========================================================================
+
+const lightboxOverlay  = document.getElementById('lightbox-overlay');
+const lightboxImg      = document.getElementById('lightbox-img');
+const lightboxCaption  = document.getElementById('lightbox-caption');
+const lightboxTitle    = document.getElementById('lightbox-title');
+const lightboxBadge    = document.getElementById('lightbox-badge');
+const lightboxWrapper  = document.getElementById('lightbox-image-wrapper');
+
+let lbState = {
+  scale: 1,
+  minScale: 0.5,
+  maxScale: 5,
+  panX: 0,
+  panY: 0,
+  isDragging: false,
+  startX: 0,
+  startY: 0,
+  originX: 0,  // origin of pan before drag starts
+  originY: 0,
+};
+
+function openLightbox(node) {
+  // Rellenar datos
+  lightboxImg.src = node.imageUrl;
+  lightboxImg.alt = node.title;
+  lightboxCaption.textContent = node.caption || '';
+  lightboxTitle.textContent = node.title;
+
+  const chapterObj = chapters.find(c => c.id === node.chapter);
+  const chapterColor = chapterObj ? chapterObj.color : 'var(--neon-cian)';
+  const chapterRgb = getRgbFromVariable(node.chapter);
+  lightboxBadge.textContent = `Capítulo ${node.chapter}`;
+  lightboxOverlay.style.setProperty('--chapter-neon', chapterColor);
+  lightboxOverlay.style.setProperty('--chapter-neon-rgb', chapterRgb);
+
+  // Resaltar nodo
+  document.querySelectorAll('.concept-node').forEach(n => n.classList.remove('active-node'));
+  const nodeEl = document.querySelector(`[data-id="${node.id}"]`);
+  if (nodeEl) nodeEl.classList.add('active-node');
+
+  // Resetear zoom/pan
+  lbResetView();
+
+  // Mostrar
+  lightboxOverlay.classList.add('active');
+  lightboxOverlay.setAttribute('aria-hidden', 'false');
+}
+
+function closeLightbox() {
+  lightboxOverlay.classList.remove('active');
+  lightboxOverlay.setAttribute('aria-hidden', 'true');
+  document.querySelectorAll('.concept-node').forEach(n => n.classList.remove('active-node'));
+  // Limpiar src después de la transición para evitar parpadeo
+  setTimeout(() => { lightboxImg.src = ''; }, 350);
+}
+
+function lbResetView() {
+  lbState.scale = 1;
+  lbState.panX = 0;
+  lbState.panY = 0;
+  lbApplyTransform();
+}
+
+function lbApplyTransform() {
+  lightboxImg.style.transform = `translate(${lbState.panX}px, ${lbState.panY}px) scale(${lbState.scale})`;
+  // Cursor: mano si se puede arrastrar
+  lightboxWrapper.style.cursor = lbState.scale > 1 ? (lbState.isDragging ? 'grabbing' : 'grab') : 'default';
+}
+
+function lbZoom(factor, pivotX, pivotY) {
+  const prevScale = lbState.scale;
+  const nextScale = Math.min(Math.max(prevScale * factor, lbState.minScale), lbState.maxScale);
+  if (nextScale === prevScale) return;
+
+  // Ajustar pan para que el punto bajo el cursor se quede fijo
+  const rect = lightboxWrapper.getBoundingClientRect();
+  const cx = (pivotX ?? rect.left + rect.width  / 2) - rect.left - rect.width  / 2;
+  const cy = (pivotY ?? rect.top  + rect.height / 2) - rect.top  - rect.height / 2;
+
+  lbState.panX = cx + (lbState.panX - cx) * (nextScale / prevScale);
+  lbState.panY = cy + (lbState.panY - cy) * (nextScale / prevScale);
+  lbState.scale = nextScale;
+  lbApplyTransform();
+}
+
+// --- Eventos del Lightbox ---
+function setupLightboxListeners() {
+  // Cerrar
+  document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+  lightboxOverlay.addEventListener('click', (e) => {
+    if (e.target === lightboxOverlay) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightboxOverlay.classList.contains('active')) closeLightbox();
+  });
+
+  // Botones de zoom
+  document.getElementById('lightbox-zoom-in').addEventListener('click',    () => lbZoom(1.3));
+  document.getElementById('lightbox-zoom-out').addEventListener('click',   () => lbZoom(1 / 1.3));
+  document.getElementById('lightbox-zoom-reset').addEventListener('click', lbResetView);
+
+  // Zoom con rueda del ratón
+  lightboxWrapper.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
+    lbZoom(factor, e.clientX, e.clientY);
+  }, { passive: false });
+
+  // Pan con arrastre del ratón
+  lightboxWrapper.addEventListener('mousedown', (e) => {
+    if (lbState.scale <= 1) return;
+    lbState.isDragging = true;
+    lbState.startX = e.clientX;
+    lbState.startY = e.clientY;
+    lbState.originX = lbState.panX;
+    lbState.originY = lbState.panY;
+    lbApplyTransform();
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!lbState.isDragging) return;
+    lbState.panX = lbState.originX + (e.clientX - lbState.startX);
+    lbState.panY = lbState.originY + (e.clientY - lbState.startY);
+    lbApplyTransform();
+  });
+  window.addEventListener('mouseup', () => {
+    if (lbState.isDragging) {
+      lbState.isDragging = false;
+      lbApplyTransform();
+    }
+  });
+
+  // Pinch-to-zoom en móvil
+  let lbTouchDist = 0, lbTouchScale = 1;
+  lightboxWrapper.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+      lbTouchDist  = getTouchDistance(e.touches);
+      lbTouchScale = lbState.scale;
+    } else if (e.touches.length === 1 && lbState.scale > 1) {
+      lbState.isDragging = true;
+      lbState.startX  = e.touches[0].clientX;
+      lbState.startY  = e.touches[0].clientY;
+      lbState.originX = lbState.panX;
+      lbState.originY = lbState.panY;
+    }
+  }, { passive: true });
+  lightboxWrapper.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const dist   = getTouchDistance(e.touches);
+      const factor = dist / lbTouchDist;
+      lbState.scale = Math.min(Math.max(lbTouchScale * factor, lbState.minScale), lbState.maxScale);
+      lbApplyTransform();
+    } else if (lbState.isDragging && e.touches.length === 1) {
+      lbState.panX = lbState.originX + (e.touches[0].clientX - lbState.startX);
+      lbState.panY = lbState.originY + (e.touches[0].clientY - lbState.startY);
+      lbApplyTransform();
+    }
+  }, { passive: false });
+  lightboxWrapper.addEventListener('touchend', () => { lbState.isDragging = false; });
+
+  // Doble clic para zoom rápido
+  lightboxWrapper.addEventListener('dblclick', (e) => {
+    if (lbState.scale > 1) {
+      lbResetView();
+    } else {
+      lbZoom(2, e.clientX, e.clientY);
+    }
+  });
 }
 
 function renderLessonContent() {

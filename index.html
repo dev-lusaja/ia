@@ -168,6 +168,37 @@
   <!-- Overlay para oscurecer el fondo al abrir paneles en móvil -->
   <div id="drawer-overlay" style="display: none;"></div>
 
+  <!-- Lightbox para nodos tipo satellite-image -->
+  <div id="lightbox-overlay" aria-hidden="true" aria-modal="true" role="dialog" aria-label="Visor de imagen">
+    <div id="lightbox-container">
+      <div id="lightbox-header">
+        <div id="lightbox-badge" class="chapter-badge"></div>
+        <div id="lightbox-controls">
+          <button id="lightbox-zoom-in"  title="Acercar imagen" aria-label="Acercar imagen">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button id="lightbox-zoom-out" title="Alejar imagen"  aria-label="Alejar imagen">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button id="lightbox-zoom-reset" title="Tamaño original" aria-label="Restablecer zoom">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+          </button>
+          <button id="lightbox-close" title="Cerrar" aria-label="Cerrar visor de imagen">&times;</button>
+        </div>
+      </div>
+      <div id="lightbox-image-wrapper">
+        <figure id="lightbox-figure">
+          <img id="lightbox-img" src="" alt="" draggable="false">
+          <figcaption id="lightbox-caption"></figcaption>
+        </figure>
+      </div>
+      <div id="lightbox-title-bar">
+        <h2 id="lightbox-title"></h2>
+        <span id="lightbox-hint">🖱 Rueda del ratón para zoom · Arrastrar para mover</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Alerta Inicial o Tutorial del Mapa -->
   <div id="welcome-modal-overlay" class="welcome-overlay">
     <div class="welcome-card glass-panel animate-fade-in">

@@ -108,19 +108,13 @@ const conceptMap = [
   {
     id: "neurona_humana",
     title: "Neurona humana",
-    isSatellite: true,
-    isImageOnly: true,
+    type: "satellite-image",
     logoUrl: "https://img.icons8.com/color/1200/neuron.jpg",
+    imageUrl: "https://i.ytimg.com/vi/LtyO5rtDOyM/hq720.jpg",
+    caption: "Estructura de una neurona biológica y sus componentes principales.",
     chapter: 1,
     coords: { x: 450, y: 280 },
     connectsTo: [],
-    summary: "Modelo de OpenAI",
-    levels: {
-      basic: {
-        title: "🌱 Pionero del Chat AI",
-        content: `![Neurona humana](https://i.ytimg.com/vi/LtyO5rtDOyM/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLA2it0ULFHSOGLxO2vUvh3S1nRS3w)`
-      }
-    }
   },
   {
     id: "que-es-la-ia",
@@ -459,20 +453,14 @@ const conceptMap = [
   },
   {
     id: "neurona_artificial",
-    title: "Neurona artificial",
-    isSatellite: true,
-    isImageOnly: true,
+    title: "Neurona artificial (Perceptrón)",
+    type: "satellite-image",
     logoUrl: "https://cdn-icons-png.flaticon.com/512/7747/7747363.png",
+    imageUrl: "https://koldopina.com/wp-content/uploads/2018/03/Perceptron01.jpg",
+    caption: "Diagrama del perceptrón artificial: entradas, pesos, función de activación y salida.",
     chapter: 3,
     coords: { x: 240, y: 700 },
     connectsTo: [],
-    summary: "Modelo de OpenAI",
-    levels: {
-      basic: {
-        title: "🌱 Pionero del Chat AI",
-        content: `![Neurona artificial](https://koldopina.com/wp-content/uploads/2018/03/Perceptron01.jpg)`
-      }
-    }
   },
   {
     id: "limite-redes-tempranas",
@@ -597,7 +585,7 @@ const conceptMap = [
   {
     id: "nvidia",
     title: "Nvidia",
-    isSatellite: true,
+    type: "satellite-logo",
     logoUrl: "https://w7.pngwing.com/pngs/60/176/png-transparent-nvidia-hd-logo-thumbnail.png",
     chapter: 4,
     coords: { x: 1100, y: 700 },
@@ -916,7 +904,7 @@ $$p_i = \\frac{e^{z_i / T}}{\\sum_{j} e^{z_j / T}}$$
   {
     id: "chatgpt",
     title: "ChatGPT",
-    isSatellite: true,
+    type: "satellite-logo",
     logoUrl: "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg",
     chapter: 6,
     coords: { x: 450, y: 1350 },
@@ -937,7 +925,7 @@ $$p_i = \\frac{e^{z_i / T}}{\\sum_{j} e^{z_j / T}}$$
   {
     id: "gemini",
     title: "Gemini",
-    isSatellite: true,
+    type: "satellite-logo",
     logoUrl: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/google-gemini-icon.png",
     chapter: 6,
     coords: { x: 600, y: 1350 },
@@ -958,7 +946,7 @@ $$p_i = \\frac{e^{z_i / T}}{\\sum_{j} e^{z_j / T}}$$
   {
     id: "claude",
     title: "Claude",
-    isSatellite: true,
+    type: "satellite-logo",
     logoUrl: "https://images.seeklogo.com/logo-png/55/2/claude-logo-png_seeklogo-554534.png",
     chapter: 6,
     coords: { x: 750, y: 1350 },
