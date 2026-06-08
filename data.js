@@ -751,32 +751,54 @@ const conceptMap = [
     levels: {
       basic: {
         title: "🌱 Concepto Simple",
-        content: `Una red neuronal no sabe qué es un "perro" o qué significa "amor". Para procesar palabras, debemos convertirlas en números.
+        content: `Las computadoras no entienden palabras como nosotros. Para una IA, textos como "perro", "casa" o "amor" deben convertirse primero en números.
 
-1. **Tokens**: Primero, cortamos el texto en trozos pequeños llamados *tokens* (que pueden ser palabras enteras o sílabas). Cada token recibe un número de identificación único (ej: "gato" = 405).
-2. **Embeddings**: Si solo asignamos números al azar, la IA no sabrá que un "gato" y un "perro" son animales similares. Para solucionar esto, convertimos cada palabra en una **lista de coordenadas** en un mapa gigante de significados. 
+        - **Tokens**: El texto se divide en pequeñas piezas llamadas tokens. Un token puede ser una palabra completa, una parte de una palabra o incluso un signo de puntuación. A cada token se le asigna un identificador numérico único.
 
-En este mapa, palabras similares en la vida real (como "rey" y "reina", o "gato" y "felino") tendrán coordenadas muy cercanas.`
+        - **Embeddings**: Tener solo un número no es suficiente para comprender el significado de una palabra. Por eso, cada token se transforma en una serie de coordenadas dentro de un espacio matemático llamado embedding.
+
+        Podemos imaginarlo como un gran mapa donde las palabras con significados parecidos aparecen cerca unas de otras. Por ejemplo, "gato" estará cerca de "felino" y "perro", mientras que estará mucho más lejos de "automóvil" o "montaña".
+
+        Gracias a esta representación, la IA puede identificar relaciones, similitudes y contextos entre las palabras, incluso sin comprenderlas de la misma forma que un ser humano.
+        `
       },
       intermediate: {
         title: "🌿 Concepto de Embeddings",
-        content: `El modelado de lenguaje moderno se basa en la **Hipótesis Distribucional**: *"Palabras que ocurren en contextos similares tienden a tener significados similares"*.
-        
-- **Tokenización**: Proceso de dividir texto en subpalabras usando algoritmos como Byte-Pair Encoding (BPE), optimizando el vocabulario sin perder palabras raras.
-- **Vectores de Características**: Un embedding es un vector densificado de alta dimensionalidad (usualmente de 768 o 1536 dimensiones). Cada dimensión representa una propiedad abstracta que la máquina aprende por sí sola.`
+        content: `Los modelos modernos de lenguaje se basan en la **Hipótesis Distribucional**, una idea fundamental de la lingüística computacional:
+
+        📝 _Las palabras que aparecen en contextos similares suelen tener significados similares._
+
+        Por ejemplo, si las palabras "gato" y "perro" aparecen frecuentemente en frases relacionadas con mascotas, comida o veterinarios, el modelo aprenderá que están conceptualmente relacionadas.
+
+        - **Tokenización**: Antes de procesar un texto, este se divide en unidades más pequeñas llamadas tokens. Para hacerlo de manera eficiente, muchos modelos utilizan algoritmos como **Byte-Pair Encoding** (BPE), que permiten representar palabras comunes completas y descomponer palabras poco frecuentes en fragmentos reutilizables.
+        - **Embeddings**: Cada token se transforma en un vector numérico de alta dimensionalidad (por ejemplo, 768 o 1536 valores). Durante el entrenamiento, el modelo ajusta estos vectores para que los conceptos relacionados queden cerca unos de otros dentro del espacio vectorial.
+
+        De esta forma, palabras con significados o usos similares terminan representadas por vectores parecidos, permitiendo que el modelo capture relaciones semánticas, contextuales e incluso algunas analogías entre conceptos.
+      `
       },
       technical: {
         title: "🚀 Representación Vectorial de Alta Dimensionalidad",
-        content: `En lugar de usar representaciones ralas tipo *One-Hot Encoding* (donde cada palabra es un vector con un único 1 y miles de ceros, lo cual es ineficiente y no almacena semántica), mapeamos cada token $i$ a un espacio continuo de dimensión $d$:
+        content: `Las primeras representaciones de texto utilizaban **One-Hot Encoding**, donde cada palabra se representaba mediante un vector con un único valor igual a 1 y el resto en 0. Aunque esta técnica identifica palabras de forma única, presenta dos limitaciones importantes:
 
-$$v_i \\in \\mathbb{R}^d$$
+        - Genera vectores extremadamente dispersos (sparse).
+        - No captura ninguna relación semántica entre palabras.
 
-Una matriz de embeddings $E \\in \\mathbb{R}^{V \\times d}$ (donde $V$ es el tamaño del vocabulario) actúa como una tabla de búsqueda (Lookup Table).
-La propiedad más fascinante de estos vectores es que conservan relaciones conceptuales lineales (aritmética de vectores):
+        Por ejemplo, las representaciones de "_gato_" y "_felino_" son tan diferentes entre sí como las de "_gato_" y "_automóvil_".
 
-$$v_{\\text{rey}} - v_{\\text{hombre}} + v_{\\text{mujer}} \\approx v_{\\text{reina}}$$
+        Para resolver este problema, cada token $i$ se proyecta a un espacio vectorial continuo de dimensión $d$:
+        $$v_i ∈ R^d$$
+        
+        Estos vectores se almacenan en una matriz de embeddings:
+        $$E ∈ R^{|V|×d}$$
 
-Esto demuestra que el modelo ha codificado matemáticamente los conceptos abstractos de género y realeza.`
+        donde $V$ representa el tamaño del vocabulario y $d$ la dimensionalidad del espacio latente. Durante el entrenamiento, los valores de esta matriz se ajustan para que palabras utilizadas en contextos similares tengan representaciones cercanas.
+
+        La propiedad más interesante de estos espacios vectoriales es que pueden capturar relaciones semánticas mediante operaciones matemáticas. Un ejemplo clásico es:
+
+        $$v_{rey} - v_{hombre} + v_{mujer} ≈ v_{reina}$$
+        
+        Este resultado sugiere que ciertas relaciones conceptuales aprendidas a partir del lenguaje quedan reflejadas en la geometría del espacio vectorial. En otras palabras, las distancias y direcciones entre vectores contienen información semántica que el modelo ha extraído de los patrones presentes en los datos de entrenamiento.
+        `
       }
     }
   },
@@ -918,7 +940,7 @@ $$p_i = \\frac{e^{z_i / T}}{\\sum_{j} e^{z_j / T}}$$
         - **Fortalezas**: Excelente para redacción creativa, lluvia de ideas, programación avanzada y razonamiento lógico general gracias a sus capacidades de razonamiento (como la serie de modelos GPT-o).
         - **Herramientas**: Integra navegación web, análisis de datos avanzado, generación de imágenes con DALL-E y creación de GPTs personalizados.
 
-        🔗 **Acceso oficial**: [https://chatgpt.com](https://chatgpt.com)`
+        🔗 **Acceso oficial**: [Chatgpt](https://chatgpt.com)`
       }
     }
   },
@@ -939,7 +961,7 @@ $$p_i = \\frac{e^{z_i / T}}{\\sum_{j} e^{z_j / T}}$$
         - **Fortalezas**: Su característica más destructiva es su **gigantesca ventana de contexto** (capaz de procesar millones de tokens), lo que le permite analizar libros enteros, horas de video o bases de código masivas de un solo golpe.
         - **Integración**: Conectado directamente al ecosistema de Google (Workspace, YouTube, Maps, e indirectamente a Android).
 
-        🔗 **Acceso oficial**: [https://gemini.google.com](https://gemini.google.com)`
+        🔗 **Acceso oficial**: [Gemini](https://gemini.google.com)`
       }
     }
   },
@@ -960,7 +982,7 @@ $$p_i = \\frac{e^{z_i / T}}{\\sum_{j} e^{z_j / T}}$$
         - **Fortalezas**: Ampliamente reconocido por tener el **tono de escritura más humano y matizado**, además de capacidades excepcionales para la programación, análisis de datos y lógica compleja.
         - **Interfaz**: Su característica "Artifacts" permite ver, ejecutar y editar código en tiempo real al lado del chat.
 
-        🔗 **Acceso oficial**: [https://claude.ai](https://claude.ai)`
+        🔗 **Acceso oficial**: [Claude](https://claude.ai)`
       }
     }
   },

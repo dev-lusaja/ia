@@ -1059,6 +1059,21 @@ body {
   line-height: 1;
 }
 
+/* Links renderizados desde Markdown en el drawer */
+.md-link {
+  color: var(--chapter-neon, var(--neon-cian));
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--chapter-neon-rgb, 0, 255, 255), 0.35);
+  text-underline-offset: 3px;
+  transition: text-shadow var(--transition-speed), text-decoration-color var(--transition-speed);
+  word-break: break-all;
+}
+
+.md-link:hover {
+  text-decoration-color: var(--chapter-neon, var(--neon-cian));
+  text-shadow: 0 0 8px rgba(var(--chapter-neon-rgb, 0, 255, 255), 0.4);
+}
+
 /* ==========================================================================
    🖼️  LIGHTBOX — Visor de Imágenes con Zoom y Pan
    ========================================================================== */

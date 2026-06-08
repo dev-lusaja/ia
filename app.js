@@ -155,8 +155,14 @@ function renderNodes() {
     if (appState.completedNodes.includes(node.id)) {
       nodeEl.classList.add('completed');
     }
-    nodeEl.setAttribute('data-id', node.id);
-    nodeEl.setAttribute('data-search-text', `${node.title} ${node.summary || ''}`.toLowerCase());
+
+    if (node.type == 'satellite-image') {
+      nodeEl.setAttribute('data-id', node.id);
+      nodeEl.setAttribute('data-search-text', `${node.title || ''} ${node.caption || ''}`.toLowerCase());
+    } else {
+      nodeEl.setAttribute('data-id', node.id);
+      nodeEl.setAttribute('data-search-text', `${node.title || ''} ${node.levels?.basic?.content || ''} ${node.levels?.intermediate?.content || ''} ${node.levels?.technical?.content || ''}`.toLowerCase());
+    }
     
     nodeEl.style.left = `${node.coords.x}px`;
     nodeEl.style.top = `${node.coords.y}px`;
@@ -545,10 +551,11 @@ function filterMap(query) {
     
     // Coincidencia: Título, resumen o lección básica
     const inTitle = node.title.toLowerCase().includes(query);
-    const inSummary = node.summary.toLowerCase().includes(query);
-    const inBasic = node.levels.basic.content.toLowerCase().includes(query);
+    const inBasic = node.levels?.basic?.content.toLowerCase().includes(query);
+    const inIntermediate = node.levels?.intermediate?.content.toLowerCase().includes(query);
+    const inTechnical = node.levels?.technical?.content.toLowerCase().includes(query);
     
-    if (inTitle || inSummary || inBasic) {
+    if (inTitle || inBasic || inIntermediate || inTechnical) {
       nodeEl.classList.remove('dimmed');
       nodeEl.classList.add('highlighted');
       if (!matchedNode) matchedNode = node; // Guardar el primero encontrado para centrar
@@ -1014,14 +1021,38 @@ function formatMarkdown(text) {
   });
 
   // 9. Italica: _texto_
-  //formatted = formatted.replace(/_([^_\n]+?)_/g, '<em>$1</em>')
   formatted = formatted.replace(/(?<!\$[^$\n]*)(?<!_)_([^_\n$]+?)_(?![^$\n]*\$)/g, '<em>$1</em>');
 
   // 12. Limpiar párrafos vacíos residuales
   formatted = formatted.replace(/<p><\/p>/g, '');
 
-  // Enlaces e Imágenes de Markdown: ![alt](url)
-  formatted = formatted.replace(/!\[([^\]]*?)\]\(([^)]+?)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto;display: block;"/>');
+  // 2b. Guardar imágenes ![alt](url) y links [texto](url) ANTES de escapar HTML
+  //     para proteger las URLs de la conversión & -> &amp;
+  const linkBlocks = [];
+
+  // Imágenes primero (deben tener precedencia sobre links)
+  formatted = formatted.replace(/!\[([^\]]*?)\]\(([^)]+?)\)/g, (_, alt, url) => {
+    linkBlocks.push({ type: 'image', alt, url });
+    return `%%LINK_BLOCK_${linkBlocks.length - 1}%%`;
+  });
+
+  // Links de texto
+  formatted = formatted.replace(/\[([^\]]+?)\]\(([^)]+?)\)/g, (_, text, url) => {
+    linkBlocks.push({ type: 'link', text, url });
+    return `%%LINK_BLOCK_${linkBlocks.length - 1}%%`;
+  });
+
+  // 13. Restaurar imágenes y links desde placeholders
+  formatted = formatted.replace(/%%LINK_BLOCK_(\d+)%%/g, (_, idx) => {
+    const block = linkBlocks[parseInt(idx)];
+    if (block.type === 'image') {
+      return `<img src="${block.url}" alt="${block.alt}" style="max-width:100%;height:auto;display:block;border-radius:6px;margin:8px 0;"/>`;
+    } else {
+      // Sanitizar: solo permitir http/https
+      const safeUrl = /^https?:\/\//.test(block.url) ? block.url : '#';
+      return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="md-link">${block.text}</a>`;
+    }
+  });
 
   return formatted;
 }
