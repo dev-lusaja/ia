@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El viaje evolutivo de la IA | Mapa interactivo de aprendizaje</title>
+  <meta name="description"
+    content="Aprende Inteligencia Artificial a través de un viaje interactivo y evolutivo. Descubre cómo Machine Learning, Redes Neuronales y LLMs se conectan en una historia fascinante.">
+
+  <!-- Google Fonts: Outfit (moderna y tecnológica) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <!-- KaTeX: Renderizado de Fórmulas Matemáticas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- Cabecera Principal (Glassmorphism) -->
+  <header id="main-header" class="glass-panel">
+    <div class="header-logo">
+      <div class="logo-icon"></div>
+      <div class="logo-text">
+        <h1>El viaje evolutivo de la IA</h1>
+        <p>Una historia interactiva de superación tecnológica</p>
+      </div>
+    </div>
+
+    <!-- Buscador de Conceptos -->
+    <div class="search-container">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" id="search-input" placeholder="Buscar concepto o tema (ej. RAG)..."
+        aria-label="Buscar concepto en el mapa">
+      <button id="clear-search" class="clear-btn" style="display: none;">&times;</button>
+    </div>
+
+    <!-- Medidor de Progreso -->
+    <div class="progress-panel">
+      <div class="progress-info">
+        <span class="progress-label">Tu progreso:</span>
+        <span id="progress-percent">0%</span>
+        <span id="progress-fraction" class="text-muted">(0/23 completados)</span>
+      </div>
+      <div class="progress-bar-container">
+        <div id="progress-fill"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Viewport del Mapa Interactivo -->
+  <main id="map-viewport" class="viewport-grab">
+    <!-- El Lienzo del Mapa (Arrastrable y Zoomable) -->
+    <div id="map-canvas">
+      <!-- Capa de Conexiones SVG -->
+      <svg id="map-svg-connections" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Filtro de Resplandor Neón para Conexiones -->
+          <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <g id="connections-group"></g>
+      </svg>
+
+      <!-- Capa de Nodos del Mapa -->
+      <div id="nodes-container"></div>
+    </div>
+  </main>
+
+  <!-- Controles Flotantes del Canvas -->
+  <div id="map-controls" class="glass-panel">
+    <button id="zoom-in" title="Acercar mapa" aria-label="Acercar mapa">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+    </button>
+    <button id="zoom-out" title="Alejar mapa" aria-label="Alejar mapa">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+    </button>
+    <button id="zoom-reset" title="Centrar mapa" aria-label="Restaurar zoom y centrar">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 3h6v6"></path>
+        <path d="M9 21H3v-6"></path>
+        <path d="M21 3l-7 7"></path>
+        <path d="M3 21l7-7"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Leyenda de Capítulos Flotante -->
+  <div id="legend-container" class="glass-panel collapsed">
+    <button id="legend-toggle" class="legend-header">
+      <span>Capítulos del Viaje</span>
+      <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    <div id="legend-list" class="legend-content"></div>
+  </div>
+
+  <!-- Panel Lateral / Drawer de Lecciones (Glassmorphism Premium) -->
+  <aside id="drawer" class="glass-panel" aria-hidden="true">
+    <div class="drawer-header">
+      <div class="drawer-badge-container">
+        <span id="drawer-chapter-badge" class="chapter-badge">Capítulo 1</span>
+      </div>
+      <button id="drawer-close" class="close-btn" aria-label="Cerrar panel de detalles">&times;</button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Título y Resumen del Concepto -->
+      <h2 id="drawer-title" class="drawer-concept-title"></h2>
+      <p id="drawer-summary" class="drawer-concept-summary"></p>
+
+      <!-- Tarjeta de Transición Narrativa: ¿Cómo llegamos aquí? -->
+      <div id="drawer-transition-card" class="transition-card">
+        <p id="drawer-transition-text"></p>
+      </div>
+
+      <!-- Tabs de Niveles de Aprendizaje Incremental -->
+      <div class="drawer-tabs">
+        <button class="tab-btn active" data-tab="basic" id="tab-basic-btn">🌱 Básico</button>
+        <button class="tab-btn" data-tab="intermediate" id="tab-intermediate-btn">🌿 Intermedio</button>
+        <button class="tab-btn" data-tab="technical" id="tab-technical-btn">🚀 Técnico</button>
+      </div>
+
+      <!-- Contenedor de Contenido del Nivel -->
+      <div id="drawer-tab-content" class="tab-content-area">
+        <!-- Renderizado dinámico de la lección -->
+      </div>
+
+      <!-- Gamificación: Marcar como Completado -->
+      <div class="completion-card">
+        <label class="completion-checkbox-label">
+          <input type="checkbox" id="node-completed-checkbox" class="completed-checkbox">
+          <span class="custom-checkbox"></span>
+          <span class="checkbox-text">Marcar este concepto como Aprendido / Completado</span>
+        </label>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Overlay para oscurecer el fondo al abrir paneles en móvil -->
+  <div id="drawer-overlay" style="display: none;"></div>
+
+  <!-- Alerta Inicial o Tutorial del Mapa -->
+  <div id="welcome-modal-overlay" class="welcome-overlay">
+    <div class="welcome-card glass-panel animate-fade-in">
+      <div class="welcome-icon">⚡</div>
+      <h2>¡Te damos la bienvenida al Viaje Evolutivo de la IA!</h2>
+      <p>Estás ante un <strong>mapa interactivo de aprendizaje</strong> estructurado como una historia viva de
+        superación técnica.</p>
+      <p>No aprenderás términos sueltos; descubrirás cómo la IA fue superando sus propios límites a lo largo del tiempo,
+        llevándonos de las reglas lógicas a las redes neuronales, el Deep Learning, los Transformers y los agentes
+        autónomos.</p>
+
+      <div class="welcome-tips">
+        <div class="tip-item">
+          <span class="tip-num">1</span>
+          <p><strong>Navega libremente</strong>: Arrastra el lienzo con el ratón o deslízalo con tus dedos en móvil. Haz
+            zoom para acercarte o alejarte.</p>
+        </div>
+        <div class="tip-item">
+          <span class="tip-num">2</span>
+          <p><strong>Aprende a tu propio ritmo</strong>: Haz clic en un tema para ver su lección con <strong>3 niveles
+              de profundidad incremental</strong>.</p>
+        </div>
+        <div class="tip-item">
+          <span class="tip-num">3</span>
+          <p><strong>Sigue el hilo narrativo</strong>: Pon especial atención a la sección <strong>"¿Cómo llegamos
+              aquí?"</strong> para comprender la historia evolutiva.</p>
+        </div>
+      </div>
+
+      <button id="welcome-start-btn" class="welcome-btn shadow-neon">Iniciar mi Viaje</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="data.js"></script>
+  <script defer src="app.js"></script>
+</body>
+
+</html>
