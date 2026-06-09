@@ -184,7 +184,7 @@ const conceptMap = [
     title: "4. ¿Cómo aprende una máquina?",
     chapter: 2,
     coords: { x: 800, y: 400 },
-    connectsTo: ["machine-learning-tradicional"],
+    connectsTo: ["machine-learning-tradicional", "machine_learning"],
     summary: "El cambio de paradigma: en lugar de programar reglas, le damos datos y medimos su error.",
     transitionFromPrevious: "Dado que escribir millones de reglas a mano para que una IA entienda el mundo es imposible, los científicos cambiaron de estrategia: ¿y si en lugar de darle las reglas, le damos los datos y dejamos que la máquina las descubra sola?",
     levels: {
@@ -241,6 +241,17 @@ const conceptMap = [
         💡 _Matemáticamente, un modelo puede entenderse como una función parametrizada que transforma datos de entrada en predicciones._`
       }
     }
+  },
+  {
+    id: "machine_learning",
+    title: "Aprendizaje",
+    type: "satellite-image",
+    logoUrl: "public/img/machine_learning.png",
+    imageUrl: "public/img/machine_learning.png",
+    caption: "Estructura de una Red Convolucional.",
+    chapter: 2,
+    coords: { x: 1000, y: 310 },
+    connectsTo: [],
   },
   {
     id: "machine-learning-tradicional",
@@ -617,7 +628,7 @@ const conceptMap = [
     title: "10. Arquitecturas Especializadas",
     chapter: 4,
     coords: { x: 600, y: 850 },
-    connectsTo: ["limite-secuencial"],
+    connectsTo: ["limite-secuencial", "cnn"],
     summary: "Redes diseñadas para tareas específicas: CNNs para ver imágenes y RNNs para procesar texto secuencial.",
     transitionFromPrevious: "Una vez que pudimos construir redes neuronales profundas, nos dimos cuenta de que una sola arquitectura no servía para todo. Una imagen estructurada en 2D requiere un procesamiento muy diferente al de una cadena secuencial de texto en el tiempo. Así nacieron las arquitecturas especializadas.",
     levels: {
@@ -659,6 +670,17 @@ const conceptMap = [
         `
       }
     }
+  },
+  {
+    id: "cnn",
+    title: "CNN",
+    type: "satellite-image",
+    logoUrl: "public/img/CNN.png",
+    imageUrl: "public/img/CNN.png",
+    caption: "Estructura de una Red Convolucional.",
+    chapter: 4,
+    coords: { x: 800, y: 860 },
+    connectsTo: [],
   },
   {
     id: "limite-secuencial",
