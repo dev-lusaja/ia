@@ -152,6 +152,10 @@ function renderNodes() {
     
     const nodeEl = document.createElement('div');
     nodeEl.className = 'concept-node';
+    if (isSatellite) {
+      nodeEl.classList.add('satellite-node');
+    }
+    
     if (appState.completedNodes.includes(node.id)) {
       nodeEl.classList.add('completed');
     }
@@ -175,14 +179,9 @@ function renderNodes() {
         <span class="node-title">${node.title.split('. ')[1] || node.title}</span>
       `;
     } else {
-      // Para satellite-image añadimos el hint de lupa
-      const zoomHint = node.type === 'satellite-image'
-        ? `<span class="node-image-hint">🔍</span>`
-        : '';
       nodeEl.innerHTML = `
         <img src="${node.logoUrl}" alt="${node.title}" class="node-logo">
         <span class="node-title">${node.title.split('. ')[1] || node.title}</span>
-        ${zoomHint}
       `;
     }
     
@@ -233,38 +232,52 @@ function renderConnections() {
         pathD = `M ${x1} ${y1} C ${x1} ${y1 + ctrlY}, ${x2} ${y2 - ctrlY}, ${x2} ${y2}`;
       }
       
+      // Determinar si es una conexión a un satélite
+      const isSatelliteConnection = (node.type === 'satellite-logo' || node.type === 'satellite-image' || 
+                                     targetNode.type === 'satellite-logo' || targetNode.type === 'satellite-image');
+      
       // Determinar si ambos nodos están completados
       const isPathActive = appState.completedNodes.includes(node.id) && appState.completedNodes.includes(targetNode.id);
       const pathOpacity = isPathActive ? 0.9 : 0.18;
-      const pulseOpacity = isPathActive ? 0.95 : 0;
       
       // 1. Línea Base
       const linePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       linePath.setAttribute('d', pathD);
       linePath.setAttribute('class', 'connection-line');
       linePath.style.setProperty('--neon-color', color);
-      linePath.style.opacity = pathOpacity;
-      if (isPathActive) {
-        linePath.style.strokeWidth = '5px';
-        linePath.style.filter = 'drop-shadow(0 0 4px ' + color + ')';
+      
+      if (isSatelliteConnection) {
+        // Conexiones a satélites: delgadas, tenues, sin pulso
+        linePath.style.opacity = 0.15;
+        linePath.style.strokeWidth = '1.5px';
+        svgConnectionsGroup.appendChild(linePath);
       } else {
-        linePath.style.strokeWidth = '3px';
+        // Conexiones principales
+        linePath.style.opacity = pathOpacity;
+        if (isPathActive) {
+          linePath.style.strokeWidth = '5px';
+          linePath.style.filter = 'drop-shadow(0 0 4px ' + color + ')';
+        } else {
+          linePath.style.strokeWidth = '3px';
+        }
+        svgConnectionsGroup.appendChild(linePath);
+        
+        // 2. Impulso Animado (solo para el camino principal)
+        const pulsePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pulsePath.setAttribute('d', pathD);
+        pulsePath.setAttribute('class', 'connection-pulse');
+        // pathLength normaliza el dasharray al tamaño real del path,
+        // así el efecto funciona en conexiones cortas y largas por igual.
+        pulsePath.setAttribute('pathLength', '100');
+        pulsePath.style.setProperty('--neon-color', color);
+        // Pulso siempre visible en el camino principal (más intenso si está completado)
+        pulsePath.style.opacity = isPathActive ? 1.0 : 0.5;
+        
+        const speed = 6 - (node.chapter * 0.4);
+        pulsePath.style.animationDuration = `${speed}s`;
+        
+        svgConnectionsGroup.appendChild(pulsePath);
       }
-      svgConnectionsGroup.appendChild(linePath);
-      
-      // 2. Impulso Animado (solo si la ruta está activa o parcialmente activa)
-      // Para darle dinamismo, pintamos el pulso siempre con menor opacidad en rutas no activadas
-      const pulsePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      pulsePath.setAttribute('d', pathD);
-      pulsePath.setAttribute('class', 'connection-pulse');
-      pulsePath.style.setProperty('--neon-color', color);
-      pulsePath.style.opacity = isPathActive ? 1.0 : 0.1;
-      
-      // Variar la velocidad de animación del pulso según el capítulo
-      const speed = 6 - (node.chapter * 0.4);
-      pulsePath.style.animationDuration = `${speed}s`;
-      
-      svgConnectionsGroup.appendChild(pulsePath);
     });
   });
 }
