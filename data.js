@@ -113,7 +113,7 @@ const conceptMap = [
     imageUrl: "public/img/neurona_humana.png",
     caption: "Estructura de una neurona biológica y sus componentes principales.",
     chapter: 1,
-    coords: { x: 450, y: 280 },
+    coords: { x: 460, y: 280 },
     connectsTo: [],
   },
   {
@@ -459,7 +459,7 @@ const conceptMap = [
     imageUrl: "public/img/perceptron.png",
     caption: "Diagrama del perceptrón artificial: entradas, pesos, función de activación y salida.",
     chapter: 3,
-    coords: { x: 250, y: 750 },
+    coords: { x: 240, y: 750 },
     connectsTo: [],
   },
   {
@@ -588,7 +588,7 @@ const conceptMap = [
     type: "satellite-logo",
     logoUrl: "public/img/icons/nvidia_icon.png",
     chapter: 4,
-    coords: { x: 1100, y: 700 },
+    coords: { x: 1050, y: 690 },
     connectsTo: [],
     summary: "Nvidia",
     levels: {
@@ -966,7 +966,7 @@ $$p_i = \\frac{e^{z_i / T}}{\\sum_{j} e^{z_j / T}}$$
     type: "satellite-logo",
     logoUrl: "public/img/icons/gemini_icon.webp",
     chapter: 6,
-    coords: { x: 600, y: 1450 },
+    coords: { x: 590, y: 1450 },
     connectsTo: [],
     summary: "Modelo de Google",
     levels: {

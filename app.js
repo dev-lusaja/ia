@@ -247,10 +247,21 @@ function renderConnections() {
       linePath.style.setProperty('--neon-color', color);
       
       if (isSatelliteConnection) {
-        // Conexiones a satélites: delgadas, tenues, sin pulso
-        linePath.style.opacity = 0.15;
-        linePath.style.strokeWidth = '1.5px';
+        // Conexiones a satélites: línea base muy tenue
+        linePath.style.opacity = 0.12;
+        linePath.style.strokeWidth = '1px';
         svgConnectionsGroup.appendChild(linePath);
+
+        // Impulso eléctrico sináptico — parpadeo irregular tipo neurona
+        const electricPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        electricPath.setAttribute('d', pathD);
+        electricPath.setAttribute('class', 'connection-electric');
+        electricPath.setAttribute('pathLength', '100');
+        electricPath.style.setProperty('--neon-color', color);
+        // Offset aleatorio en la animación para que cada satélite "dispare" en momentos distintos
+        const delay = -(Math.random() * 3).toFixed(2);
+        electricPath.style.animationDelay = `${delay}s`;
+        svgConnectionsGroup.appendChild(electricPath);
       } else {
         // Conexiones principales
         linePath.style.opacity = pathOpacity;

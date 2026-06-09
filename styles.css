@@ -319,6 +319,28 @@ body {
   }
 }
 
+/* Impulso Sináptico — conexiones a satélites tipo neurona disparando */
+.connection-electric {
+  fill: none;
+  stroke: var(--neon-color);
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  filter: url(#neon-glow);
+  /* Dash corto + gap grande = chispa discreta viajando */
+  stroke-dasharray: 3 25;
+  animation: synapse-fire 2.2s ease-in-out infinite;
+}
+
+@keyframes synapse-fire {
+  0%   { opacity: 0;    stroke-dashoffset: 100; }
+  10%  { opacity: 0.9;  }
+  15%  { opacity: 0.3;  }
+  20%  { opacity: 1.0;  }
+  70%  { opacity: 0.6;  stroke-dashoffset: -100; }
+  85%  { opacity: 0;    }
+  100% { opacity: 0;    stroke-dashoffset: -100; }
+}
+
 #nodes-container {
   position: absolute;
   top: 0;
