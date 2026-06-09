@@ -109,8 +109,8 @@ const conceptMap = [
     id: "neurona_humana",
     title: "Neurona humana",
     type: "satellite-image",
-    logoUrl: "https://img.icons8.com/color/1200/neuron.jpg",
-    imageUrl: "https://i.ytimg.com/vi/LtyO5rtDOyM/hq720.jpg",
+    logoUrl: "public/img/icons/neurona_icon.jpg",
+    imageUrl: "public/img/neurona_humana.png",
     caption: "Estructura de una neurona biológica y sus componentes principales.",
     chapter: 1,
     coords: { x: 450, y: 280 },
@@ -455,8 +455,8 @@ const conceptMap = [
     id: "neurona_artificial",
     title: "Neurona artificial (Perceptrón)",
     type: "satellite-image",
-    logoUrl: "https://cdn-icons-png.flaticon.com/512/7747/7747363.png",
-    imageUrl: "https://koldopina.com/wp-content/uploads/2018/03/Perceptron01.jpg",
+    logoUrl: "public/img/icons/neurona_artificial_icon.png",
+    imageUrl: "public/img/perceptron.png",
     caption: "Diagrama del perceptrón artificial: entradas, pesos, función de activación y salida.",
     chapter: 3,
     coords: { x: 240, y: 700 },
@@ -586,7 +586,7 @@ const conceptMap = [
     id: "nvidia",
     title: "Nvidia",
     type: "satellite-logo",
-    logoUrl: "https://w7.pngwing.com/pngs/60/176/png-transparent-nvidia-hd-logo-thumbnail.png",
+    logoUrl: "public/img/icons/nvidia_icon.png",
     chapter: 4,
     coords: { x: 1100, y: 700 },
     connectsTo: [],
@@ -813,33 +813,49 @@ const conceptMap = [
     levels: {
       basic: {
         title: "🌱 Concepto Simple",
-        content: `El **Espacio Latente** es el nombre elegante que le damos a ese mapa gigante de significados multidimensionales donde viven nuestros vectores.
+        content: `
+        El **Espacio Latente** es una representación matemática donde la IA organiza conceptos según su significado.
 
-Imagina un mapa en 3D:
-- El eje X representa "Qué tan animal es".
-- El eje Y representa "Qué tan doméstico es".
-- El eje Z representa "Qué tan juguetón es".
+        Puedes imaginarlo como un mapa gigante donde las ideas similares quedan cerca unas de otras y las diferentes quedan más lejos.
 
-La palabra "perro" se ubicaría muy cerca de "gato" en las tres dimensiones. En cambio, "rascacielos" estaría en el extremo opuesto del mapa.
+        Por ejemplo, "perro" y "gato" estarían muy próximos porque comparten muchas características, mientras que "rascacielos" estaría mucho más lejos.
 
-Para medir qué tan parecidas son dos palabras o frases, la IA calcula el ángulo entre sus vectores en este espacio. Si apuntan casi en la misma dirección, significa que los conceptos son casi idénticos. Esto se llama **Similitud Coseno**.`
+        Gracias a este mapa, la IA puede entender relaciones, encontrar similitudes y conectar conceptos aunque las palabras sean distintas.
+        `
       },
       intermediate: {
         title: "🌿 Similitud Semántica",
-        content: `El espacio latente permite realizar búsquedas semánticas (por significado y no por palabras clave exactas):
-        
-- **Espacio Latente**: Un espacio geométrico abstracto donde los datos similares se agrupan de forma natural por sus características intrínsecas.
-- **Similitud Coseno**: Una métrica que mide la similitud de dos vectores calculando el coseno del ángulo entre ellos, ignorando la longitud de los vectores y enfocándose únicamente en la dirección hacia la que apuntan.`
-      },
+        content: `
+        El espacio latente permite realizar búsquedas semánticas, es decir, encontrar información por significado y no únicamente por coincidencia exacta de palabras.
+
+        - **Espacio Latente**: Es un mapa matemático donde la IA organiza conceptos según su significado. Las ideas relacionadas quedan cerca unas de otras, mientras que las no relacionadas quedan más alejadas.
+        - **Similitud Coseno**: Es la forma más común de medir qué tan parecidos son dos conceptos dentro de ese mapa. En lugar de comparar las palabras directamente, compara la dirección de sus vectores. Cuanto más alineados estén, mayor será la similitud semántica.
+
+        Por ejemplo, una búsqueda de "cómo cuidar mi mascota" podría encontrar documentos sobre "cuidados para perros" aunque ninguna de las palabras coincida exactamente.
+        `},
       technical: {
         title: "🚀 Métrica de Similitud Coseno",
-        content: `Dados dos vectores $A$ y $B$ en un espacio latente de alta dimensionalidad $\\mathbb{R}^d$, la similitud coseno se define matemáticamente como el producto escalar de los vectores dividido por el producto de sus normas euclidianas:
+        content: `
+        En los modelos modernos de IA, cada palabra, frase, documento o imagen se representa mediante un embedding, es decir, un vector numérico dentro de un espacio latente de alta dimensionalidad.
 
-$$\\text{Similitud Coseno}(A, B) = \\cos(\\theta) = \\frac{A \\cdot B}{\\|A\\| \\|B\\|} = \\frac{\\sum_{i=1}^{d} A_i B_i}{\\sqrt{\\sum_{i=1}^{d} A_i^2} \\sqrt{\\sum_{i=1}^{d} B_i^2}}$$
+        Un embedding puede representarse como:
 
-- Un valor de **1** indica que los vectores apuntan exactamente en la misma dirección (semántica idéntica).
-- Un valor de **0** indica que los vectores son ortogonales (sin relación semántica).
-- Un valor de **-1** indica direcciones opuestas (conceptos contrarios).`
+        $$ A=(a_1,a_2,...,a_d) \\in \\mathbb{R}^d $$
+        
+        donde $d$ puede ser de cientos o miles de dimensiones dependiendo del modelo.
+
+        Para determinar qué tan similares son dos embeddings $A$ y $B$, se utiliza comúnmente la **similitud coseno**, que mide el ángulo entre ambos vectores independientemente de su magnitud.
+
+        $$ cos(θ)=\\frac{A⋅B}{∥A∥∥B∥} = \\frac{∑_{i=1}^{d}A_iB_i}{√∑_{i=1}^{d}{A_i^2}√∑_{i=1}^{d}{B_i^2}}$$
+
+        Interpretación:
+
+        1. Los vectores apuntan en la misma dirección (máxima similitud semántica).
+        2. Los vectores son ortogonales (sin relación semántica relevante).
+        3. Los vectores apuntan en direcciones opuestas (máxima disimilitud).
+
+        Esta métrica es la base de tareas como búsqueda semántica, recuperación de contexto, sistemas de recomendación y clustering de embeddings.
+        `
       }
     }
   },
@@ -927,7 +943,7 @@ $$p_i = \\frac{e^{z_i / T}}{\\sum_{j} e^{z_j / T}}$$
     id: "chatgpt",
     title: "ChatGPT",
     type: "satellite-logo",
-    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg",
+    logoUrl: "public/img/icons/chatgpt_icon.svg",
     chapter: 6,
     coords: { x: 450, y: 1350 },
     connectsTo: [],
@@ -948,7 +964,7 @@ $$p_i = \\frac{e^{z_i / T}}{\\sum_{j} e^{z_j / T}}$$
     id: "gemini",
     title: "Gemini",
     type: "satellite-logo",
-    logoUrl: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/google-gemini-icon.png",
+    logoUrl: "public/img/icons/gemini_icon.webp",
     chapter: 6,
     coords: { x: 600, y: 1350 },
     connectsTo: [],
@@ -969,7 +985,7 @@ $$p_i = \\frac{e^{z_i / T}}{\\sum_{j} e^{z_j / T}}$$
     id: "claude",
     title: "Claude",
     type: "satellite-logo",
-    logoUrl: "https://images.seeklogo.com/logo-png/55/2/claude-logo-png_seeklogo-554534.png",
+    logoUrl: "public/img/icons/claude_icon.png",
     chapter: 6,
     coords: { x: 750, y: 1350 },
     connectsTo: [],
