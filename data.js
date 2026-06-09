@@ -744,8 +744,8 @@ const conceptMap = [
     id: "digitalizacion-de-significados",
     title: "12. Digitalización de Significados",
     chapter: 5,
-    coords: { x: 350, y: 1050 },
-    connectsTo: ["espacio-latente"],
+    coords: { x: 380, y: 1050 },
+    connectsTo: ["espacio-latente", "tokens"],
     summary: "Cómo convertimos palabras abstractas en números y coordenadas en un mapa multidimensional (Embeddings).",
     transitionFromPrevious: "Para resolver el límite secuencial de las RNNs y crear una IA que entienda el lenguaje de verdad, primero debemos resolver un problema puente: las computadoras solo entienden números, mientras que los humanos usamos palabras abstractas. ¿Cómo traducimos el significado de una palabra a matemáticas?",
     levels: {
@@ -803,10 +803,22 @@ const conceptMap = [
     }
   },
   {
+    id: "tokens",
+    title: "Tokenizacion",
+    type: "satellite-image",
+    logoUrl: "public/img/icons/tokenization.png",
+    imageUrl: "public/img/tokens.jpg",
+    logoAlt: "Tokenizacion",
+    chapter: 5,
+    coords: { x: 550, y: 1000 },
+    connectsTo: [],
+    summary: "Tokenizacion"
+  },
+  {
     id: "espacio-latente",
     title: "13. El Espacio Latente",
     chapter: 5,
-    coords: { x: 700, y: 1100 },
+    coords: { x: 750, y: 1100 },
     connectsTo: ["arquitectura-transformer"],
     summary: "El mapa geométrico de los conceptos y la similitud coseno para medir la cercanía de ideas.",
     transitionFromPrevious: "Una vez que hemos convertido las palabras en listas de coordenadas (vectores), ¿dónde viven esas coordenadas y cómo hace la IA para calcular qué palabras o frases se parecen entre sí en el mundo real?",
