@@ -989,7 +989,7 @@ const conceptMap = [
     imageUrl: "public/img/transformer_architecture.png",
     caption: "Ejemplo de traducción de una frase usando la arquitectura Transformer.",
     chapter: 2,
-    coords: { x: 220, y: 145wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww0 },
+    coords: { x: 220, y: 1450 },
     connectsTo: [],
   },
   {
