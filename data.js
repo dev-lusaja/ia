@@ -900,41 +900,97 @@ const conceptMap = [
     title: "14. La Arquitectura Transformer",
     chapter: 6,
     coords: { x: 250, y: 1250 },
-    connectsTo: ["llm"],
+    connectsTo: ["llm", "self_attention", "transformer_architecture"],
     summary: "El mecanismo de Auto-Atención que lee textos completos en paralelo y revolucionó la IA.",
     transitionFromPrevious: "Con los embeddings listos, los científicos tenían la materia prima numérica ideal. En 2017, un equipo de Google publicó un artículo revolucionario que cambió todo al presentar la arquitectura perfecta para procesar embeddings de forma paralela y sin perder memoria: el Transformer.",
     levels: {
       basic: {
         title: "🌱 Concepto Simple",
-        content: `El **Transformer** solucionó el límite secuencial de las RNNs de una forma genial: en lugar de leer palabra por palabra, **lee toda la frase al mismo tiempo** (procesamiento en paralelo).
+        content: `
+        El **Transformer** revolucionó el procesamiento del lenguaje porque ya no necesita leer las palabras una por una, como hacían las arquitecturas anteriores. En cambio, puede analizar toda la oración al mismo tiempo.
 
-Para entender cómo se relacionan las palabras entre sí, utiliza un mecanismo llamado **Auto-Atención (Self-Attention)**. 
+        Para comprender el significado de cada palabra utiliza un mecanismo llamado **Auto-Atención (Self-Attention)**, que le permite identificar cuáles son las palabras más importantes para interpretar el contexto.
 
-Imagina la frase: *"El banco de madera estaba en el río, al lado del banco financiero"*.
-Al procesar la palabra "banco", la Auto-Atención analiza toda la frase e identifica de inmediato que el primer "banco" se conecta con la palabra "madera" (un asiento), mientras que el segundo "banco" se asocia con "financiero" (una institución). El Transformer entiende el contexto completo al instante.`
+        Por ejemplo, en la frase:
+
+        _"El banco de madera estaba junto al río, al lado del banco financiero"._
+
+        Cuando analiza la palabra "_banco_", el modelo observa el resto de la oración y detecta que el primer "banco" está relacionado con "_madera_", por lo que se refiere a un asiento. En cambio, el segundo está relacionado con "_financiero_", por lo que se refiere a una institución bancaria.
+
+        Gracias a esta capacidad de relacionar palabras con su contexto, el Transformer puede comprender el significado de una frase de forma mucho más precisa.
+        `
       },
       intermediate: {
         title: "🌿 Auto-Atención y Codificación",
-        content: `La magia del Transformer se basa en tres vectores dinámicos calculados para cada palabra durante el proceso de atención:
-        
-- **Query (Consulta)**: Qué información está buscando esta palabra.
-- **Key (Clave)**: Qué tipo de información puede ofrecer esta palabra a las demás.
-- **Value (Valor)**: El contenido semántico real que aporta la palabra una vez que se establece la conexión.`
+        content: `
+        La **Auto-Atención** funciona mediante tres representaciones que se calculan para cada palabra:
+
+        - **Query (Consulta)**: representa qué información está buscando la palabra actual.
+        - **Key (Clave)**: representa qué información puede ofrecer una palabra a las demás.
+        - **Value (Valor)**: contiene la información o significado que finalmente se comparte.
+
+        Una forma sencilla de entenderlo es imaginar una búsqueda de información:
+
+        - La Query es la pregunta que realiza una palabra.
+        - Las Keys son las etiquetas que indican qué sabe cada palabra.
+        - Los Values son los datos que se obtienen cuando se encuentra una coincidencia relevante.
+
+        Durante el proceso de atención, cada palabra compara su **Query** con las **Keys** de todas las demás palabras de la oración para determinar cuáles son las más relevantes. Después, combina los **Values** asociados a esas palabras para construir una representación más rica de su significado dentro del contexto.
+        `
       },
       technical: {
         title: "🚀 Ecuación de Atención de Producto Escalar Escalado",
-        content: `Dada una matriz de entrada $X$, proyectamos linealmente las representaciones para obtener las matrices de Consultas $Q$, Claves $K$ y Valores $V$ utilizando matrices de pesos entrenables $W_Q, W_K, W_V$:
+        content: `La arquitectura Transformer está compuesta por bloques de Encoder y Decoder, construidos a partir de mecanismos de atención y redes neuronales feed-forward.
+        El núcleo de esta arquitectura es la **Auto-Atención Escalada por Producto Escalar (Scaled Dot-Product Attention)**.
 
-$$Q = X W_Q, \\quad K = X W_K, \\quad V = X W_V$$
+        Dada una matriz de entrada $X$, cada token se proyecta en tres espacios distintos mediante matrices de pesos entrenables:
 
-La ecuación de **Atención de Producto Escalar Escalado** (Scaled Dot-Product Attention) se define matemáticamente como:
+        $$Q = X W_Q, \\quad K = X W_K, \\quad V = X W_V$$
 
-$$\\text{Attention}(Q, K, V) = \\text{softmax}\\left( \\frac{Q K^T}{\\sqrt{d_k}} \\right) V$$
+        donde:
 
-Donde $d_k$ es la dimensión de las claves (usada como factor de escala para evitar que el gradiente se desvanezca en la función softmax debido a productos escalares excesivamente grandes).
-La operación softmax convierte el producto escalar en una distribución de probabilidades (pesos de atención) que determina cuánta "atención" presta cada palabra a todas las demás en la frase.`
+        - **$Q$ (Queries)** representa la información que cada token busca.
+        - **$K$ (Keys)** representa la información que cada token puede ofrecer.
+        - **$V$ (Values)** contiene la información semántica que será compartida entre los tokens.
+
+        La atención se calcula mediante la operación de Atención de Producto Escalar Escalado (Scaled Dot-Product Attention):
+
+        $$Attention(Q,K,V)=softmax(\\frac{QK^T}{\\sqrt{d_k}})V$$
+
+        Esta ecuación puede interpretarse en tres pasos:
+
+        1. **Calcular similitudes** El producto matricial $QK^T$ mide qué tan relacionada está cada palabra con todas las demás de la secuencia.
+        2. **Normalizar los puntajes** La división por $\\sqrt{d_k}$ evita que los valores del producto escalar crezcan demasiado cuando aumenta la dimensión de los vectores, estabilizando el comportamiento de la función softmax durante el entrenamiento.
+        3. **Generar pesos de atención** La función softmax transforma los puntajes en una distribución de probabilidades. Estos pesos indican cuánta atención debe prestar cada palabra a las demás.
+
+        Finalmente, los pesos de atención se utilizan para combinar los vectores $V$, produciendo una nueva representación contextualizada donde cada token incorpora información relevante del resto de la secuencia.
+
+        En la arquitectura Transformer original, múltiples bloques de atención se organizan dentro de un **Encoder**, encargado de construir representaciones contextualizadas del texto de entrada, y un **Decoder**, responsable de generar la secuencia de salida utilizando dichas representaciones. Este diseño permitió reemplazar las arquitecturas recurrentes tradicionales y sentó las bases de modelos modernos como BERT y GPT.
+        `
       }
     }
+  },
+  {
+    id: "self_attention",
+    title: "Self-Attention",
+    type: "satellite-image",
+    logoUrl: "public/img/self_attention.png",
+    imageUrl: "public/img/self_attention.png",
+    caption: "Funcionamiento del Self-Attention.",
+    chapter: 2,
+    coords: { x: 100, y: 1400 },
+    connectsTo: [],
+  },
+  {
+    id: "transformer_architecture",
+    title: "Arquitectura Transformer",
+    type: "satellite-image",
+    logoUrl: "public/img/transformer_architecture.png",
+    imageUrl: "public/img/transformer_architecture.png",
+    caption: "Ejemplo de traducción de una frase usando la arquitectura Transformer.",
+    chapter: 2,
+    coords: { x: 220, y: 145wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww0 },
+    connectsTo: [],
   },
   {
     id: "llm",
