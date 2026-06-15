@@ -997,38 +997,79 @@ const conceptMap = [
     title: "15. Modelos de Lenguaje Grandes (LLM)",
     chapter: 6,
     coords: { x: 600, y: 1300 },
-    connectsTo: ["alineacion-y-conexion-de-modelos", "chatgpt", "gemini", "claude"],
+    connectsTo: ["alineacion-y-conexion-de-modelos","llm_example", "chatgpt", "gemini", "claude"],
     summary: "Pre-entrenamiento masivo con todo el texto de internet y comportamientos emergentes.",
     transitionFromPrevious: "La arquitectura Transformer era tan escalable que permitía procesar cantidades absurdas de datos en paralelo. Los científicos se dieron cuenta de que si construían Transformers gigantescos y los alimentaban con casi todo el texto disponible en internet, ocurría un milagro: nacían los Modelos de Lenguaje Grandes (LLMs).",
     levels: {
       basic: {
         title: "🌱 Concepto Simple",
-        content: `Un **LLM** (como ChatGPT, Gemini o Claude) es simplemente un Transformer gigante entrenado para hacer una sola tarea billones de veces: **predecir cuál es la palabra más probable que sigue a continuación**.
+        content: `
+        Un **LLM** (Large Language Model), como ChatGPT, Gemini o Claude, es un modelo basado en la arquitectura Transformer entrenado para realizar una tarea muy simple millones de veces: **predecir cuál es el siguiente fragmento de texto más probable**.
 
-Si le escribes *"El cielo es..."*, el LLM calcula que la palabra más probable es *"azul"*.
+        Por ejemplo, si escribimos: _"El cielo es..."_
 
-Al entrenar al modelo con todo internet (libros, artículos, foros), la IA no solo aprende a completar frases; de forma sorprendente, aprende lógica, programación, idiomas y razonamiento común. Esto se llama **Comportamientos Emergentes**: habilidades complejas que surgen por pura escala de datos.`
+        el modelo calcula qué palabra o fragmento tiene mayor probabilidad de aparecer después, como _"azul"_.
+
+        Durante el entrenamiento analiza **enormes cantidades de texto** provenientes de libros, artículos, sitios web y otros documentos. Al aprender a predecir texto cada vez mejor, el modelo desarrolla capacidades sorprendentes como responder preguntas, programar, traducir idiomas o resolver problemas.
+
+        Estas habilidades se conocen como **comportamientos emergentes**: capacidades complejas que aparecen cuando el modelo alcanza suficiente escala de datos, parámetros y entrenamiento, aunque nunca hayan sido programadas explícitamente.
+        `
       },
       intermediate: {
         title: "🌿 Parámetros e Hiperparámetros",
-        content: `El comportamiento de un LLM se configura mediante parámetros estructurales e hiperparámetros de inferencia:
-        
-- **Ventana de Contexto**: La cantidad máxima de texto que el modelo puede retener en su memoria activa al mismo tiempo durante una conversación.
-- **Temperatura**: Parámetro que controla la creatividad. Una temperatura de $0$ hace que el modelo elija siempre la palabra más probable (determinista y aburrido); una de $1$ introduce aleatoriedad y creatividad.
-- **Alucinaciones**: Cuando el modelo predice una secuencia de palabras gramaticalmente perfecta pero fácticamente falsa, debido a que su objetivo es la verosimilitud del lenguaje, no la verdad factual.`
+        content: `
+        El comportamiento de un LLM no depende únicamente de los datos con los que fue entrenado. También intervienen conceptos y parámetros que determinan cómo procesa y genera texto:
+
+        **Tokens**: Antes de procesar un texto, el modelo lo divide en pequeñas unidades llamadas tokens. Un token puede ser una palabra completa, parte de una palabra o incluso un signo de puntuación. Por ejemplo, la frase "Inteligencia Artificial" podría dividirse en varios tokens dependiendo del modelo utilizado. Los LLM no trabajan directamente con palabras, sino con secuencias de tokens.
+
+        **Ventana de Contexto**: Es la cantidad máxima de tokens que el modelo puede considerar simultáneamente. Cuanto mayor sea la ventana de contexto, más información podrá recordar y utilizar durante una conversación o documento largo.
+
+        **Temperatura**: Es un parámetro que controla el nivel de aleatoriedad en la generación de texto. Con valores bajos, el modelo tiende a elegir las opciones más probables y producir respuestas más consistentes. Con valores más altos, explora alternativas menos probables, generando respuestas más variadas.
+
+        **Alucinaciones**: Ocurren cuando el modelo genera información incorrecta o inventada que parece convincente. Esto sucede porque el objetivo principal de un LLM es producir texto estadísticamente probable según su entrenamiento, no verificar automáticamente si cada afirmación es verdadera.
+        `
       },
       technical: {
         title: "🚀 Softmax y el Parámetro de Temperatura",
-        content: `Durante la inferencia, la última capa del LLM produce puntuaciones crudas (*logits*) $z_i$ para cada palabra en el vocabulario. Para convertirlas en probabilidades $p_i$, aplicamos la función softmax con un parámetro de **Temperatura** $T$:
+        content: `
+        Cuando un LLM recibe una secuencia de tokens, el Transformer procesa todo el contexto mediante mecanismos de atención y genera una representación interna para cada posición.
 
-$$p_i = \\frac{e^{z_i / T}}{\\sum_{j} e^{z_j / T}}$$
+        A partir de la representación del último token, una capa de salida proyecta el resultado sobre todo el vocabulario del modelo, produciendo una puntuación numérica para cada posible token. Estas puntuaciones se denominan **logits**.
 
-- Si $T \\to 0$, la probabilidad del logit más alto tiende a 1 (muestreo codicioso o *greedy decoding*).
-- Si $T$ aumenta, la distribución de probabilidad se vuelve más uniforme, permitiendo que palabras menos probables tengan oportunidad de ser seleccionadas, lo que incrementa la creatividad pero también la tasa de alucinaciones.`
+        $$z=[z_1, z_2, ..., z_V]$$
+
+        Donde: $V$ es el tamaño del vocabulario.
+
+        Los logits no son probabilidades, por lo que se transforman mediante la función Softmax:
+
+        $$P(i) = \\frac{e^{z_i/T}}{\\sum_{j}e^{z_j/T}}$$
+
+        El resultado es una distribución de probabilidad sobre todos los tokens posibles. El modelo selecciona entonces uno de ellos (por ejemplo mediante muestreo o selección del más probable), lo agrega al contexto y repite el proceso para generar el siguiente token.
+
+        La temperatura $T$ controla la forma de esta distribución:
+        - **Con temperaturas bajas**, la probabilidad se concentra en unos pocos tokens, produciendo respuestas más deterministas.
+        - **Con temperaturas altas**, la distribución se vuelve más uniforme, aumentando la diversidad de las respuestas.
+
+        Este ciclo de:
+        Contexto -> Transformer -> Logits -> Softmax -> Selección de Token
+
+        se repite token por token hasta completar la respuesta.
+        `
       }
     }
   },
   // --- Modelos LLM específicos ---
+  {
+    id: "llm_example",
+    title: "LLM",
+    type: "satellite-image",
+    logoUrl: "public/img/llm.png",
+    imageUrl: "public/img/llm.png",
+    caption: "Funcionamiento del LLM.",
+    chapter: 6,
+    coords: { x: 610, y: 1200 },
+    connectsTo: [],
+  },
   {
     id: "chatgpt",
     title: "ChatGPT",
