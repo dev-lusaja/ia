@@ -1082,11 +1082,16 @@ const conceptMap = [
     levels: {
       basic: {
         title: "🌱 Pionero del Chat AI",
-        content: `**ChatGPT** (desarrollado por OpenAI) es el modelo que popularizó la IA generativa a nivel mundial. 
+        content: `**ChatGPT** (desarrollado por OpenAI) es un asistente basado en modelos de lenguaje (LLM) desarrollado por OpenAI. Está diseñado para comprender instrucciones en lenguaje natural y ayudar en tareas como responder preguntas, generar contenido, analizar información, programar y resolver problemas.
 
-        - **Fortalezas**: Excelente para redacción creativa, lluvia de ideas, programación avanzada y razonamiento lógico general gracias a sus capacidades de razonamiento (como la serie de modelos GPT-o).
-        - **Herramientas**: Integra navegación web, análisis de datos avanzado, generación de imágenes con DALL-E y creación de GPTs personalizados.
+        **¿Qué puede hacer?**
 
+        - Mantener conversaciones naturales.
+        - Generar y corregir textos.
+        - Explicar conceptos complejos.
+        - Analizar documentos y datos.
+        - Ayudar en tareas técnicas y creativas.
+        
         🔗 **Acceso oficial**: [Chatgpt](https://chatgpt.com)`
       }
     }
@@ -1103,10 +1108,15 @@ const conceptMap = [
     levels: {
       basic: {
         title: "🌱 Multimodal Nativo",
-        content: `**Gemini** es la suite de modelos avanzados de Google, construidos desde cero para ser nativamente multimodales.
+        content: `**Gemini** (desarrollado por Google) es la familia de modelos de lenguaje de Google y también el nombre de su asistente de inteligencia artificial. Está diseñado para comprender y generar información a partir de texto, imágenes y otros formatos, facilitando tareas de productividad, investigación y creación de contenido.
 
-        - **Fortalezas**: Su característica más destructiva es su **gigantesca ventana de contexto** (capaz de procesar millones de tokens), lo que le permite analizar libros enteros, horas de video o bases de código masivas de un solo golpe.
-        - **Integración**: Conectado directamente al ecosistema de Google (Workspace, YouTube, Maps, e indirectamente a Android).
+        **¿Qué puede hacer?**
+
+        - Responder preguntas y explicar información.
+        - Generar contenido escrito.
+        - Analizar documentos e imágenes.
+        - Ayudar en tareas académicas y profesionales.
+        - Integrarse con herramientas del ecosistema Google.
 
         🔗 **Acceso oficial**: [Gemini](https://gemini.google.com)`
       }
@@ -1124,10 +1134,15 @@ const conceptMap = [
     levels: {
       basic: {
         title: "🌱 Redacción y Código Técnico",
-        content: `**Claude** (desarrollado por Anthropic) es un modelo diseñado con un enfoque estricto en la seguridad, la alineación ética (Constitutional AI) y el rendimiento técnico.
+        content: `**Claude** (desarrollado por Anthropic) es un asistente de inteligencia artificial desarrollado por Anthropic, basado en modelos de lenguaje avanzados. Se especializa en el análisis de información, la comprensión de documentos extensos y la generación de respuestas detalladas y contextualizadas.
 
-        - **Fortalezas**: Ampliamente reconocido por tener el **tono de escritura más humano y matizado**, además de capacidades excepcionales para la programación, análisis de datos y lógica compleja.
-        - **Interfaz**: Su característica "Artifacts" permite ver, ejecutar y editar código en tiempo real al lado del chat.
+        **¿Qué puede hacer?**
+
+        - Analizar grandes cantidades de texto.
+        - Resumir y organizar información.
+        - Redactar y revisar documentos.
+        - Resolver problemas mediante razonamiento.
+        - Asistir en investigación y planificación.
 
         🔗 **Acceso oficial**: [Claude](https://claude.ai)`
       }
@@ -1135,46 +1150,106 @@ const conceptMap = [
   },
   {
     id: "alineacion-y-conexion-de-modelos",
-    title: "16. Alineación y Conexión de Modelos",
+    title: "16. Alineación de modelos LLM",
     chapter: 6,
     coords: { x: 950, y: 1250 },
     connectsTo: ["ia-generativa-multimodal"],
-    summary: "RLHF para domar al modelo y los límites de una base de datos estática.",
-    transitionFromPrevious: "Un LLM recién salido de internet (llamado modelo base) es como un animal salvaje: si le pides ayuda, simplemente completará el texto con lo que vio en internet, pudiendo responder con insultos o textos sin sentido. Para que sea un asistente útil y seguro, necesitamos alinearlo.",
+    summary: "",
     levels: {
       basic: {
         title: "🌱 Concepto Simple",
-        content: `Un LLM recién entrenado es propenso a decir cosas inapropiadas o inútiles. Para convertirlo en un chat servicial, aplicamos **Alineación**.
+        content: `
+        **Alineación: Enseñando a la IA a ser útil**
+        Un LLM recién entrenado sabe mucho sobre lenguaje, pero no necesariamente cómo comportarse como un buen asistente. Puede responder de forma confusa, poco útil o incluso inapropiada.
 
-El método principal es el **RLHF** (Aprendizaje por Refuerzo con Feedback Humano):
-1. Ponemos a la IA a responder preguntas.
-2. Humanos revisan las respuestas y califican con "estrella" las amables e informativas y con "tacha" las groseras o confusas.
-3. La IA aprende mediante recompensas a comportarse como un asistente servicial.
+        Para convertirlo en un asistente servicial se aplica un proceso llamado **Alineación**, cuyo objetivo es enseñarle a responder de forma útil, segura y acorde a las expectativas humanas.
 
-**El Límite del LLM Estático (El gran cuello de botella)**:
-Un LLM es una foto del pasado. No sabe qué pasó ayer y no tiene acceso a internet por sí solo. Es una base de datos estática cerrada. Para resolver este límite, necesitamos abrirlo al mundo exterior.`
+        Uno de los métodos más utilizados es el **RLHF (Aprendizaje por Refuerzo con Feedback Humano)**:
+
+        1. La IA genera respuestas a distintas preguntas.
+        2. Personas evalúan cuáles respuestas son más útiles, claras y correctas.
+        3. El modelo aprende de esas evaluaciones y ajusta su comportamiento para producir mejores respuestas en el futuro.
+
+        Gracias a este proceso, los LLM pasan de ser simples predictores de texto a asistentes capaces de interactuar de manera más natural y confiable.
+        
+        **El límite del LLM estático**
+        Aunque un LLM puede haber aprendido enormes cantidades de información durante su entrenamiento, su conocimiento tiene una fecha de corte.
+
+        Por sí solo:
+
+        - No sabe qué ocurrió después de su entrenamiento.
+        - No puede consultar internet.
+        - No puede acceder a tus documentos o sistemas.
+
+        En otras palabras, un LLM conoce lo que aprendió en el pasado, pero no lo que está ocurriendo ahora.
+
+        Para superar esta limitación, necesitamos conectarlo con fuentes externas de información y herramientas del mundo real.
+
+        `
       },
       intermediate: {
         title: "🌿 Métodos de Adaptación",
-        content: `Para moldear las respuestas de un modelo, existen tres técnicas principales:
-        
-- **RLHF**: Entrenamiento de alineación para inculcar seguridad, tono conversacional y utilidad en el modelo.
-- **Fine-Tuning (Ajuste Fino)**: Volver a entrenar al modelo con un conjunto pequeño de datos ultra-especializados (ej. historiales clínicos) para cambiar su tono o enseñarle una especialidad.
-- **Prompt Engineering**: Diseñar de forma estructurada las instrucciones de entrada para guiar al modelo sin alterar sus conexiones neuronales internas.`
+        content: `
+      **Cómo se moldea el comportamiento de un LLM**
+
+      Existen diferentes formas de influir en cómo responde un modelo de lenguaje, desde modificar su entrenamiento hasta simplemente cambiar las instrucciones que recibe.
+
+      **1. RLHF (Reinforcement Learning from Human Feedback)**
+      Es una técnica de alineación donde evaluadores humanos califican respuestas generadas por el modelo. Con esta retroalimentación, el modelo aprende a ser más útil, seguro y coherente con las expectativas humanas.
+
+      **2. Fine-Tuning (Ajuste Fino)**
+      Consiste en continuar el entrenamiento del modelo utilizando datos especializados de un dominio concreto. Esto permite adaptarlo a tareas, industrias o estilos específicos sin tener que entrenarlo desde cero.
+
+      Ejemplos:
+      - Terminología médica.
+      - Documentación legal.
+      - Soporte técnico de una empresa.
+      - Estilo de comunicación corporativo.
+
+      **3. Prompt Engineering**
+      Consiste en diseñar instrucciones claras y estructuradas para guiar el comportamiento del modelo durante una conversación.
+
+      A diferencia del Fine-Tuning, no modifica el modelo internamente. En su lugar, aprovecha las capacidades que ya posee para obtener respuestas más precisas y útiles.
+
+      Ejemplo:
+      No es lo mismo pedir *"Explícame que es la IA"* que *"Explícame que es la IA como si tuviera 10 años y usando ejemplos cotidianos"*.
+      `
       },
       technical: {
         title: "🚀 El Algoritmo RLHF y PPO",
-        content: `El proceso de RLHF se divide en tres fases matemáticas:
-        
-1. **Entrenamiento del Modelo de Recompensa (Reward Model)**:
-Se recolecta un dataset de respuestas comparadas por humanos $(x, y_w, y_l)$, donde $y_w$ es la respuesta preferida (winner) y $y_l$ la descartada (loser). Se entrena un modelo de recompensa $r_\\psi(s, a)$ minimizando la pérdida de pérdida binaria cruzada:
+        content: `
+      **RLHF: Alineación mediante Aprendizaje por Refuerzo con Feedback Humano**
 
-$$\\mathcal{L}(\\psi) = -\\mathbb{E}_{(x, y_w, y_l)} \\left[ \\log \\sigma(r_\\psi(x, y_w) - r_\\psi(x, y_l)) \\right]$$
+      A nivel técnico, RLHF transforma un modelo base entrenado para predecir texto en un asistente alineado con las preferencias humanas. El proceso suele dividirse en tres etapas.
 
-2. **Optimización de la Política**:
-Se optimiza la política del LLM $\\pi_\\theta$ utilizando algoritmos de optimización de política proximal (**PPO**), penalizando desviaciones excesivas del modelo base $\\pi^{\\text{SFT}}$ mediante una divergencia KL (Kullback-Leibler) para evitar que el modelo se corrompa en el proceso:
+      1. **Supervised Fine-Tuning (SFT)**
+      Partiendo de un modelo preentrenado, se realiza un ajuste supervisado utilizando ejemplos de alta calidad escritos por humanos.
+      Se optimizan los parámetros del modelo para maximizar la probabilidad de las respuestas deseadas:
+      $$\\mathcal{L}_{SFT}=-\\sum_{t=1}^{T}\\log \\pi_\\theta(y_t \\mid x, y_{<t})$$
+      El resultado es una política inicial $\\pi^{SFT}$ capaz de seguir instrucciones de manera razonable.
+      
+      2. **Entrenamiento del Modelo de Recompensa (Reward Model)**
+      Se recopilan comparaciones humanas de respuestas:
+      $$(x, y_w, y_l)$$
+      donde:
+      - $x$ es el prompt.
+      - $y_w$ es la respuesta preferida (*winner*).
+      - $y_l$ es la respuesta descartada (*loser*).
+      Se entrena un modelo de recompensa $r_\\psi$ para asignar puntuaciones más altas a las respuestas preferidas:
+      $$\\mathcal{L}(\\psi) = \\mathbb{E}*{(x,y_w,y_l)} \\left[ \\log \\sigma \\left( r*\\psi(x,y_w)-r_\\psi(x,y_l) \\right) \\right]$$
+      Este modelo aprende una aproximación matemática de las preferencias humanas.
+      
+      3. **RLHF (objetivo)**
+      Finalmente, el LLM se optimiza para maximizar la recompensa estimada por el Reward Model.
+      El objetivo consiste en obtener respuestas mejor valoradas sin alejarse excesivamente del comportamiento aprendido durante SFT:
+      $$\\mathcal{J}(\\theta) = \\mathbb{E}\\left[r_\\psi(x,y)\\right] - \\beta D_{KL}\\left(\\pi_\\theta \\parallel \\pi^{SFT}\\right)$$
+      donde:
+      - $r_\\psi$: recompensa respuestas preferidas por humanos.
+      - $D_{KL}$: penaliza desviaciones excesivas respecto al modelo SFT.
+      - $\\beta$: controla el equilibrio entre exploración y estabilidad.
 
-$$\\text{objective}(\\theta) = \\mathbb{E} \\left[ r_\\psi(x, y) \\right] - \\beta D_{\\text{KL}}(\\pi_\\theta(y|x) \\parallel \\pi^{\\text{SFT}}(y|x))$$`
+      En la práctica, esta optimización suele implementarse mediante algoritmos de aprendizaje por refuerzo como PPO (Proximal Policy Optimization).
+      `
       }
     }
   },
