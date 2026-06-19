@@ -121,7 +121,7 @@ const conceptMap = [
     title: "3. ¿Qué es la Inteligencia Artificial?",
     chapter: 1,
     coords: { x: 750, y: 200 },
-    connectsTo: ["como-aprende-una-maquina"],
+    connectsTo: ["como-aprende-una-maquina", "categorias_ia"],
     summary: "El intento de recrear el pensamiento humano en silicio mediante código, y por qué las reglas fijas fracasaron.",
     transitionFromPrevious: "Si entendemos el pensamiento y definimos la inteligencia, el siguiente paso lógico es obvio: ¿podemos construirla artificialmente en una máquina?",
     levels: {
@@ -177,7 +177,17 @@ const conceptMap = [
       }
     }
   },
-
+  {
+    id: "categorias_ia",
+    title: "Categorías",
+    type: "satellite-image",
+    logoUrl: "public/img/categorias_ia.png",
+    imageUrl: "public/img/categorias_ia.png",
+    caption: "Categorías de la IA.",
+    chapter: 1,
+    coords: { x: 790, y: 90 },
+    connectsTo: [],
+  },
   // --- CAPÍTULO 2 ---
   {
     id: "como-aprende-una-maquina",
@@ -1155,6 +1165,7 @@ const conceptMap = [
     coords: { x: 950, y: 1250 },
     connectsTo: ["ia-generativa-multimodal"],
     summary: "",
+    transitionFromPrevious: "Un LLM recién salido de internet (llamado modelo base) es como un animal salvaje: si le pides ayuda, simplemente completará el texto con lo que vio en internet, pudiendo responder con insultos o textos sin sentido. Para que sea un asistente útil y seguro, necesitamos alinearlo.",
     levels: {
       basic: {
         title: "🌱 Concepto Simple",
@@ -1194,7 +1205,7 @@ const conceptMap = [
 
       Existen diferentes formas de influir en cómo responde un modelo de lenguaje, desde modificar su entrenamiento hasta simplemente cambiar las instrucciones que recibe.
 
-      **1. RLHF (Reinforcement Learning from Human Feedback)**
+      **1. RLHF (Aprendizaje por refuerzo con feedback humano)**
       Es una técnica de alineación donde evaluadores humanos califican respuestas generadas por el modelo. Con esta retroalimentación, el modelo aprende a ser más útil, seguro y coherente con las expectativas humanas.
 
       **2. Fine-Tuning (Ajuste Fino)**
@@ -1218,17 +1229,17 @@ const conceptMap = [
       technical: {
         title: "🚀 El Algoritmo RLHF y PPO",
         content: `
-      **RLHF: Alineación mediante Aprendizaje por Refuerzo con Feedback Humano**
+      **RLHF: Alineación mediante aprendizaje por refuerzo con feedback humano**
 
       A nivel técnico, RLHF transforma un modelo base entrenado para predecir texto en un asistente alineado con las preferencias humanas. El proceso suele dividirse en tres etapas.
 
-      1. **Supervised Fine-Tuning (SFT)**
+      **1. Supervised Fine-Tuning (SFT)**
       Partiendo de un modelo preentrenado, se realiza un ajuste supervisado utilizando ejemplos de alta calidad escritos por humanos.
       Se optimizan los parámetros del modelo para maximizar la probabilidad de las respuestas deseadas:
       $$\\mathcal{L}_{SFT}=-\\sum_{t=1}^{T}\\log \\pi_\\theta(y_t \\mid x, y_{<t})$$
       El resultado es una política inicial $\\pi^{SFT}$ capaz de seguir instrucciones de manera razonable.
       
-      2. **Entrenamiento del Modelo de Recompensa (Reward Model)**
+      **2. Entrenamiento del Modelo de Recompensa (Reward Model)**
       Se recopilan comparaciones humanas de respuestas:
       $$(x, y_w, y_l)$$
       donde:
@@ -1239,7 +1250,7 @@ const conceptMap = [
       $$\\mathcal{L}(\\psi) = \\mathbb{E}*{(x,y_w,y_l)} \\left[ \\log \\sigma \\left( r*\\psi(x,y_w)-r_\\psi(x,y_l) \\right) \\right]$$
       Este modelo aprende una aproximación matemática de las preferencias humanas.
       
-      3. **RLHF (objetivo)**
+      **3. RLHF (objetivo)**
       Finalmente, el LLM se optimiza para maximizar la recompensa estimada por el Reward Model.
       El objetivo consiste en obtener respuestas mejor valoradas sin alejarse excesivamente del comportamiento aprendido durante SFT:
       $$\\mathcal{J}(\\theta) = \\mathbb{E}\\left[r_\\psi(x,y)\\right] - \\beta D_{KL}\\left(\\pi_\\theta \\parallel \\pi^{SFT}\\right)$$
