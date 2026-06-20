@@ -1007,14 +1007,14 @@ const conceptMap = [
     title: "15. Modelos de Lenguaje Grandes (LLM)",
     chapter: 6,
     coords: { x: 600, y: 1300 },
-    connectsTo: ["alineacion-y-conexion-de-modelos","llm_example", "chatgpt", "gemini", "claude"],
+    connectsTo: ["alineacion-y-conexion-de-modelos","llm_example"],
     summary: "Pre-entrenamiento masivo con todo el texto de internet y comportamientos emergentes.",
     transitionFromPrevious: "La arquitectura Transformer era tan escalable que permitía procesar cantidades absurdas de datos en paralelo. Los científicos se dieron cuenta de que si construían Transformers gigantescos y los alimentaban con casi todo el texto disponible en internet, ocurría un milagro: nacían los Modelos de Lenguaje Grandes (LLMs).",
     levels: {
       basic: {
         title: "🌱 Concepto Simple",
         content: `
-        Un **LLM** (Large Language Model), como ChatGPT, Gemini o Claude, es un modelo basado en la arquitectura Transformer entrenado para realizar una tarea muy simple millones de veces: **predecir cuál es el siguiente fragmento de texto más probable**.
+        Un **LLM** (Large Language Model) es un modelo basado en la arquitectura **Transformer** entrenado para realizar una tarea muy simple millones de veces: **predecir cuál es el siguiente fragmento de texto más probable**.
 
         Por ejemplo, si escribimos: _"El cielo es..."_
 
@@ -1071,99 +1071,21 @@ const conceptMap = [
   // --- Modelos LLM específicos ---
   {
     id: "llm_example",
-    title: "LLM",
+    title: "¿Cómo funciona?",
     type: "satellite-image",
     logoUrl: "public/img/llm.png",
     imageUrl: "public/img/llm.png",
     caption: "Funcionamiento del LLM.",
     chapter: 6,
-    coords: { x: 610, y: 1200 },
+    coords: { x: 610, y: 1450 },
     connectsTo: [],
-  },
-  {
-    id: "chatgpt",
-    title: "ChatGPT",
-    type: "satellite-logo",
-    logoUrl: "public/img/icons/chatgpt_icon.svg",
-    chapter: 6,
-    coords: { x: 450, y: 1450 },
-    connectsTo: [],
-    summary: "Modelo de OpenAI",
-    levels: {
-      basic: {
-        title: "🌱 Pionero del Chat AI",
-        content: `**ChatGPT** (desarrollado por OpenAI) es un asistente basado en modelos de lenguaje (LLM) desarrollado por OpenAI. Está diseñado para comprender instrucciones en lenguaje natural y ayudar en tareas como responder preguntas, generar contenido, analizar información, programar y resolver problemas.
-
-        **¿Qué puede hacer?**
-
-        - Mantener conversaciones naturales.
-        - Generar y corregir textos.
-        - Explicar conceptos complejos.
-        - Analizar documentos y datos.
-        - Ayudar en tareas técnicas y creativas.
-        
-        🔗 **Acceso oficial**: [Chatgpt](https://chatgpt.com)`
-      }
-    }
-  },
-  {
-    id: "gemini",
-    title: "Gemini",
-    type: "satellite-logo",
-    logoUrl: "public/img/icons/gemini_icon.webp",
-    chapter: 6,
-    coords: { x: 590, y: 1450 },
-    connectsTo: [],
-    summary: "Modelo de Google",
-    levels: {
-      basic: {
-        title: "🌱 Multimodal Nativo",
-        content: `**Gemini** (desarrollado por Google) es la familia de modelos de lenguaje de Google y también el nombre de su asistente de inteligencia artificial. Está diseñado para comprender y generar información a partir de texto, imágenes y otros formatos, facilitando tareas de productividad, investigación y creación de contenido.
-
-        **¿Qué puede hacer?**
-
-        - Responder preguntas y explicar información.
-        - Generar contenido escrito.
-        - Analizar documentos e imágenes.
-        - Ayudar en tareas académicas y profesionales.
-        - Integrarse con herramientas del ecosistema Google.
-
-        🔗 **Acceso oficial**: [Gemini](https://gemini.google.com)`
-      }
-    }
-  },
-  {
-    id: "claude",
-    title: "Claude",
-    type: "satellite-logo",
-    logoUrl: "public/img/icons/claude_icon.png",
-    chapter: 6,
-    coords: { x: 750, y: 1450 },
-    connectsTo: [],
-    summary: "Modelo de Anthropic",
-    levels: {
-      basic: {
-        title: "🌱 Redacción y Código Técnico",
-        content: `**Claude** (desarrollado por Anthropic) es un asistente de inteligencia artificial desarrollado por Anthropic, basado en modelos de lenguaje avanzados. Se especializa en el análisis de información, la comprensión de documentos extensos y la generación de respuestas detalladas y contextualizadas.
-
-        **¿Qué puede hacer?**
-
-        - Analizar grandes cantidades de texto.
-        - Resumir y organizar información.
-        - Redactar y revisar documentos.
-        - Resolver problemas mediante razonamiento.
-        - Asistir en investigación y planificación.
-
-        🔗 **Acceso oficial**: [Claude](https://claude.ai)`
-      }
-    }
   },
   {
     id: "alineacion-y-conexion-de-modelos",
     title: "16. Alineación de modelos LLM",
     chapter: 6,
     coords: { x: 950, y: 1250 },
-    connectsTo: ["ia-generativa-multimodal"],
+    connectsTo: ["ia-generativa"],
     summary: "",
     transitionFromPrevious: "Un LLM recién salido de internet (llamado modelo base) es como un animal salvaje: si le pides ayuda, simplemente completará el texto con lo que vio en internet, pudiendo responder con insultos o textos sin sentido. Para que sea un asistente útil y seguro, necesitamos alinearlo.",
     levels: {
@@ -1267,49 +1189,246 @@ const conceptMap = [
 
   // --- CAPÍTULO 7 ---
   {
+    id: "ia-generativa",
+    title: "17. IA Generativa",
+    chapter: 7,
+    coords: { x: 1290, y: 1150 },
+    connectsTo: ["ia-generativa-multimodal", "ia_generativa"],
+    summary: "De entender a crear: modelos que pintan imágenes con difusión o generan código.",
+    transitionFromPrevious: "Al alinear los LLMs para que sus respuestas sean más útiles, seguras y coherentes con las intenciones humanas, descubrimos algo importante: no solo eran capaces de comprender y seguir instrucciones con precisión, sino también de sintetizar información y producir contenido nuevo a partir de lo aprendido durante su entrenamiento. Esta capacidad dio origen a lo que conocemos como IA Generativa.",
+    levels: {
+      basic: {
+        title: "🌱 Concepto Simple",
+        content: `
+        Los modelos de IA modernos no solo pueden comprender información y responder preguntas. También pueden utilizar el conocimiento adquirido durante su entrenamiento para **crear contenido nuevo**. Esta capacidad se conoce como IA Generativa.
+
+        - Generación de Texto: Redactar artículos, resumir documentos, responder preguntas o escribir código.
+        - Generación de Imágenes: Crear imágenes originales a partir de descripciones escritas.
+        - Generación de Audio: Producir voces, música o efectos de sonido.
+        - Generación de Video: Crear secuencias de video a partir de instrucciones o contenido de referencia.
+
+        🚀 La IA Generativa transforma el conocimiento aprendido durante el entrenamiento en **nuevo contenido**, permitiendo pasar de sistemas que únicamente analizan información a sistemas capaces de crearla.
+        `
+      },
+      intermediate: {
+        title: "🌿 Difusión y Multimodalidad",
+        content: `
+        A diferencia de los sistemas tradicionales de IA, que suelen clasificar, detectar o predecir información existente, los **modelos generativos** pueden producir **contenido completamente nuevo** a partir de los patrones aprendidos durante el entrenamiento.
+
+        - IA tradicional → Clasificar correos como spam o no spam.
+        - IA predictiva → Estimar el precio de una vivienda.
+        - IA generativa → Crear un nuevo correo, imagen, audio o video.
+
+        🚀 La principal característica de la IA Generativa es su capacidad para sintetizar información y producir contenido original en lugar de limitarse a analizar datos existentes.
+        `
+      },
+      technical: {
+        title: "🚀 Matemáticas de Modelos de Difusión (DDPM)",
+        content: `
+        Desde una perspectiva técnica, los modelos generativos aprenden una **representación estadística** de los datos de entrenamiento y utilizan esa representación para **producir nuevas muestras coherentes** con los patrones observados.
+
+        Dependiendo de la modalidad, distintos tipos de arquitecturas pueden utilizarse para la generación:
+        
+        - LLMs para texto.
+        - Modelos de difusión para imágenes y video.
+        - Modelos autoregresivos para secuencias.
+        - Arquitecturas multimodales para combinar diferentes tipos de información.
+
+        💡 Aunque las arquitecturas pueden variar, todas comparten el mismo objetivo: **generar contenido nuevo que conserve las características aprendidas durante el entrenamiento**.
+        `
+      }
+    }
+  },
+  {
+    id: "ia_generativa",
+    title: "Generación de contenido",
+    type: "satellite-image",
+    logoUrl: "public/img/ia_generativa.png",
+    imageUrl: "public/img/ia_generativa.png",
+    caption: "Generación de contenido",
+    chapter: 7,
+    coords: { x: 1190, y: 1050 },
+    connectsTo: [],
+  },
+  {
     id: "ia-generativa-multimodal",
-    title: "17. IA Generativa Multimodal",
+    title: "18. IA Generativa Multimodal",
     chapter: 7,
     coords: { x: 1200, y: 1400 },
-    connectsTo: ["rag"],
+    connectsTo: ["rag", "chatgpt", "gemini", "claude", "ia_generativa_multmodal"],
     summary: "De entender a crear: modelos que pintan imágenes con difusión o generan código.",
     transitionFromPrevious: "Al abrir a los LLMs al mundo exterior y alinear su comportamiento, nos dimos cuenta de que su comprensión profunda de los embeddings les permitía no solo analizar información, sino crear contenido completamente nuevo en múltiples formatos (multimodalidad).",
     levels: {
       basic: {
         title: "🌱 Concepto Simple",
-        content: `La **IA Generativa** es el paso de *"entender"* a *"crear"*. Dado que la IA conoce las coordenadas matemáticas del mundo real (embeddings), puede usarlas a la inversa para generar material nuevo.
+        content: `
+        La IA Generativa Multimodal es la evolución de la IA generativa que permite **comprender y generar diferentes tipos de información**, como texto, imágenes y audio, dentro de un mismo sistema.
 
-- **Texto a Imagen (Modelos de Difusión)**: Para pintar una imagen, la IA toma un lienzo lleno de ruido estático (píxeles grises al azar) y, guiada por tu texto, va limpiando ese ruido paso a paso hasta que emerge una imagen nítida de alta definición.
-- **Multimodalidad**: Modelos modernos como GPT-4o o Gemini que pueden ver imágenes, escuchar tu voz y responderte hablando o escribiendo código de programación, todo dentro de una misma red neuronal.`
+        Esto significa que un modelo puede analizar una imagen, entender una pregunta hablada y responder mediante texto o voz, manteniendo el contexto de toda la interacción.
+
+        - **Comprensión multimodal**: Puede interpretar texto, imágenes, audio y documentos.
+        - **Generación multimodal**: Puede responder utilizando texto, voz, imágenes u otros formatos.
+        - **Contexto compartido**: La información de distintas modalidades se combina dentro de una misma conversación.
+
+        Herramientas como ChatGPT, Gemini y Claude son ejemplos de sistemas multimodales modernos, capaces de interactuar con diferentes tipos de información más allá del texto tradicional.
+
+        💡 _La multimodalidad acerca a la IA a una forma de interacción más natural, donde diferentes tipos de información pueden ser comprendidos y generados dentro de un mismo contexto._
+        `
       },
       intermediate: {
         title: "🌿 Difusión y Multimodalidad",
-        content: `Las dos tecnologías clave de la generación moderna son:
-        
-- **Modelos de Difusión**: Redes neuronales entrenadas para revertir un proceso de degradación de información. Aprenden a predecir y restar "ruido gaussiano" de una imagen de forma iterativa hasta descubrir la imagen estructurada oculta.
-- **Modelos Multimodales**: Sistemas que usan "proyectores de embeddings" para alinear las señales visuales o auditivas en el mismo espacio vectorial que el texto, permitiendo al cerebro del LLM "entender" una foto igual que si fuera un párrafo escrito.`
+        content: `
+        La generación moderna se apoya en diferentes arquitecturas especializadas para trabajar con distintos tipos de información. Dos de las más importantes son:
+
+        - **Modelos de Difusión**: Los modelos de difusión son una familia de redes neuronales utilizadas principalmente para generar imágenes. Su funcionamiento se basa en un proceso gradual de refinamiento: comienzan con una imagen compuesta únicamente por ruido aleatorio y, guiados por una descripción textual, eliminan ese ruido paso a paso hasta formar una imagen coherente.
+
+        Por ejemplo, si el usuario solicita:
+
+        _"Un castillo flotando sobre las nubes al atardecer"_
+
+        El modelo parte de un patrón aleatorio de píxeles y realiza cientos de pequeñas correcciones hasta que emerge una imagen que coincide con la descripción proporcionada.
+
+        En lugar de dibujar una imagen desde cero, un modelo de difusión aprende a transformar ruido aleatorio en contenido visual significativo.
+
+        - **Modelos Multimodales**: Sistemas capaces de procesar texto, imágenes, audio y otras modalidades dentro de un mismo modelo. Para lograrlo, utilizan proyectores que transforman cada tipo de dato en representaciones vectoriales compatibles, permitiendo que diferentes modalidades compartan un mismo espacio semántico.
+
+        💡 _Gracias a esta representación compartida, el modelo puede relacionar conceptos entre distintos formatos, como asociar una fotografía con una descripción textual o interpretar una pregunta sobre una imagen._
+        `
       },
       technical: {
         title: "🚀 Matemáticas de Modelos de Difusión (DDPM)",
-        content: `Los modelos de difusión constan de dos procesos:
-        
-1. **Proceso de Difusión Directa (Forward Process)**:
-Se añade ruido gaussiano a una imagen real $x_0$ secuencialmente en $T$ pasos según una agenda de varianza $\\beta_t$:
+        content: `
+        Los sistemas multimodales modernos combinan arquitecturas especializadas para comprender y generar información en diferentes modalidades.
 
-$$q(x_t|x_{t-1}) = \\mathcal{N}(x_t; \\sqrt{1 - \\beta_t} x_{t-1}, \\beta_t \\mathbf{I})$$
+        **Modelos de Difusión**
 
-2. **Proceso de Difusión Inversa (Reverse Process)**:
-El modelo de difusión $\\epsilon_\\theta(x_t, t)$ es entrenado para predecir el ruido añadido en cada paso. La pérdida simplificada es la discrepancia entre el ruido real $\\epsilon$ y el ruido predicho por la red:
+        Los modelos de difusión formalizan matemáticamente la idea de transformar ruido aleatorio en una imagen coherente mediante dos procesos complementarios.
 
-$$\\mathcal{L}(\\theta) = \\mathbb{E}_{t, x_0, \\epsilon} \\left[ \\| \\epsilon - \\epsilon_\\theta(x_t, t) \\|^2 \\right]$$
+        1. **Proceso de Difusión Directa (Forward Process)**
+        Se añade ruido gaussiano a una imagen real $x_0$ de manera progresiva durante $T$ pasos, siguiendo una agenda de varianza $β_t$:
+        $$q(x_t|x_{t-1}) = N(x_t; \\sqrt{1 - β_t}x_{t-1}, β_t​I)$$
+        Tras suficientes iteraciones, la imagen original se transforma en ruido casi puro.
 
-Durante la inferencia, partimos de un ruido puro $x_T \\sim \\mathcal{N}(0, \\mathbf{I})$ y aplicamos la red de forma iterativa hacia atrás para reconstruir la imagen final $x_0$.`
+        2. **Proceso de Difusión Inversa (Reverse Process)**
+        Una red neuronal $ϵ_θ(x_t,t)$ es entrenada para estimar el ruido presente en cada paso del proceso.
+        La función de pérdida simplificada se define como:
+        $$L(θ) = E_{t,x_0,ϵ}[∥ϵ - ϵ_θ(x_t,t)∥^2]$$
+        donde la red aprende a aproximar el ruido real ϵ añadido durante la difusión.
+
+        **Inferencia**
+        Durante la generación, el modelo parte de un ruido puro:
+        $$x_T \\sim N(0,I)$$
+        y aplica iterativamente el proceso inverso hasta reconstruir una imagen coherente $x_0$ condicionada por la instrucción del usuario.
+
+        **Arquitecturas Multimodales**
+
+        Para incorporar información visual o auditiva, los sistemas multimodales utilizan codificadores especializados (encoders) que transforman cada modalidad en representaciones vectoriales compatibles con el espacio semántico del modelo.
+
+        Si $I$ representa una imagen y $E_I$ un codificador visual:
+        $$z_I=E_I(I)$$
+        donde $z_I$ es la representación latente de la imagen.
+        Posteriormente, una capa de proyección alinea esta representación con el espacio utilizado por el modelo de lenguaje:
+        $$h_I​=W_I{z_I​}+b$$
+        permitiendo que embeddings visuales, auditivos y textuales sean procesados conjuntamente mediante mecanismos de atención.
+        Gracias a esta alineación, el modelo puede razonar sobre múltiples modalidades dentro de un mismo contexto y generar respuestas que combinan información proveniente de diferentes fuentes.
+
+        💡 _La multimodalidad moderna surge cuando texto, imágenes, audio y otras señales comparten una representación matemática común que puede ser procesada por una misma arquitectura de aprendizaje profundo._
+        `
       }
     }
   },
   {
+    id: "chatgpt",
+    title: "ChatGPT",
+    type: "satellite-logo",
+    logoUrl: "public/img/icons/chatgpt_icon.svg",
+    chapter: 7,
+    coords: { x: 1150, y: 1530 },
+    connectsTo: [],
+    summary: "Modelo de OpenAI",
+    levels: {
+      basic: {
+        title: "🌱 Pionero del Chat AI",
+        content: `**ChatGPT** (desarrollado por OpenAI) es un asistente basado en modelos de lenguaje (LLM) desarrollado por OpenAI. Está diseñado para comprender instrucciones en lenguaje natural y ayudar en tareas como responder preguntas, generar contenido, analizar información, programar y resolver problemas.
+
+        **¿Qué puede hacer?**
+
+        - Mantener conversaciones naturales.
+        - Generar y corregir textos.
+        - Explicar conceptos complejos.
+        - Analizar documentos y datos.
+        - Ayudar en tareas técnicas y creativas.
+        
+        🔗 **Acceso oficial**: [Chatgpt](https://chatgpt.com)`
+      }
+    }
+  },
+  {
+    id: "gemini",
+    title: "Gemini",
+    type: "satellite-logo",
+    logoUrl: "public/img/icons/gemini_icon.webp",
+    chapter: 7,
+    coords: { x: 1210, y: 1580 },
+    connectsTo: [],
+    summary: "Modelo de Google",
+    levels: {
+      basic: {
+        title: "🌱 Multimodal Nativo",
+        content: `**Gemini** (desarrollado por Google) es la familia de modelos de lenguaje de Google y también el nombre de su asistente de inteligencia artificial. Está diseñado para comprender y generar información a partir de texto, imágenes y otros formatos, facilitando tareas de productividad, investigación y creación de contenido.
+
+        **¿Qué puede hacer?**
+
+        - Responder preguntas y explicar información.
+        - Generar contenido escrito.
+        - Analizar documentos e imágenes.
+        - Ayudar en tareas académicas y profesionales.
+        - Integrarse con herramientas del ecosistema Google.
+
+        🔗 **Acceso oficial**: [Gemini](https://gemini.google.com)`
+      }
+    }
+  },
+  {
+    id: "claude",
+    title: "Claude",
+    type: "satellite-logo",
+    logoUrl: "public/img/icons/claude_icon.png",
+    chapter: 7,
+    coords: { x: 1265, y: 1530 },
+    connectsTo: [],
+    summary: "Modelo de Anthropic",
+    levels: {
+      basic: {
+        title: "🌱 Redacción y Código Técnico",
+        content: `**Claude** (desarrollado por Anthropic) es un asistente de inteligencia artificial desarrollado por Anthropic, basado en modelos de lenguaje avanzados. Se especializa en el análisis de información, la comprensión de documentos extensos y la generación de respuestas detalladas y contextualizadas.
+
+        **¿Qué puede hacer?**
+
+        - Analizar grandes cantidades de texto.
+        - Resumir y organizar información.
+        - Redactar y revisar documentos.
+        - Resolver problemas mediante razonamiento.
+        - Asistir en investigación y planificación.
+
+        🔗 **Acceso oficial**: [Claude](https://claude.ai)`
+      }
+    }
+  },
+  {
+    id: "ia_generativa_multmodal",
+    title: "Multiples formatos",
+    type: "satellite-image",
+    logoUrl: "public/img/ia_generativa_multimodal.png",
+    imageUrl: "public/img/ia_generativa_multimodal.png",
+    caption: "Multiples formatos",
+    chapter: 7,
+    coords: { x: 1350, y: 1390 },
+    connectsTo: [],
+  },
+  {
     id: "rag",
-    title: "18. RAG (Generación Aumentada)",
+    title: "19. RAG (Generación Aumentada)",
     chapter: 7,
     coords: { x: 950, y: 1500 },
     connectsTo: ["agentes-autonomos"],
@@ -1354,7 +1473,7 @@ Esto reduce radicalmente la tasa de alucinaciones ya que el modelo realiza un ma
   },
   {
     id: "agentes-autonomos",
-    title: "19. Agentes Autónomos (Ciclo ReAct)",
+    title: "20. Agentes Autónomos (Ciclo ReAct)",
     chapter: 7,
     coords: { x: 600, y: 1600 },
     connectsTo: ["sistemas-multiagente"],
@@ -1408,7 +1527,7 @@ El bucle de control del lado del servidor analiza la salida del LLM mediante exp
   },
   {
     id: "sistemas-multiagente",
-    title: "20. Sistemas Multiagente",
+    title: "21. Sistemas Multiagente",
     chapter: 7,
     coords: { x: 250, y: 1650 },
     connectsTo: ["modelos-infraestructura-costos"],
@@ -1455,7 +1574,7 @@ Donde $\\tau$ es un umbral de calidad preestablecido.`
   // --- CAPÍTULO 8 ---
   {
     id: "modelos-infraestructura-costos",
-    title: "21. Modelos, Infraestructura y Costos",
+    title: "22. Modelos, Infraestructura y Costos",
     chapter: 8,
     coords: { x: 300, y: 1850 },
     connectsTo: ["etica-seguridad-gobernanza"],
@@ -1496,7 +1615,7 @@ Esto reduce el almacenamiento del modelo a la mitad (o a una cuarta parte si usa
   },
   {
     id: "etica-seguridad-gobernanza",
-    title: "22. Ética, Seguridad y Gobernanza",
+    title: "23. Ética, Seguridad y Gobernanza",
     chapter: 8,
     coords: { x: 600, y: 1900 },
     connectsTo: ["hacia-donde-va-la-ia"],
@@ -1533,7 +1652,7 @@ Para mitigar esto, se implementa **Entrenamiento Adversario** (Red Teaming) y ca
   },
   {
     id: "hacia-donde-va-la-ia",
-    title: "23. Hacia dónde va la IA (El horizonte)",
+    title: "24. Hacia dónde va la IA (El horizonte)",
     chapter: 8,
     coords: { x: 950, y: 1950 },
     connectsTo: [],
