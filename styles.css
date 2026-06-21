@@ -257,6 +257,7 @@ body {
   z-index: 1;
   overflow: hidden;
   background-color: var(--bg-canvas);
+  touch-action: none;
 }
 
 .viewport-grab {
