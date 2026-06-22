@@ -3,9 +3,9 @@
 // ==========================================================================
 
 const VIEWPORT_CONFIG = {
-  canvasWidth: 2800,
-  canvasHeight: 2100,
-  minScale: 0.35,
+  canvasWidth: 1400,
+  canvasHeight: 6400,
+  minScale: 0.15,
   maxScale: 2.2,
   zoomSpeed: 0.05
 };
@@ -13,7 +13,7 @@ const VIEWPORT_CONFIG = {
 let appState = {
   panX: 0,
   panY: 0,
-  scale: 0.75, // Zoom inicial para ver parte del mapa
+  scale: 0.85, // Zoom inicial para ver el primer nodo con claridad
   isDragging: false,
   startX: 0,
   startY: 0,
