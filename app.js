@@ -154,6 +154,8 @@ function renderNodes() {
     nodeEl.className = 'concept-node';
     if (isSatellite) {
       nodeEl.classList.add('satellite-node');
+    } else {
+      nodeEl.classList.add('main-node');
     }
     
     if (appState.completedNodes.includes(node.id)) {

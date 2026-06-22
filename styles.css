@@ -406,8 +406,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
+  width: 65px;
+  height: 65px;
   background: var(--bg-glass-heavy);
   border: 2px solid var(--neon-color);
   border-radius: 50%;
@@ -419,6 +419,28 @@ body {
     box-shadow var(--transition-speed),
     opacity var(--transition-speed);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Nodos principales: fondo con tinte del color de capítulo */
+.concept-node.main-node {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(var(--neon-rgb), 0.6) 0%,
+    rgba(var(--neon-rgb), 0.25) 100%
+  );
+  background-color: rgba(10, 16, 30, 0.6);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.5),
+    inset 0 0 18px rgba(var(--neon-rgb), 0.3);
+}
+
+.concept-node.main-node:hover {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(var(--neon-rgb), 0.8) 0%,
+    rgba(var(--neon-rgb), 0.45) 100%
+  );
+  background-color: rgba(10, 16, 30, 0.8);
 }
 
 /* Número indicador dentro del nodo redondo */
@@ -444,10 +466,10 @@ body {
 
 /* Nodos Satélites más pequeños */
 .concept-node.satellite-node {
-  width: 44px;
-  height: 44px;
+  width: 60px;
+  height: 60px;
   border-width: 1.5px;
-  opacity: 0.85;
+  /* opacity: 0.85; */
 }
 
 .concept-node.satellite-node:hover {
@@ -461,8 +483,8 @@ body {
 }
 
 .concept-node.satellite-node .node-logo {
-  width: 26px;
-  height: 26px;
+  width: 80%;
+  height: 80%;
   padding: 2px;
 }
 
@@ -480,9 +502,9 @@ body {
 }
 
 /* Estado: Completado (Gamificación) */
-.concept-node.completed {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(var(--neon-rgb), 0.1));
-}
+/* .concept-node.completed {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(var(--neon-rgb), 0.22));
+} */
 
 .concept-node.completed::after {
   content: '';
