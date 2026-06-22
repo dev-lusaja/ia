@@ -987,8 +987,8 @@ const conceptMap = [
     logoUrl: "public/img/self_attention.png",
     imageUrl: "public/img/self_attention.png",
     caption: "Funcionamiento del Self-Attention.",
-    chapter: 2,
-    coords: { x: 620, y: 3220 },
+    chapter: 6,
+    coords: { x: 980, y: 3220 },
     connectsTo: [],
   },
   {
@@ -998,8 +998,8 @@ const conceptMap = [
     logoUrl: "public/img/transformer_architecture.png",
     imageUrl: "public/img/transformer_architecture.png",
     caption: "Ejemplo de traducción de una frase usando la arquitectura Transformer.",
-    chapter: 2,
-    coords: { x: 980, y: 3220 },
+    chapter: 6,
+    coords: { x: 980, y: 3480 },
     connectsTo: [],
   },
   {
@@ -1255,7 +1255,7 @@ const conceptMap = [
     title: "18. IA Generativa Multimodal",
     chapter: 7,
     coords: { x: 800, y: 4350 },
-    connectsTo: ["rag", "chatgpt", "gemini", "claude", "ia_generativa_multmodal"],
+    connectsTo: ["rag", "ia_generativa_multmodal"],
     summary: "De entender a crear: modelos que pintan imágenes con difusión o generan código.",
     transitionFromPrevious: "Al abrir a los LLMs al mundo exterior y alinear su comportamiento, nos dimos cuenta de que su comprensión profunda de los embeddings les permitía no solo analizar información, sino crear contenido completamente nuevo en múltiples formatos (multimodalidad).",
     levels: {
@@ -1338,12 +1338,23 @@ const conceptMap = [
     }
   },
   {
+    id: "ia_generativa_multmodal",
+    title: "Multiples formatos",
+    type: "satellite-image",
+    logoUrl: "public/img/ia_generativa_multimodal.png",
+    imageUrl: "public/img/ia_generativa_multimodal.png",
+    caption: "Representación de una IA generativa multimodal capaz de procesar y generar texto, imágenes, audio y video en una misma conversación.",
+    chapter: 7,
+    coords: { x: 960, y: 4351 },
+    connectsTo: ["chatgpt", "gemini", "claude"],
+  },
+  {
     id: "chatgpt",
     title: "ChatGPT",
     type: "satellite-logo",
     logoUrl: "public/img/icons/chatgpt_icon.svg",
     chapter: 7,
-    coords: { x: 960, y: 4220 },
+    coords: { x: 1120, y: 4220 },
     connectsTo: [],
     summary: "Modelo de OpenAI",
     levels: {
@@ -1369,7 +1380,7 @@ const conceptMap = [
     type: "satellite-logo",
     logoUrl: "public/img/icons/gemini_icon.webp",
     chapter: 7,
-    coords: { x: 1000, y: 4350 },
+    coords: { x: 1120, y: 4350 },
     connectsTo: [],
     summary: "Modelo de Google",
     levels: {
@@ -1395,7 +1406,7 @@ const conceptMap = [
     type: "satellite-logo",
     logoUrl: "public/img/icons/claude_icon.png",
     chapter: 7,
-    coords: { x: 960, y: 4480 },
+    coords: { x: 1120, y: 4480 },
     connectsTo: [],
     summary: "Modelo de Anthropic",
     levels: {
@@ -1414,17 +1425,6 @@ const conceptMap = [
         🔗 **Acceso oficial**: [Claude](https://claude.ai)`
       }
     }
-  },
-  {
-    id: "ia_generativa_multmodal",
-    title: "Multiples formatos",
-    type: "satellite-image",
-    logoUrl: "public/img/ia_generativa_multimodal.png",
-    imageUrl: "public/img/ia_generativa_multimodal.png",
-    caption: "Representación de una IA generativa multimodal capaz de procesar y generar texto, imágenes, audio y video en una misma conversación.",
-    chapter: 7,
-    coords: { x: 640, y: 4500 },
-    connectsTo: [],
   },
   {
     id: "rag",
