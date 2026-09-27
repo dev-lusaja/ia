@@ -66,9 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // para que viewport.clientWidth/clientHeight reflejen las dimensiones reales.
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      centerOnNodeId("que-es-pensar", true);
+      centerOnNodeId(getResumeNodeId(), true);
+      openFromUrl(); // Enlace directo: index.html#id-del-tema
     });
   });
+
+  // Botón atrás/adelante del navegador
+  window.addEventListener('popstate', openFromUrl);
 
   // Re-centrar si el viewport cambia de tamaño (rotación, barra del navegador móvil)
   let resizeTimer;
@@ -77,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     resizeTimer = setTimeout(() => {
       // Solo re-centra si no hay un nodo activo abierto en el drawer
       if (!appState.activeNode) {
-        centerOnNodeId("que-es-pensar", true);
+        centerOnNodeId(getResumeNodeId(), true);
       }
     }, 200);
   });
@@ -98,6 +102,13 @@ function loadProgress() {
   }
 }
 
+// Primer tema sin completar (en orden de la historia); si están todos, el primero
+function getResumeNodeId() {
+  const lessons = conceptMap.filter(n => !n.type);
+  const next = lessons.find(n => !appState.completedNodes.includes(n.id)) || lessons[0];
+  return next.id;
+}
+
 function toggleNodeCompletion(nodeId) {
   const index = appState.completedNodes.indexOf(nodeId);
   if (index > -1) {
@@ -109,8 +120,9 @@ function toggleNodeCompletion(nodeId) {
   localStorage.setItem('ai-map-progress', JSON.stringify(appState.completedNodes));
   
   // Actualizar interfaz del nodo y progreso
-  const nodeEl = document.querySelector(`[data-id="${nodeId}"]`);
+  const nodeEl = getNodeEl(nodeId);
   if (nodeEl) {
+    nodeEl.setAttribute('aria-label', nodeLabel(conceptMap.find(n => n.id === nodeId)));
     if (appState.completedNodes.includes(nodeId)) {
       nodeEl.classList.add('completed');
     } else {
@@ -138,6 +150,17 @@ function updateProgressUI() {
 // 🎨 RENDERIZADO DE NODOS Y CONEXIONES (SVG)
 // ==========================================================================
 
+function getNodeEl(id) {
+  return nodesContainer.querySelector(`.concept-node[data-id="${id}"]`);
+}
+
+// Nombre accesible: "7. Redes Neuronales Artificiales, capítulo 3, completado"
+function nodeLabel(node) {
+  const kind = node.type === 'satellite-image' ? ', imagen' : '';
+  const done = appState.completedNodes.includes(node.id) ? ', completado' : '';
+  return `${node.title}, capítulo ${node.chapter}${kind}${done}`;
+}
+
 function renderNodes() {
   nodesContainer.innerHTML = '';
   let nodeIndicator = 0;
@@ -146,12 +169,11 @@ function renderNodes() {
     if (!isSatellite) {
       nodeIndicator++;
     }
-    const chapterObj = chapters.find(c => c.id === node.chapter);
-    const neonColor = chapterObj ? chapterObj.color : 'var(--neon-cian)';
-    const neonRgb = getRgbFromVariable(node.chapter);
-    
-    const nodeEl = document.createElement('div');
+
+    const nodeEl = document.createElement('button');
+    nodeEl.type = 'button';
     nodeEl.className = 'concept-node';
+    nodeEl.setAttribute('aria-label', nodeLabel(node));
     if (isSatellite) {
       nodeEl.classList.add('satellite-node');
     } else {
@@ -162,41 +184,40 @@ function renderNodes() {
       nodeEl.classList.add('completed');
     }
 
-    if (node.type == 'satellite-image') {
-      nodeEl.setAttribute('data-id', node.id);
-      nodeEl.setAttribute('data-search-text', `${node.title || ''} ${node.caption || ''}`.toLowerCase());
-    } else {
-      nodeEl.setAttribute('data-id', node.id);
-      nodeEl.setAttribute('data-search-text', `${node.title || ''} ${node.levels?.basic?.content || ''} ${node.levels?.intermediate?.content || ''} ${node.levels?.technical?.content || ''}`.toLowerCase());
-    }
+    nodeEl.setAttribute('data-id', node.id);
+    nodeEl.dataset.searchText = normalizeSearch(`${node.title} ${plainText(node)}`);
     
     nodeEl.style.left = `${node.coords.x}px`;
     nodeEl.style.top = `${node.coords.y}px`;
-    nodeEl.style.setProperty('--neon-color', neonColor);
-    nodeEl.style.setProperty('--neon-rgb', neonRgb);
+    nodeEl.style.setProperty('--neon-color', chapterColor(node.chapter));
+    nodeEl.style.setProperty('--neon-rgb', chapterRgb(node.chapter));
     
     if (!isSatellite) {
       nodeEl.innerHTML = `
-        <div class="node-indicator">${nodeIndicator}</div>
-        <span class="node-title">${node.title.split('. ')[1] || node.title}</span>
+        <span class="node-indicator" aria-hidden="true">${nodeIndicator}</span>
+        <span class="node-title" aria-hidden="true">${node.title.split('. ')[1] || node.title}</span>
       `;
     } else {
       nodeEl.innerHTML = `
-        <img src="${node.logoUrl}" alt="${node.title}" class="node-logo">
-        <span class="node-title">${node.title.split('. ')[1] || node.title}</span>
+        <img src="${node.logoUrl}" alt="" class="node-logo">
+        <span class="node-title" aria-hidden="true">${node.title.split('. ')[1] || node.title}</span>
       `;
     }
     
     nodeEl.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (node.type === 'satellite-image') {
-        openLightbox(node);
-      } else {
-        openDrawer(node);
-      }
+      openNode(node);
     });
     
     nodesContainer.appendChild(nodeEl);
+  });
+
+  // Tab entre nodos: el foco no debe desplazar el viewport (overflow: hidden),
+  // en su lugar centramos el mapa en el nodo enfocado
+  nodesContainer.addEventListener('focusin', (e) => {
+    viewport.scrollTop = viewport.scrollLeft = 0;
+    const nodeEl = e.target.closest('.concept-node');
+    if (nodeEl && nodeEl.matches(':focus-visible')) centerOnNodeId(nodeEl.dataset.id);
   });
 }
 
@@ -206,8 +227,7 @@ function renderConnections() {
   conceptMap.forEach(node => {
     if (!node.connectsTo || node.connectsTo.length === 0) return;
     
-    const chapterObj = chapters.find(c => c.id === node.chapter);
-    const color = chapterObj ? chapterObj.color : 'rgba(255, 255, 255, 0.12)';
+    const color = chapterColor(node.chapter);
     
     node.connectsTo.forEach(targetId => {
       const targetNode = conceptMap.find(n => n.id === targetId);
@@ -302,7 +322,7 @@ function renderLegend() {
   chapters.forEach(chap => {
     const item = document.createElement('div');
     item.className = 'legend-item';
-    item.style.setProperty('--chapter-color', chap.color);
+    item.style.setProperty('--chapter-color', chapterColor(chap.id));
     item.innerHTML = `
       <span class="legend-color-dot"></span>
       <span>${chap.name}</span>
@@ -318,19 +338,13 @@ function renderLegend() {
   });
 }
 
-// Devuelve los valores RGB en texto según la variable de CSS para poder usar RGBA dinámico
-function getRgbFromVariable(chapterId) {
-  const rgbs = {
-    1: "0, 255, 255",     // Cian
-    2: "30, 144, 255",   // Azul
-    3: "138, 43, 226",   // Violeta
-    4: "255, 0, 255",     // Magenta
-    5: "255, 69, 0",     // Naranja
-    6: "255, 215, 0",     // Oro
-    7: "0, 255, 128",     // Verde
-    8: "255, 64, 64"      // Rojo
-  };
-  return rgbs[chapterId] || "0, 255, 255";
+// Color del capítulo (definido en data.js): "r, g, b" para rgba() y rgb() sólido
+function chapterRgb(chapterId) {
+  return (chapters.find(c => c.id === chapterId) || chapters[0]).rgb;
+}
+
+function chapterColor(chapterId) {
+  return `rgb(${chapterRgb(chapterId)})`;
 }
 
 // ==========================================================================
@@ -345,6 +359,7 @@ function setupPanAndZoom() {
     
     appState.isDragging = true;
     viewport.classList.replace('viewport-grab', 'viewport-grabbing');
+    viewport.classList.add('map-moving');
     appState.startX = e.clientX - appState.panX;
     appState.startY = e.clientY - appState.panY;
   });
@@ -363,12 +378,14 @@ function setupPanAndZoom() {
     if (appState.isDragging) {
       appState.isDragging = false;
       viewport.classList.replace('viewport-grabbing', 'viewport-grab');
+      viewport.classList.remove('map-moving');
     }
   });
   
   // 2. Touch Dragging & Pinch to Zoom (Paneo y zoom en móvil)
   viewport.addEventListener('touchstart', (e) => {
     if (e.target.closest('.concept-node') || e.target.closest('.glass-panel') || e.target.closest('aside')) return;
+    viewport.classList.add('map-moving');
     
     if (e.touches.length === 1) {
       // Un solo dedo -> arrastre simple
@@ -411,13 +428,19 @@ function setupPanAndZoom() {
     }
   }, { passive: true });
   
-  viewport.addEventListener('touchend', () => {
+  viewport.addEventListener('touchend', (e) => {
     appState.isDragging = false;
+    if (e.touches.length === 0) viewport.classList.remove('map-moving');
   });
   
   // 3. Zoom mediante Rueda de Ratón (Enfocado en cursor)
+  let wheelTimer;
   viewport.addEventListener('wheel', (e) => {
     e.preventDefault();
+    // La rueda no tiene "fin": se considera terminada tras 150 ms sin eventos
+    viewport.classList.add('map-moving');
+    clearTimeout(wheelTimer);
+    wheelTimer = setTimeout(() => viewport.classList.remove('map-moving'), 150);
     
     const viewportRect = viewport.getBoundingClientRect();
     const mouseX = e.clientX - viewportRect.left;
@@ -442,7 +465,7 @@ function setupPanAndZoom() {
   // 4. Botones Flotantes de Control
   document.getElementById('zoom-in').addEventListener('click', () => zoomCenter(1.2));
   document.getElementById('zoom-out').addEventListener('click', () => zoomCenter(0.8));
-  document.getElementById('zoom-reset').addEventListener('click', () => centerOnNodeId("que-es-pensar", true));
+  document.getElementById('zoom-reset').addEventListener('click', () => centerOnNodeId(getResumeNodeId(), true));
 }
 
 function getTouchDistance(touches) {
@@ -544,66 +567,178 @@ function centerOnNodeId(nodeId, smoothScale = false) {
 // 🔍 SISTEMA DE BÚSQUEDA Y FILTRADO
 // ==========================================================================
 
+// Minúsculas y sin acentos: "regresion" encuentra "Regresión"
+function normalizeSearch(text) {
+  return (text || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+}
+
+// Texto legible del tema, sin fórmulas ni símbolos de Markdown (para buscar y para los fragmentos)
+function plainText(node) {
+  return [node.caption, ...Object.values(node.levels || {}).map(l => l.content)].join(' ')
+    .replace(/\$\$[\s\S]*?\$\$|\$[^\n$]+?\$/g, ' ')
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[*_`#>]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Envuelve la primera coincidencia en <mark> (ignorando acentos)
+function highlightMatch(text, query) {
+  const i = normalizeSearch(text).indexOf(query);
+  if (i < 0) return escapeHtml(text);
+  const end = i + query.length;
+  return escapeHtml(text.slice(0, i)) + '<mark>' + escapeHtml(text.slice(i, end)) + '</mark>' + escapeHtml(text.slice(end));
+}
+
+// Fragmento del contenido alrededor de la coincidencia
+function searchSnippet(node, query) {
+  const text = plainText(node);
+  const i = normalizeSearch(text).indexOf(query);
+  if (i < 0) return '';
+  const start = Math.max(0, i - 40);
+  const end = Math.min(text.length, i + query.length + 70);
+  const piece = (start > 0 ? '…' : '') + text.slice(start, end) + (end < text.length ? '…' : '');
+  return highlightMatch(piece, query);
+}
+
+let searchState = { query: '', matches: [], index: -1 };
+
+const searchInput = document.getElementById('search-input');
+const searchPanel = document.getElementById('search-panel');
+const searchResults = document.getElementById('search-results');
+
 function setupSearchListener() {
-  const searchInput = document.getElementById('search-input');
   const clearBtn = document.getElementById('clear-search');
-  
-  searchInput.addEventListener('input', (e) => {
-    const text = e.target.value.toLowerCase().trim();
-    
-    if (text.length > 0) {
-      clearBtn.style.display = 'block';
-      filterMap(text);
-    } else {
-      clearBtn.style.display = 'none';
-      resetFilter();
+
+  // Escribir filtra y lista resultados; el mapa no se mueve
+  searchInput.addEventListener('input', () => {
+    const query = normalizeSearch(searchInput.value.trim());
+    clearBtn.style.display = query ? 'block' : 'none';
+    if (query) filterMap(query);
+    else resetFilter();
+  });
+
+  searchInput.addEventListener('focus', () => { if (searchState.query) showSearchPanel(true); });
+  searchInput.addEventListener('blur', () => showSearchPanel(false));
+
+  searchInput.addEventListener('keydown', (e) => {
+    const n = searchState.matches.length;
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && n) {
+      e.preventDefault();
+      const step = e.key === 'ArrowDown' ? 1 : -1;
+      const i = searchState.index;
+      selectSearchMatch(i < 0 ? (step > 0 ? 0 : n - 1) : (i + step + n) % n);
+    } else if (e.key === 'Enter' && n) {
+      e.preventDefault();
+      openSearchMatch(searchState.matches[Math.max(searchState.index, 0)]);
+    } else if (e.key === 'Escape') {
+      // Que no cierre también el drawer
+      e.stopPropagation();
+      if (!searchPanel.hidden) showSearchPanel(false);
+      else clearBtn.click();
     }
   });
-  
+
+  // mousedown cancelado: el input no pierde el foco antes del clic
+  searchResults.addEventListener('mousedown', (e) => e.preventDefault());
+  searchResults.addEventListener('click', (e) => {
+    const item = e.target.closest('[data-id]');
+    if (item) openSearchMatch(conceptMap.find(n => n.id === item.dataset.id));
+  });
+
   clearBtn.addEventListener('click', () => {
     searchInput.value = '';
     clearBtn.style.display = 'none';
     resetFilter();
     searchInput.focus();
   });
+
+  // Atajo "/" para buscar
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.target.closest('input, textarea, [contenteditable]')) return;
+    e.preventDefault();
+    searchInput.focus();
+  });
 }
 
 function filterMap(query) {
-  let matchedNode = null;
-  
-  conceptMap.forEach(node => {
-    const nodeEl = document.querySelector(`[data-id="${node.id}"]`);
-    if (!nodeEl) return;
-    
-    // Coincidencia: Título, resumen o lección básica
-    const inTitle = node.title.toLowerCase().includes(query);
-    const inBasic = node.levels?.basic?.content.toLowerCase().includes(query);
-    const inIntermediate = node.levels?.intermediate?.content.toLowerCase().includes(query);
-    const inTechnical = node.levels?.technical?.content.toLowerCase().includes(query);
-    
-    if (inTitle || inBasic || inIntermediate || inTechnical) {
-      nodeEl.classList.remove('dimmed');
-      nodeEl.classList.add('highlighted');
-      if (!matchedNode) matchedNode = node; // Guardar el primero encontrado para centrar
-    } else {
-      nodeEl.classList.remove('highlighted');
-      nodeEl.classList.add('dimmed');
-    }
+  const matchedIds = new Set();
+  document.querySelectorAll('.concept-node').forEach(nodeEl => {
+    const match = nodeEl.dataset.searchText.includes(query);
+    nodeEl.classList.toggle('highlighted', match);
+    nodeEl.classList.toggle('dimmed', !match);
+    nodeEl.tabIndex = match ? 0 : -1;
+    nodeEl.classList.remove('search-current');
+    if (match) matchedIds.add(nodeEl.dataset.id);
   });
-  
-  // Si encontramos al menos una coincidencia, centrar el mapa en ella
-  if (matchedNode) {
-    centerOnNodeId(matchedNode.id);
-  }
+
+  // Primero los que coinciden en el título; dentro de cada grupo, orden de la historia
+  const matches = conceptMap.filter(n => matchedIds.has(n.id));
+  const inTitle = n => normalizeSearch(n.title).includes(query);
+  matches.sort((a, b) => inTitle(b) - inTitle(a));
+  searchState = { query, matches, index: -1 };
+  renderSearchResults();
+  showSearchPanel(document.activeElement === searchInput);
+}
+
+function renderSearchResults() {
+  const { query, matches } = searchState;
+  document.getElementById('search-status-text').textContent = matches.length === 0
+    ? 'Sin resultados'
+    : `${matches.length} resultado${matches.length === 1 ? '' : 's'}`;
+
+  searchResults.innerHTML = matches.map((node, i) => {
+    const kind = node.type === 'satellite-image' ? ' · Imagen' : '';
+    const snippet = searchSnippet(node, query);
+    return `
+      <li id="search-option-${i}" role="option" aria-selected="false" data-id="${node.id}"
+          style="--chapter-color: ${chapterColor(node.chapter)}">
+        <span class="search-result-title">${highlightMatch(node.title, query)}</span>
+        <span class="search-result-meta">Capítulo ${node.chapter}${kind}</span>
+        ${snippet ? `<span class="search-result-snippet">${snippet}</span>` : ''}
+      </li>`;
+  }).join('');
+}
+
+function showSearchPanel(show) {
+  searchPanel.hidden = !(show && searchState.query);
+  searchInput.setAttribute('aria-expanded', String(!searchPanel.hidden));
+}
+
+// ↑↓: marca el resultado en la lista y centra el mapa en él (vista previa)
+function selectSearchMatch(index) {
+  searchState.index = index;
+  const node = searchState.matches[index];
+
+  searchResults.querySelectorAll('[role="option"]').forEach((li, i) => li.setAttribute('aria-selected', String(i === index)));
+  const option = document.getElementById(`search-option-${index}`);
+  option.scrollIntoView({ block: 'nearest' });
+  searchInput.setAttribute('aria-activedescendant', option.id);
+
+  document.querySelectorAll('.concept-node.search-current').forEach(n => n.classList.remove('search-current'));
+  getNodeEl(node.id)?.classList.add('search-current');
+  centerOnNodeId(node.id);
+}
+
+function openSearchMatch(node) {
+  searchInput.blur();
+  openNode(node);
 }
 
 function resetFilter() {
-  conceptMap.forEach(node => {
-    const nodeEl = document.querySelector(`[data-id="${node.id}"]`);
-    if (nodeEl) {
-      nodeEl.classList.remove('dimmed', 'highlighted');
-    }
+  searchState = { query: '', matches: [], index: -1 };
+  document.querySelectorAll('.concept-node').forEach(nodeEl => {
+    nodeEl.classList.remove('dimmed', 'highlighted', 'search-current');
+    nodeEl.tabIndex = 0;
   });
+  searchResults.innerHTML = '';
+  searchInput.removeAttribute('aria-activedescendant');
+  showSearchPanel(false);
 }
 
 // ==========================================================================
@@ -619,6 +754,35 @@ function setupDrawerListeners() {
   closeBtn.addEventListener('click', closeDrawer);
   drawerOverlay.addEventListener('click', closeDrawer);
   
+  // Copiar enlace directo al tema
+  const shareBtn = document.getElementById('drawer-share');
+  let shareTimer;
+  shareBtn.addEventListener('click', async () => {
+    if (!appState.activeNode) return;
+    const url = `${location.origin}${location.pathname}#${appState.activeNode.id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      // Sin permiso de portapapeles (p. ej. http sin TLS): que lo copie a mano
+      prompt('Copia este enlace:', url);
+      return;
+    }
+    const actions = shareBtn.parentElement;
+    actions.querySelector('.share-feedback').textContent = 'Enlace copiado';
+    actions.classList.add('copied');
+    clearTimeout(shareTimer);
+    shareTimer = setTimeout(() => {
+      actions.classList.remove('copied');
+      actions.querySelector('.share-feedback').textContent = '';
+    }, 1800);
+  });
+
+  // Siguiente tema
+  document.getElementById('drawer-next-btn').addEventListener('click', () => {
+    const next = appState.activeNode && getNextLesson(appState.activeNode);
+    if (next) openDrawer(next);
+  });
+
   // Checkbox de Completado
   completedCheckbox.addEventListener('change', () => {
     if (appState.activeNode) {
@@ -638,27 +802,65 @@ function setupDrawerListeners() {
   });
 }
 
+// ==========================================================================
+// 🔗 ENLACES DIRECTOS (#id-del-tema) E HISTORIAL DEL NAVEGADOR
+// ==========================================================================
+
+// Refleja el tema abierto en la URL. Abrir crea entrada en el historial (el botón
+// atrás vuelve al tema anterior); cerrar la reemplaza para no dejar entradas vacías.
+function setUrlNode(id, replace = false) {
+  if (location.hash === (id ? `#${id}` : '')) return;
+  const url = id ? `#${id}` : location.pathname + location.search;
+  if (replace || !id) history.replaceState(null, '', url);
+  else history.pushState(null, '', url);
+}
+
+// Abre lo que indique la URL (o cierra todo si no hay tema)
+function openFromUrl() {
+  const id = decodeURIComponent(location.hash.slice(1));
+  const node = conceptMap.find(n => n.id === id);
+
+  if (lightboxOverlay.classList.contains('active') && node?.type !== 'satellite-image') closeLightbox(false);
+  if (!node) {
+    if (appState.activeNode) closeDrawer(false);
+  } else if (node.type === 'satellite-image') {
+    openLightbox(node);
+  } else {
+    openDrawer(node);
+  }
+}
+
+// Imágenes satélite se ven en el lightbox; el resto en el drawer
+function openNode(node) {
+  if (node.type === 'satellite-image') openLightbox(node);
+  else openDrawer(node);
+}
+
+// Siguiente lección de la historia: el primer destino de connectsTo que no es satélite
+function getNextLesson(node) {
+  return (node.connectsTo || [])
+    .map(id => conceptMap.find(n => n.id === id))
+    .find(n => n && !n.type);
+}
+
 function openDrawer(node) {
+  if (!appState.activeNode) appState.returnFocus = document.activeElement;
   appState.activeNode = node;
+  setUrlNode(node.id);
   
   // Resaltar nodo activo visualmente
   document.querySelectorAll('.concept-node').forEach(n => n.classList.remove('active-node'));
-  const activeNodeEl = document.querySelector(`[data-id="${node.id}"]`);
+  const activeNodeEl = getNodeEl(node.id);
   if (activeNodeEl) activeNodeEl.classList.add('active-node');
   
   // Rellenar Badge de Capítulo y colores neón personalizados
-  const chapterObj = chapters.find(c => c.id === node.chapter);
-  const chapterColor = chapterObj ? chapterObj.color : 'var(--neon-cian)';
-  const chapterRgb = getRgbFromVariable(node.chapter);
-  
   const drawerBadge = document.getElementById('drawer-chapter-badge');
   drawerBadge.innerText = `Capítulo ${node.chapter}`;
-  drawer.style.setProperty('--chapter-neon', chapterColor);
-  drawer.style.setProperty('--chapter-neon-rgb', chapterRgb);
+  drawer.style.setProperty('--chapter-neon', chapterColor(node.chapter));
+  drawer.style.setProperty('--chapter-neon-rgb', chapterRgb(node.chapter));
   
   // Datos Generales
   document.getElementById('drawer-title').innerText = node.title;
-  //document.getElementById('drawer-summary').innerText = node.summary;
   
   // Estado Checkbox Completado
   document.getElementById('node-completed-checkbox').checked = appState.completedNodes.includes(node.id);
@@ -689,12 +891,18 @@ function openDrawer(node) {
     }
   }
   
+  const next = getNextLesson(node);
+  const nextBtn = document.getElementById('drawer-next-btn');
+  nextBtn.hidden = !next;
+  if (next) document.getElementById('drawer-next-title').textContent = next.title.split('. ')[1] || next.title;
+
   // Renderizar
   renderLessonContent();
   
   // Activar Drawer y Overlay
   drawer.classList.add('active');
   drawer.setAttribute('aria-hidden', 'false');
+  document.getElementById('drawer-title').focus({ preventScroll: true });
   if (window.innerWidth < 768) {
     drawerOverlay.style.display = 'block';
   }
@@ -716,13 +924,20 @@ function openDrawer(node) {
   }
 }
 
-function closeDrawer() {
+function closeDrawer(updateUrl = true) {
   appState.activeNode = null;
+  if (updateUrl) setUrlNode(null);
   document.querySelectorAll('.concept-node').forEach(n => n.classList.remove('active-node'));
   
   drawer.classList.remove('active');
   drawer.setAttribute('aria-hidden', 'true');
   drawerOverlay.style.display = 'none';
+
+  // Devolver el foco a donde estaba (p. ej. el nodo del mapa)
+  if (updateUrl && drawer.contains(document.activeElement)) {
+    appState.returnFocus?.focus?.({ preventScroll: true });
+  }
+  appState.returnFocus = null;
 }
 
 // ==========================================================================
@@ -750,22 +965,21 @@ let lbState = {
 };
 
 function openLightbox(node) {
+  setUrlNode(node.id);
+
   // Rellenar datos
   lightboxImg.src = node.imageUrl;
   lightboxImg.alt = node.title;
   lightboxCaption.textContent = node.caption || '';
   lightboxTitle.textContent = node.title;
 
-  const chapterObj = chapters.find(c => c.id === node.chapter);
-  const chapterColor = chapterObj ? chapterObj.color : 'var(--neon-cian)';
-  const chapterRgb = getRgbFromVariable(node.chapter);
   lightboxBadge.textContent = `Capítulo ${node.chapter}`;
-  lightboxOverlay.style.setProperty('--chapter-neon', chapterColor);
-  lightboxOverlay.style.setProperty('--chapter-neon-rgb', chapterRgb);
+  lightboxOverlay.style.setProperty('--chapter-neon', chapterColor(node.chapter));
+  lightboxOverlay.style.setProperty('--chapter-neon-rgb', chapterRgb(node.chapter));
 
   // Resaltar nodo
   document.querySelectorAll('.concept-node').forEach(n => n.classList.remove('active-node'));
-  const nodeEl = document.querySelector(`[data-id="${node.id}"]`);
+  const nodeEl = getNodeEl(node.id);
   if (nodeEl) nodeEl.classList.add('active-node');
 
   // Resetear zoom/pan
@@ -776,7 +990,9 @@ function openLightbox(node) {
   lightboxOverlay.setAttribute('aria-hidden', 'false');
 }
 
-function closeLightbox() {
+function closeLightbox(updateUrl = true) {
+  // Si el drawer sigue abierto debajo, la URL vuelve a su tema
+  if (updateUrl) setUrlNode(appState.activeNode?.id, true);
   lightboxOverlay.classList.remove('active');
   lightboxOverlay.setAttribute('aria-hidden', 'true');
   document.querySelectorAll('.concept-node').forEach(n => n.classList.remove('active-node'));
@@ -820,8 +1036,11 @@ function setupLightboxListeners() {
   lightboxOverlay.addEventListener('click', (e) => {
     if (e.target === lightboxOverlay) closeLightbox();
   });
+  // Escape cierra primero el lightbox (va encima) y luego el drawer
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && lightboxOverlay.classList.contains('active')) closeLightbox();
+    if (e.key !== 'Escape') return;
+    if (lightboxOverlay.classList.contains('active')) closeLightbox();
+    else if (drawer.classList.contains('active')) closeDrawer();
   });
 
   // Botones de zoom
@@ -920,189 +1139,35 @@ function renderLessonContent() {
 // ✏️ FORMATEADOR INTEGRADO DE MARKDOWN A HTML + KATEX
 // ==========================================================================
 
+marked.use({
+  renderer: {
+    link({ href, tokens }) {
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="md-link">${this.parser.parseInline(tokens)}</a>`;
+    }
+  }
+});
+
 function formatMarkdown(text) {
   if (!text) return '';
 
-  // 1. Limpiar espacios extra iniciales
-  let formatted = text.trim();
+  // Quitar la indentación del template literal: marked trata 4+ espacios como bloque de código
+  const lines = text.split('\n');
+  const indents = lines.slice(1).filter(l => l.trim()).map(l => l.match(/^ */)[0].length);
+  const cut = indents.length ? Math.min(...indents) : 0;
+  let md = [lines[0].trim(), ...lines.slice(1).map(l => l.slice(cut))].join('\n');
 
-  // 2. Guardar bloque de fórmulas matemáticas ANTES de escapar HTML
-  //    para que KaTeX las procese sin interferencia. Las marcamos con placeholders.
-  const mathBlocks = [];
-  
-  // Guardar fórmulas en bloque: $$ formula $$
-  formatted = formatted.replace(/\$\$([\s\S]*?)\$\$/g, (_, formula) => {
-    mathBlocks.push({ type: 'block', formula: formula.trim() });
-    return `%%MATH_BLOCK_${mathBlocks.length - 1}%%`;
-  });
+  // Apartar fórmulas antes de marked para que no toque sus _ ni *
+  const math = [];
+  const hold = (formula, display) => `%%MATH${math.push({ formula, display }) - 1}%%`;
+  md = md.replace(/\$\$([\s\S]+?)\$\$/g, (_, f) => `\n\n${hold(f, true)}\n\n`)
+         .replace(/\$([^\n$]+?)\$/g, (_, f) => hold(f, false));
 
-  // Guardar fórmulas en línea: $ formula $  (no greedy, no salto de línea)
-  formatted = formatted.replace(/\$([^\n$]+?)\$/g, (_, formula) => {
-    mathBlocks.push({ type: 'inline', formula: formula.trim() });
-    return `%%MATH_BLOCK_${mathBlocks.length - 1}%%`;
-  });
-
-  // 3. Escapar HTML para prevenir XSS
-  formatted = formatted
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-  // 4. Bloques de Código Multilínea: ``` ... ```
-  formatted = formatted.replace(/```(?:\w+)?\n([\s\S]*?)```/g, (_, code) => {
-    const cleanCode = code.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-    return `<pre><code>${cleanCode.trim()}</code></pre>`;
-  });
-
-  // 5. Código en línea: `código`
-  formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-  // 6. Citas: > cita
-  formatted = formatted.replace(/^&gt;\s+(.*)$/gm, '<blockquote>$1</blockquote>');
-
-  // 7. Negritas: **texto**
-  formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-  // 8. Cursivas: *texto* (que no sean parte de listas)
-  formatted = formatted.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
-
-  // 10. Listas ordenadas y sin orden
-  let lines = formatted.split('\n');
-  let listStack = []; // Guarda el tipo de lista abierta ('ul' o 'ol') y su nivel de indentación
-  const processedLines = [];
-
-  for (let i = 0; i < lines.length; i++) {
-    const rawLine = lines[i];
-    const trimmedLine = rawLine.trim();
-    
-    // Calcular cuántos espacios de indentación tiene la línea
-    const matchSpaces = rawLine.match(/^(\s*)/);
-    const indent = matchSpaces ? matchSpaces[1].length : 0;
-
-    if (/^- /.test(trimmedLine)) {
-      const content = trimmedLine.slice(2);
-      adjustListStack('ul', indent, processedLines, listStack);
-      processedLines.push(`<li>${content}</li>`);
-    } else if (/^\d+\.\s/.test(trimmedLine)) {
-      const content = trimmedLine.replace(/^\d+\.\s/, '');
-      adjustListStack('ol', indent, processedLines, listStack);
-      processedLines.push(`<li>${content}</li>`);
-    } else {
-      // Si no es lista, cerramos todas las listas abiertas
-      while (listStack.length > 0) {
-        const top = listStack.pop();
-        processedLines.push(`</${top.type}>`);
-      }
-      
-      if (trimmedLine.length > 0
-          && !trimmedLine.startsWith('<pre')
-          && !trimmedLine.startsWith('</pre')
-          && !trimmedLine.startsWith('<blockquote')
-          && !trimmedLine.startsWith('<ul')
-          && !trimmedLine.startsWith('</ul')
-          && !trimmedLine.startsWith('<ol')
-          && !trimmedLine.startsWith('</ol')
-          && !trimmedLine.startsWith('<li')
-          && !trimmedLine.startsWith('%%MATH_BLOCK')) {
-        processedLines.push(`<p>${trimmedLine}</p>`);
-      } else {
-        processedLines.push(trimmedLine);
-      }
-    }
-  }
-
-  // Cerrar cualquier lista que haya quedado abierta al final del archivo
-  while (listStack.length > 0) {
-    const top = listStack.pop();
-    processedLines.push(`</${top.type}>`);
-  }
-
-  formatted = processedLines.join('\n');
-
-  // 11. Restaurar fórmulas matemáticas renderizadas con KaTeX
-  formatted = formatted.replace(/%%MATH_BLOCK_(\d+)%%/g, (_, idx) => {
-    const { type, formula } = mathBlocks[parseInt(idx)];
-    try {
-      if (type === 'block') {
-        const rendered = katex.renderToString(formula, {
-          displayMode: true,
-          throwOnError: false,
-          trust: true
-        });
-        return `<div class="math-block">${rendered}</div>`;
-      } else {
-        const rendered = katex.renderToString(formula, {
-          displayMode: false,
-          throwOnError: false,
-          trust: true
-        });
-        return `<span class="math-inline">${rendered}</span>`;
-      }
-    } catch (e) {
-      // Fallback: mostrar la fórmula en code si KaTeX falla
-      return type === 'block'
-        ? `<div class="math-block"><code>${formula}</code></div>`
-        : `<code>${formula}</code>`;
-    }
-  });
-
-  // 9. Italica: _texto_
-  formatted = formatted.replace(/(?<!\$[^$\n]*)(?<!_)_([^_\n$]+?)_(?![^$\n]*\$)/g, '<em>$1</em>');
-
-  // 12. Limpiar párrafos vacíos residuales
-  formatted = formatted.replace(/<p><\/p>/g, '');
-
-  // 2b. Guardar imágenes ![alt](url) y links [texto](url) ANTES de escapar HTML
-  //     para proteger las URLs de la conversión & -> &amp;
-  const linkBlocks = [];
-
-  // Imágenes primero (deben tener precedencia sobre links)
-  formatted = formatted.replace(/!\[([^\]]*?)\]\(([^)]+?)\)/g, (_, alt, url) => {
-    linkBlocks.push({ type: 'image', alt, url });
-    return `%%LINK_BLOCK_${linkBlocks.length - 1}%%`;
-  });
-
-  // Links de texto
-  formatted = formatted.replace(/\[([^\]]+?)\]\(([^)]+?)\)/g, (_, text, url) => {
-    linkBlocks.push({ type: 'link', text, url });
-    return `%%LINK_BLOCK_${linkBlocks.length - 1}%%`;
-  });
-
-  // 13. Restaurar imágenes y links desde placeholders
-  formatted = formatted.replace(/%%LINK_BLOCK_(\d+)%%/g, (_, idx) => {
-    const block = linkBlocks[parseInt(idx)];
-    if (block.type === 'image') {
-      return `<img src="${block.url}" alt="${block.alt}" style="max-width:100%;height:auto;display:block;border-radius:6px;margin:8px 0;"/>`;
-    } else {
-      // Sanitizar: solo permitir http/https
-      const safeUrl = /^https?:\/\//.test(block.url) ? block.url : '#';
-      return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="md-link">${block.text}</a>`;
-    }
-  });
-
-  return formatted;
-}
-
-function adjustListStack(type, indent, processedLines, listStack) {
-  // Si la lista actual es más profunda que la anterior, abrimos una sublista
-  if (listStack.length === 0 || indent > listStack[listStack.length - 1].indent) {
-    listStack.push({ type, indent });
-    processedLines.push(`<${type}>`);
-  } 
-  // Si es menor indentación, cerramos las sublistas necesarias
-  else {
-    while (listStack.length > 0 && indent < listStack[listStack.length - 1].indent) {
-      const top = listStack.pop();
-      processedLines.push(`</${top.type}>`);
-    }
-    // Si cambió de tipo (de ul a ol) en el mismo nivel
-    if (listStack.length > 0 && listStack[listStack.length - 1].type !== type) {
-      const top = listStack.pop();
-      processedLines.push(`</${top.type}>`);
-      listStack.push({ type, indent });
-      processedLines.push(`<${type}>`);
-    }
-  }
+  return marked.parse(md, { breaks: true })
+    .replace(/<p>%%MATH(\d+)%%<\/p>|%%MATH(\d+)%%/g, (_, b, i) => {
+      const { formula, display } = math[b ?? i];
+      const html = katex.renderToString(formula.trim(), { displayMode: display, throwOnError: false });
+      return display ? `<div class="math-block">${html}</div>` : `<span class="math-inline">${html}</span>`;
+    });
 }
 
 // ==========================================================================

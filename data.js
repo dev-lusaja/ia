@@ -1,12 +1,14 @@
+// Color de cada capítulo en "r, g, b": único lugar donde se define.
+// app.js lo usa como rgb(...) para bordes/textos y rgba(..., alpha) para brillos.
 const chapters = [
-  { id: 1, name: "1. El Sueño de Pensar (Lógica)", color: "var(--neon-cian)" },
-  { id: 2, name: "2. Dejar que la Máquina Aprenda (ML)", color: "var(--neon-azul)" },
-  { id: 3, name: "3. La Red Autodiseñada (Neural Nets)", color: "var(--neon-violeta)" },
-  { id: 4, name: "4. Ir Más Profundo (Deep Learning)", color: "var(--neon-magenta)" },
-  { id: 5, name: "5. El Idioma de los Vectores (Embeddings)", color: "var(--neon-naranja)" },
-  { id: 6, name: "6. La Gran Revolución del Lenguaje (Transformers)", color: "var(--neon-oro)" },
-  { id: 7, name: "7. De Conversar a Actuar (Agentes)", color: "var(--neon-verde)" },
-  { id: 8, name: "8. El Impacto y la Realidad (Futuro)", color: "var(--neon-rojo)" }
+  { id: 1, name: "1. El Sueño de Pensar (Lógica)", rgb: "0, 255, 255" },            // cian
+  { id: 2, name: "2. Dejar que la Máquina Aprenda (ML)", rgb: "26, 140, 255" },     // azul
+  { id: 3, name: "3. La Red Autodiseñada (Neural Nets)", rgb: "136, 77, 255" },     // violeta
+  { id: 4, name: "4. Ir Más Profundo (Deep Learning)", rgb: "255, 51, 187" },       // magenta
+  { id: 5, name: "5. El Idioma de los Vectores (Embeddings)", rgb: "255, 83, 26" }, // naranja
+  { id: 6, name: "6. La Gran Revolución del Lenguaje (Transformers)", rgb: "255, 191, 0" }, // oro
+  { id: 7, name: "7. De Conversar a Actuar (Agentes)", rgb: "0, 255, 106" },        // verde
+  { id: 8, name: "8. El Impacto y la Realidad (Futuro)", rgb: "255, 51, 51" }       // rojo
 ];
 
 const conceptMap = [
@@ -17,7 +19,6 @@ const conceptMap = [
     chapter: 1,
     coords: { x: 400, y: 100 },
     connectsTo: ["que-significa-ser-inteligente"],
-    summary: "Los pilares cognitivos que definen la mente humana: percepción, memoria, aprendizaje y razonamiento.",
     transitionFromPrevious: "",
     levels: {
       basic: {
@@ -67,7 +68,6 @@ const conceptMap = [
     chapter: 1,
     coords: { x: 800, y: 350 },
     connectsTo: ["que-es-la-ia", "neurona_humana"],
-    summary: "El arte de reconocer patrones en el caos del universo y usarlos para resolver problemas.",
     transitionFromPrevious: "Ya sabemos cómo procesamos información en nuestra mente, pero ¿cuándo cruza ese proceso la línea para convertirse en 'inteligencia'? ¿Es solo seguir reglas o hay algo más?",
     levels: {
       basic: {
@@ -122,7 +122,6 @@ const conceptMap = [
     chapter: 1,
     coords: { x: 400, y: 600 },
     connectsTo: ["como-aprende-una-maquina", "categorias_ia"],
-    summary: "El intento de recrear el pensamiento humano en silicio mediante código, y por qué las reglas fijas fracasaron.",
     transitionFromPrevious: "Si entendemos el pensamiento y definimos la inteligencia, el siguiente paso lógico es obvio: ¿podemos construirla artificialmente en una máquina?",
     levels: {
       basic: {
@@ -195,7 +194,6 @@ const conceptMap = [
     chapter: 2,
     coords: { x: 800, y: 850 },
     connectsTo: ["machine-learning-tradicional", "machine_learning"],
-    summary: "El cambio de paradigma: en lugar de programar reglas, le damos datos y medimos su error.",
     transitionFromPrevious: "Dado que escribir millones de reglas a mano para que una IA entienda el mundo es imposible, los científicos cambiaron de estrategia: ¿y si en lugar de darle las reglas, le damos los datos y dejamos que la máquina las descubra sola?",
     levels: {
       basic: {
@@ -269,7 +267,6 @@ const conceptMap = [
     chapter: 2,
     coords: { x: 400, y: 1100 },
     connectsTo: ["aprendizaje-por-refuerzo"],
-    summary: "Los algoritmos que dominaron la industria: aprender clasificando grupos o trazando líneas de regresión.",
     transitionFromPrevious: "Ya sabemos que una máquina aprende minimizando errores sobre los datos. Pero, ¿qué herramientas o algoritmos específicos utilizamos para encontrar esos patrones en los datos? Así nace el Machine Learning tradicional.",
     levels: {
       basic: {
@@ -277,10 +274,10 @@ const conceptMap = [
         content: `El Machine Learning (ML) se divide principalmente en dos tipos de aprendizaje:
         
         1. **Aprendizaje Supervisado (Con guía)**: El modelo aprende usando ejemplos que ya incluyen la respuesta correcta. 
-          - **Regresión**: Predecir un valor numérico continuo (ej. la temperatura de mañana).
-          - **Clasificación**: Determinar a qué categoría pertenece algo (ej. detectar si un correo es spam).    
+           - **Regresión**: Predecir un valor numérico continuo (ej. la temperatura de mañana).
+           - **Clasificación**: Determinar a qué categoría pertenece algo (ej. detectar si un correo es spam).    
         2. **Aprendizaje No Supervisado (Sin guía)**: El modelo intenta descubrir patrones y estructuras en datos que no tienen respuestas etiquetadas.
-          - **Clustering**: Agrupar elementos similares (ej. segmentar clientes según sus hábitos de compra).`
+           - **Clustering**: Agrupar elementos similares (ej. segmentar clientes según sus hábitos de compra).`
       },
       intermediate: {
         title: "🌿 Algoritmos Esenciales",
@@ -326,7 +323,6 @@ const conceptMap = [
     chapter: 2,
     coords: { x: 800, y: 1350 },
     connectsTo: ["redes-neuronales"],
-    summary: "El arte de aprender mediante ensayo y error, recibiendo premios y castigos en un entorno virtual.",
     transitionFromPrevious: "Ya sabemos cómo predecir precios o clasificar correos analizando datos estáticos. Pero, ¿cómo aprende una máquina a interactuar con un entorno en movimiento, como jugar Mario Bros o conducir un auto? Ahí es donde entra el Aprendizaje por Refuerzo.",
     levels: {
       basic: {
@@ -402,7 +398,6 @@ const conceptMap = [
     chapter: 3,
     coords: { x: 400, y: 1600 },
     connectsTo: ["limite-redes-tempranas", "neurona_artificial"],
-    summary: "Una estructura de neuronas matemáticas interconectadas inspirada en la corteza cerebral.",
     transitionFromPrevious: "En el capítulo anterior descubrimos el gran obstáculo del Machine Learning: los humanos tenían que extraer a mano las características relevantes de los datos complejos (imágenes, audios). Para solucionar esto, los científicos crearon una estructura que aprende a extraer sus propias características de forma automática: las Redes Neuronales.",
     levels: {
       basic: {
@@ -489,7 +484,6 @@ const conceptMap = [
     chapter: 3,
     coords: { x: 800, y: 1850 },
     connectsTo: ["deep-learning"],
-    summary: "Los inviernos de la IA: por qué tener pocas capas limitaba su potencial y qué hacía falta para despegar.",
     transitionFromPrevious: "Las Redes Neuronales eran una idea maravillosa en papel. Sin embargo, durante décadas (años 80 y 90), la tecnología se estancó en lo que se conoce como 'Los Inviernos de la IA'. ¿Por qué no podíamos hacer que estas redes resolvieran problemas del mundo real?",
     levels: {
       basic: {
@@ -536,7 +530,7 @@ const conceptMap = [
 
         Al aplicar la retropropagación, el gradiente de la pérdida L respecto a los pesos de una capa temprana resulta de la multiplicación sucesiva de gradientes locales mediante la regla de la cadena:
 
-        $$\\frac{∂L}{∂w_{1}} = \\frac{∂L}{∂a_{d}} ∏_{k=2}^{d} w_{k}σ'(z_{k-1})x_{1}$$  ​
+        $$\\frac{∂L}{∂w_{1}} = \\frac{∂L}{∂a_{d}} ∏_{k=2}^{d} w_{k}σ'(z_{k-1})x_{1}$$  
 
         Dado que cada término $σ'(z)$ es menor o igual a 0.25, el producto de múltiples derivadas tiende a disminuir exponencialmente a medida que aumenta la profundidad de la red.
 
@@ -559,7 +553,6 @@ const conceptMap = [
     chapter: 4,
     coords: { x: 400, y: 2100 },
     connectsTo: ["arquitecturas-especializadas", "nvidia"],
-    summary: "El Big Data y las GPUs salvan a las redes neuronales, naciendo el aprendizaje con docenas de capas ocultas.",
     transitionFromPrevious: "A finales de la década de 2000, todo cambió. La explosión del internet nos dio billones de datos y las tarjetas de video (GPUs) abrieron las puertas a la computación en paralelo masiva. Al resolver los problemas matemáticos y de hardware del pasado, pudimos apilar decenas de capas ocultas. Nació el Deep Learning.",
     levels: {
       basic: {
@@ -611,7 +604,6 @@ const conceptMap = [
     chapter: 4,
     coords: { x: 220, y: 1980 },
     connectsTo: [],
-    summary: "Nvidia",
     levels: {
       basic: {
         title: "🌱 Tarjetas graficas",
@@ -622,9 +614,11 @@ const conceptMap = [
         **GPUs de alto rendimiento**
         - Mientras una CPU tiene pocos núcleos optimizados para tareas generales, una GPU posee miles de núcleos capaces de realizar cálculos en paralelo.
         - Esto aceleró enormemente el entrenamiento de redes neuronales, reduciendo procesos que podían tardar meses a días o incluso horas.
+
         **Creación de CUDA**
         - NVIDIA desarrolló CUDA (Compute Unified Device Architecture), una plataforma que permitió a investigadores y desarrolladores utilizar las GPUs para tareas científicas y de Inteligencia Artificial, no solo para gráficos.
         - CUDA se convirtió en el estándar de facto para el entrenamiento de modelos de Deep Learning.
+
         **Ecosistema especializado para IA**
         - Además del hardware, NVIDIA desarrolló bibliotecas y herramientas optimizadas para aprendizaje profundo, facilitando el trabajo de frameworks como **TensorFlow** y **PyTorch**.
         - Sus arquitecturas modernas están diseñadas específicamente para acelerar modelos de IA cada vez más grandes.
@@ -639,7 +633,6 @@ const conceptMap = [
     chapter: 4,
     coords: { x: 800, y: 2350 },
     connectsTo: ["limite-secuencial", "cnn"],
-    summary: "Redes diseñadas para tareas específicas: CNNs para ver imágenes y RNNs para procesar texto secuencial.",
     transitionFromPrevious: "Una vez que pudimos construir redes neuronales profundas, nos dimos cuenta de que una sola arquitectura no servía para todo. Una imagen estructurada en 2D requiere un procesamiento muy diferente al de una cadena secuencial de texto en el tiempo. Así nacieron las arquitecturas especializadas.",
     levels: {
       basic: {
@@ -698,7 +691,6 @@ const conceptMap = [
     chapter: 4,
     coords: { x: 400, y: 2600 },
     connectsTo: ["digitalizacion-de-significados"],
-    summary: "El gran problema de la memoria a largo plazo en textos y la imposibilidad de paralelizar RNNs.",
     transitionFromPrevious: "Las RNNs y LSTMs nos permitieron procesar texto por primera vez. Sin embargo, al intentar traducir libros enteros o mantener conversaciones largas con IAs, nos topamos con un muro insalvable. El procesamiento secuencial tenía una limitación fundamental.",
     levels: {
       basic: {
@@ -751,9 +743,9 @@ const conceptMap = [
 
         4. **LSTM: una mejora parcial** Para mitigar este problema surgieron las Long Short-Term Memory (LSTM), una variante de las RNN que incorpora una memoria explícita controlada por compuertas.
 
-        - Puerta de olvido ($f_t$): determina qué información descartar.
-        - Puerta de entrada ($i_t$): decide qué información almacenar.
-        - Puerta de salida ($o_t$): controla qué información exponer como salida.
+           - Puerta de olvido ($f_t$): determina qué información descartar.
+           - Puerta de entrada ($i_t$): decide qué información almacenar.
+           - Puerta de salida ($o_t$): controla qué información exponer como salida.
 
         Las compuertas se calculan mediante funciones sigmoides:
         $$f_t = \\sigma(W_f [h_{t-1}, x_t] + b_f)$$
@@ -778,7 +770,6 @@ const conceptMap = [
     chapter: 5,
     coords: { x: 800, y: 2850 },
     connectsTo: ["espacio-latente", "tokens"],
-    summary: "Cómo convertimos palabras abstractas en números y coordenadas en un mapa multidimensional (Embeddings).",
     transitionFromPrevious: "Para resolver el límite secuencial de las RNNs y crear una IA que entienda el lenguaje de verdad, primero debemos resolver un problema puente: las computadoras solo entienden números, mientras que los humanos usamos palabras abstractas. ¿Cómo traducimos el significado de una palabra a matemáticas?",
     levels: {
       basic: {
@@ -844,7 +835,6 @@ const conceptMap = [
     chapter: 5,
     coords: { x: 980, y: 2730 },
     connectsTo: [],
-    summary: "Tokenizacion"
   },
   {
     id: "espacio-latente",
@@ -852,7 +842,6 @@ const conceptMap = [
     chapter: 5,
     coords: { x: 400, y: 3100 },
     connectsTo: ["arquitectura-transformer"],
-    summary: "El mapa geométrico de los conceptos y la similitud coseno para medir la cercanía de ideas.",
     transitionFromPrevious: "Una vez que hemos convertido las palabras en listas de coordenadas (vectores), ¿dónde viven esas coordenadas y cómo hace la IA para calcular qué palabras o frases se parecen entre sí en el mundo real?",
     levels: {
       basic: {
@@ -890,7 +879,7 @@ const conceptMap = [
 
         Para determinar qué tan similares son dos embeddings $A$ y $B$, se utiliza comúnmente la **similitud coseno**, que mide el ángulo entre ambos vectores independientemente de su magnitud.
 
-        $$ cos(θ)=\\frac{A⋅B}{∥A∥∥B∥} = \\frac{∑_{i=1}^{d}A_iB_i}{√∑_{i=1}^{d}{A_i^2}√∑_{i=1}^{d}{B_i^2}}$$
+        $$\\cos(θ)=\\frac{A⋅B}{\\|A\\|\\,\\|B\\|} = \\frac{∑_{i=1}^{d}A_iB_i}{\\sqrt{∑_{i=1}^{d}A_i^2}\\,\\sqrt{∑_{i=1}^{d}B_i^2}}$$
 
         Interpretación:
 
@@ -911,7 +900,6 @@ const conceptMap = [
     chapter: 6,
     coords: { x: 800, y: 3350 },
     connectsTo: ["llm", "self_attention", "transformer_architecture"],
-    summary: "El mecanismo de Auto-Atención que lee textos completos en paralelo y revolucionó la IA.",
     transitionFromPrevious: "Con los embeddings listos, los científicos tenían la materia prima numérica ideal. En 2017, un equipo de Google publicó un artículo revolucionario que cambió todo al presentar la arquitectura perfecta para procesar embeddings de forma paralela y sin perder memoria: el Transformer.",
     levels: {
       basic: {
@@ -1008,7 +996,6 @@ const conceptMap = [
     chapter: 6,
     coords: { x: 400, y: 3600 },
     connectsTo: ["alineacion-y-conexion-de-modelos", "llm_example"],
-    summary: "Pre-entrenamiento masivo con todo el texto de internet y comportamientos emergentes.",
     transitionFromPrevious: "La arquitectura Transformer era tan escalable que permitía procesar cantidades absurdas de datos en paralelo. Los científicos se dieron cuenta de que si construían Transformers gigantescos y los alimentaban con casi todo el texto disponible en internet, ocurría un milagro: nacían los Modelos de Lenguaje Grandes (LLMs).",
     levels: {
       basic: {
@@ -1086,7 +1073,6 @@ const conceptMap = [
     chapter: 6,
     coords: { x: 800, y: 3850 },
     connectsTo: ["ia-generativa"],
-    summary: "",
     transitionFromPrevious: "Un LLM recién salido de internet (llamado modelo base) es como un animal salvaje: si le pides ayuda, simplemente completará el texto con lo que vio en internet, pudiendo responder con insultos o textos sin sentido. Para que sea un asistente útil y seguro, necesitamos alinearlo.",
     levels: {
       basic: {
@@ -1194,7 +1180,6 @@ const conceptMap = [
     chapter: 7,
     coords: { x: 400, y: 4100 },
     connectsTo: ["ia-generativa-multimodal", "ia_generativa"],
-    summary: "De entender a crear: modelos que pintan imágenes con difusión o generan código.",
     transitionFromPrevious: "Al alinear los LLMs para que sus respuestas sean más útiles, seguras y coherentes con las intenciones humanas, descubrimos algo importante: no solo eran capaces de comprender y seguir instrucciones con precisión, sino también de sintetizar información y producir contenido nuevo a partir de lo aprendido durante su entrenamiento. Esta capacidad dio origen a lo que conocemos como IA Generativa.",
     levels: {
       basic: {
@@ -1256,7 +1241,6 @@ const conceptMap = [
     chapter: 7,
     coords: { x: 800, y: 4350 },
     connectsTo: ["rag", "ia_generativa_multmodal"],
-    summary: "De entender a crear: modelos que pintan imágenes con difusión o generan código.",
     transitionFromPrevious: "Al abrir a los LLMs al mundo exterior y alinear su comportamiento, nos dimos cuenta de que su comprensión profunda de los embeddings les permitía no solo analizar información, sino crear contenido completamente nuevo en múltiples formatos (multimodalidad).",
     levels: {
       basic: {
@@ -1306,13 +1290,13 @@ const conceptMap = [
 
         1. **Proceso de Difusión Directa (Forward Process)**
         Se añade ruido gaussiano a una imagen real $x_0$ de manera progresiva durante $T$ pasos, siguiendo una agenda de varianza $β_t$:
-        $$q(x_t|x_{t-1}) = N(x_t; \\sqrt{1 - β_t}x_{t-1}, β_t​I)$$
+        $$q(x_t|x_{t-1}) = N(x_t; \\sqrt{1 - β_t}x_{t-1}, β_tI)$$
         Tras suficientes iteraciones, la imagen original se transforma en ruido casi puro.
 
         2. **Proceso de Difusión Inversa (Reverse Process)**
         Una red neuronal $ϵ_θ(x_t,t)$ es entrenada para estimar el ruido presente en cada paso del proceso.
         La función de pérdida simplificada se define como:
-        $$L(θ) = E_{t,x_0,ϵ}[∥ϵ - ϵ_θ(x_t,t)∥^2]$$
+        $$L(θ) = E_{t,x_0,ϵ}[\\|ϵ - ϵ_θ(x_t,t)\\|^2]$$
         donde la red aprende a aproximar el ruido real ϵ añadido durante la difusión.
 
         **Inferencia**
@@ -1328,7 +1312,7 @@ const conceptMap = [
         $$z_I=E_I(I)$$
         donde $z_I$ es la representación latente de la imagen.
         Posteriormente, una capa de proyección alinea esta representación con el espacio utilizado por el modelo de lenguaje:
-        $$h_I​=W_I{z_I​}+b$$
+        $$h_I=W_I{z_I}+b$$
         permitiendo que embeddings visuales, auditivos y textuales sean procesados conjuntamente mediante mecanismos de atención.
         Gracias a esta alineación, el modelo puede razonar sobre múltiples modalidades dentro de un mismo contexto y generar respuestas que combinan información proveniente de diferentes fuentes.
 
@@ -1356,7 +1340,6 @@ const conceptMap = [
     chapter: 7,
     coords: { x: 1140, y: 4220 },
     connectsTo: [],
-    summary: "Modelo de OpenAI",
     levels: {
       basic: {
         title: "🌱 Pionero del Chat AI",
@@ -1382,7 +1365,6 @@ const conceptMap = [
     chapter: 7,
     coords: { x: 1140, y: 4350 },
     connectsTo: [],
-    summary: "Modelo de Google",
     levels: {
       basic: {
         title: "🌱 Multimodal Nativo",
@@ -1408,7 +1390,6 @@ const conceptMap = [
     chapter: 7,
     coords: { x: 1140, y: 4480 },
     connectsTo: [],
-    summary: "Modelo de Anthropic",
     levels: {
       basic: {
         title: "🌱 Redacción y Código Técnico",
@@ -1432,7 +1413,6 @@ const conceptMap = [
     chapter: 7,
     coords: { x: 400, y: 4600 },
     connectsTo: ["agentes-autonomos"],
-    summary: "Conectar los LLMs a bases de datos vectoriales en tiempo real para evitar alucinaciones.",
     transitionFromPrevious: "La IA generativa y los LLMs son increíbles creadores, pero seguimos teniendo el límite estático: si les preguntas por un documento interno de tu empresa o una noticia de última hora, alucinarán o dirán que no lo saben. ¿Cómo conectamos su cerebro a información externa al instante? Nace el RAG.",
     levels: {
       basic: {
@@ -1477,7 +1457,6 @@ Esto reduce radicalmente la tasa de alucinaciones ya que el modelo realiza un ma
     chapter: 7,
     coords: { x: 800, y: 4850 },
     connectsTo: ["sistemas-multiagente"],
-    summary: "Dotar a la IA de herramientas (APIs, Web Search) y un ciclo de razonamiento y acción.",
     transitionFromPrevious: "Con RAG, la IA ya puede leer libros y archivos en tiempo real. Pero sigue siendo un chat pasivo: solo habla cuando tú le hablas. ¿Cómo hacemos para que la IA actúe de forma proactiva, navegue por internet por sí sola, use la calculadora o envíe correos para resolver tareas complejas? Nace el Agente Autónomo.",
     levels: {
       basic: {
@@ -1531,7 +1510,6 @@ El bucle de control del lado del servidor analiza la salida del LLM mediante exp
     chapter: 7,
     coords: { x: 400, y: 5100 },
     connectsTo: ["modelos-infraestructura-costos"],
-    summary: "La división del trabajo en IA: coordinadores y especialistas colaborando para resolver metas.",
     transitionFromPrevious: "Un solo agente autónomo con muchas herramientas es increíble, pero si le pides que cree una aplicación móvil completa, se confundirá y entrará en bucles infinitos de error. Para resolver tareas monumentales, aplicamos el principio más antiguo de la humanidad: la división del trabajo y la colaboración en equipo.",
     levels: {
       basic: {
@@ -1578,7 +1556,6 @@ Donde $\\tau$ es un umbral de calidad preestablecido.`
     chapter: 8,
     coords: { x: 800, y: 5350 },
     connectsTo: ["etica-seguridad-gobernanza"],
-    summary: "La realidad económica detrás de la IA: GPUs, costos por millón de tokens y cuantización.",
     transitionFromPrevious: "Ya sabemos cómo construir sofisticadas sociedades de agentes inteligentes capaces de resolver problemas complejos. Pero al llevar estos sistemas del laboratorio al mundo real, nos topamos de frente con la realidad física y financiera: ejecutar IAs requiere un poder de cómputo inmenso y cuesta mucho dinero.",
     levels: {
       basic: {
@@ -1619,7 +1596,6 @@ Esto reduce el almacenamiento del modelo a la mitad (o a una cuarta parte si usa
     chapter: 8,
     coords: { x: 400, y: 5600 },
     connectsTo: ["hacia-donde-va-la-ia"],
-    summary: "Los riesgos de la superinteligencia: sesgos en los datos, jailbreaks y alineación.",
     transitionFromPrevious: "La viabilidad técnica e infraestructura están resueltas. Sin embargo, conforme los agentes de IA se vuelven más potentes y autónomos, se hace imperativo abordar un dilema crucial: ¿cómo nos aseguramos de que estas mentes digitales sean seguras, justas y no perjudiquen a la sociedad?",
     levels: {
       basic: {
@@ -1656,7 +1632,6 @@ Para mitigar esto, se implementa **Entrenamiento Adversario** (Red Teaming) y ca
     chapter: 8,
     coords: { x: 800, y: 5850 },
     connectsTo: [],
-    summary: "El futuro de nuestra civilización: la Inteligencia Artificial General (AGI) y la robótica inteligente.",
     transitionFromPrevious: "Hemos recorrido todo el camino: desde los fundamentos de lo que significa pensar, pasando por el nacimiento del aprendizaje automático y las redes profundas, hasta la explosión de agentes autónomos éticamente regulados. Ahora, la gran pregunta final es: ¿hacia dónde se dirige esta asombrosa aventura tecnológica?",
     levels: {
       basic: {

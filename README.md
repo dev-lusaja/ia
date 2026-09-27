@@ -37,7 +37,7 @@ ia/
 
 Para agregar, editar o eliminar información del mapa, abre el archivo [data.js](file:///d:/code/ia/data.js) y edita su estructura:
 
-- **Modificar un tema existente**: Busca el nodo por su `id` y edita los campos `title`, `summary`, `transitionFromPrevious` o el contenido de los niveles en `levels.basic`, `levels.intermediate` o `levels.technical`.
+- **Modificar un tema existente**: Busca el nodo por su `id` y edita los campos `title`, `transitionFromPrevious` o el contenido de los niveles en `levels.basic`, `levels.intermediate` o `levels.technical`.
 - **Añadir un tema nuevo**: Agrega un objeto con la estructura estándar al array `conceptMap`, define sus coordenadas `{x, y}` para situarlo en el mapa y enlázalo en `connectsTo` desde el tema previo para que la línea de conexión se dibuje automáticamente.
 
 ---
