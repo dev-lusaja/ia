@@ -4,7 +4,7 @@
 
 const VIEWPORT_CONFIG = {
   canvasWidth: 1400,
-  canvasHeight: 6400,
+  canvasHeight: 7400,
   minScale: 0.15,
   maxScale: 2.2,
   zoomSpeed: 0.05
@@ -18,7 +18,7 @@ let appState = {
   startX: 0,
   startY: 0,
   activeNode: null,
-  activeTab: 'basic',
+  activeTab: 'basic', // Último nivel elegido (se recuerda en localStorage)
   completedNodes: [], // IDs cargados de localStorage
   
   // Soporte Multi-Touch (Pinch-to-zoom en móvil)
@@ -26,14 +26,21 @@ let appState = {
   touchStartScale: 1
 };
 
+const LEVELS = ['basic', 'intermediate', 'technical'];
+
+// Temas de la ruta (sin satélites), en orden de la historia
+const lessons = conceptMap.filter(n => !n.type);
+
 // Elementos DOM Clave
 const viewport = document.getElementById('map-viewport');
 const canvas = document.getElementById('map-canvas');
 const nodesContainer = document.getElementById('nodes-container');
 const svgConnectionsGroup = document.getElementById('connections-group');
 const svgElement = document.getElementById('map-svg-connections');
-const drawer = document.getElementById('drawer');
-const drawerOverlay = document.getElementById('drawer-overlay');
+const lessonView = document.getElementById('lesson-view');
+const lessonEl = document.getElementById('lesson');
+const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebar-overlay');
 
 // ==========================================================================
 // 🚀 INICIALIZACIÓN DE LA APLICACIÓN
@@ -50,11 +57,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Renderizar Elementos del Mapa
   renderNodes();
   renderConnections();
-  renderLegend();
   
   // Configurar Escuchadores de Eventos
   setupPanAndZoom();
-  setupDrawerListeners();
+  setupLessonListeners();
+  setupSidebarListeners();
   setupLightboxListeners();
   setupSearchListener();
   setupTutorial();
@@ -62,28 +69,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Actualizar indicadores de progreso generales
   updateProgressUI();
   
-  // Esperar a que el navegador haya pintado el layout completo (crítico en móvil)
-  // para que viewport.clientWidth/clientHeight reflejen las dimensiones reales.
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      centerOnNodeId(getResumeNodeId(), true);
-      openFromUrl(); // Enlace directo: index.html#id-del-tema
-    });
-  });
+  // Enlace directo (index.html#id-del-tema, #mapa); sin enlace, el primer tema pendiente
+  openFromUrl();
 
   // Botón atrás/adelante del navegador
   window.addEventListener('popstate', openFromUrl);
 
-  // Re-centrar si el viewport cambia de tamaño (rotación, barra del navegador móvil)
-  let resizeTimer;
+  // Rotación o barra del navegador móvil: solo reajustar límites, sin re-centrar
   window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      // Solo re-centra si no hay un nodo activo abierto en el drawer
-      if (!appState.activeNode) {
-        centerOnNodeId(getResumeNodeId(), true);
-      }
-    }, 200);
+    clampPan();
+    updateCanvasTransform();
   });
 });
 
@@ -100,21 +95,26 @@ function loadProgress() {
       appState.completedNodes = [];
     }
   }
+  const level = localStorage.getItem('ai-map-level');
+  if (LEVELS.includes(level)) appState.activeTab = level;
+}
+
+function isCompleted(nodeId) {
+  return appState.completedNodes.includes(nodeId);
 }
 
 // Primer tema sin completar (en orden de la historia); si están todos, el primero
 function getResumeNodeId() {
-  const lessons = conceptMap.filter(n => !n.type);
-  const next = lessons.find(n => !appState.completedNodes.includes(n.id)) || lessons[0];
+  const next = lessons.find(n => !isCompleted(n.id)) || lessons[0];
   return next.id;
 }
 
-function toggleNodeCompletion(nodeId) {
-  const index = appState.completedNodes.indexOf(nodeId);
-  if (index > -1) {
-    appState.completedNodes.splice(index, 1);
-  } else {
+function setNodeCompletion(nodeId, completed) {
+  if (isCompleted(nodeId) === completed) return;
+  if (completed) {
     appState.completedNodes.push(nodeId);
+  } else {
+    appState.completedNodes.splice(appState.completedNodes.indexOf(nodeId), 1);
   }
   
   localStorage.setItem('ai-map-progress', JSON.stringify(appState.completedNodes));
@@ -132,18 +132,23 @@ function toggleNodeCompletion(nodeId) {
   
   updateProgressUI();
   renderConnections(); // Volver a dibujar conexiones para cambiar brillo
+
+  // ¿Era el último tema pendiente de su capítulo?
+  const node = conceptMap.find(n => n.id === nodeId);
+  if (completed && lessons.filter(l => l.chapter === node.chapter).every(l => isCompleted(l.id))) {
+    showChapterDone(node.chapter);
+  }
 }
 
 function updateProgressUI() {
-  const mainNodes = conceptMap.filter(node => !node.type || node.type === 'satellite-logo');
-  const trackable = mainNodes.filter(node => node.type !== 'satellite-logo');
-  const total = trackable.length;
-  const completed = appState.completedNodes.length;
+  const total = lessons.length;
+  const completed = lessons.filter(n => isCompleted(n.id)).length;
   const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
   
   document.getElementById('progress-percent').innerText = `${percent}%`;
   document.getElementById('progress-fraction').innerText = `(${completed}/${total} completados)`;
   document.getElementById('progress-fill').style.width = `${percent}%`;
+  renderPathIndex();
 }
 
 // ==========================================================================
@@ -315,27 +320,38 @@ function renderConnections() {
   });
 }
 
-function renderLegend() {
-  const legendList = document.getElementById('legend-list');
-  legendList.innerHTML = '';
-  
-  chapters.forEach(chap => {
-    const item = document.createElement('div');
-    item.className = 'legend-item';
-    item.style.setProperty('--chapter-color', chapterColor(chap.id));
-    item.innerHTML = `
-      <span class="legend-color-dot"></span>
-      <span>${chap.name}</span>
-    `;
-    legendList.appendChild(item);
-  });
-  
-  // Alternar colapsado de leyenda
-  const toggleBtn = document.getElementById('legend-toggle');
-  const container = document.getElementById('legend-container');
-  toggleBtn.addEventListener('click', () => {
-    container.classList.toggle('collapsed');
-  });
+// Índice lateral: capítulos plegables con anillo de progreso y el estado de cada tema
+function renderPathIndex() {
+  const nav = document.getElementById('path-index');
+  const wasOpen = new Set([...nav.querySelectorAll('details[open]')].map(d => d.dataset.chapter));
+  const current = appState.activeNode;
+
+  nav.innerHTML = chapters.map(chap => {
+    const items = lessons.filter(l => l.chapter === chap.id);
+    const done = items.filter(l => isCompleted(l.id)).length;
+    const open = wasOpen.has(String(chap.id)) || current?.chapter === chap.id;
+    return `
+      <details class="path-chapter" data-chapter="${chap.id}" ${open ? 'open' : ''}
+               style="--chapter-neon: ${chapterColor(chap.id)}; --chapter-neon-rgb: ${chap.rgb}; --p: ${done / items.length}">
+        <summary>
+          <span class="path-ring" aria-hidden="true"></span>
+          <span class="path-chapter-name">${escapeHtml(chap.name)}</span>
+          <span class="path-count" aria-label="${done} de ${items.length} completados">${done}/${items.length}</span>
+        </summary>
+        <ol>${items.map(l => {
+          const isDone = isCompleted(l.id);
+          const isCurrent = l === current;
+          const state = isCurrent ? 'current' : isDone ? 'done' : 'pending';
+          return `
+          <li><a href="#${l.id}" data-id="${l.id}" class="path-lesson ${state}" ${isCurrent ? 'aria-current="page"' : ''}>
+            <span class="path-status" aria-hidden="true">${isDone ? '✓' : isCurrent ? '●' : '○'}</span>
+            <span>${escapeHtml(l.title)}</span>${isDone ? '<span class="visually-hidden">, completado</span>' : ''}
+          </a></li>`;
+        }).join('')}</ol>
+      </details>`;
+  }).join('');
+
+  nav.querySelector('[aria-current]')?.scrollIntoView({ block: 'nearest' });
 }
 
 // Color del capítulo (definido en data.js): "r, g, b" para rgba() y rgb() sólido
@@ -412,9 +428,10 @@ function setupPanAndZoom() {
       const factor = dist / appState.touchStartDist;
       const nextScale = Math.min(Math.max(appState.touchStartScale * factor, VIEWPORT_CONFIG.minScale), VIEWPORT_CONFIG.maxScale);
       
-      // Zoom enfocado al punto medio entre los dos toques
-      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      // Zoom enfocado al punto medio entre los dos toques (relativo al viewport, que no empieza en 0,0)
+      const rect = viewport.getBoundingClientRect();
+      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
       
       const canvasMidX = (midX - appState.panX) / appState.scale;
       const canvasMidY = (midY - appState.panY) / appState.scale;
@@ -494,20 +511,13 @@ function clampPan() {
   const vw = viewport.clientWidth  || window.innerWidth;
   const vh = viewport.clientHeight || window.innerHeight;
   
-  // Altura del header fijo en móvil: los nodos deben poder arrastrarse
-  // por debajo de él, así que maxY debe ser al menos headerH + margen.
-  const header = document.getElementById('main-header');
-  const headerH = (vw < 992 && header) ? header.offsetHeight + 8 : 0;
-  
   // En móvil el padding mínimo permite ver el nodo aunque esté en el borde
   const pad = vw < 768 ? 40 : 150;
   
   const minX = vw - VIEWPORT_CONFIG.canvasWidth  * appState.scale - pad;
   const maxX = pad;
   const minY = vh - VIEWPORT_CONFIG.canvasHeight * appState.scale - pad;
-  // maxY: el canvas puede bajar lo suficiente para que queden nodos visibles
-  // debajo del header (sin que el canvas se vaya al infinito hacia abajo)
-  const maxY = headerH + pad;
+  const maxY = pad;
   
   // Solo aplicamos límites si el canvas es más grande que el viewport
   appState.panX = Math.min(Math.max(appState.panX, minX), maxX);
@@ -540,13 +550,8 @@ function centerOnNodeId(nodeId, smoothScale = false) {
     }
   }
 
-  // Descontar la altura del header fijo en móvil para centrar verticalmente
-  // dentro del área visible real (debajo del header)
-  const header = document.getElementById('main-header');
-  const headerH = (vw < 992 && header) ? header.offsetHeight + 8 : 0;
-  
   const centerX = vw / 2;
-  const centerY = headerH + (vh - headerH) / 2;
+  const centerY = vh / 2;
 
   // Centrar coordenadas del nodo
   appState.panX = centerX - node.coords.x * appState.scale;
@@ -636,7 +641,7 @@ function setupSearchListener() {
       e.preventDefault();
       openSearchMatch(searchState.matches[Math.max(searchState.index, 0)]);
     } else if (e.key === 'Escape') {
-      // Que no cierre también el drawer
+      // Que no cierre también el índice lateral
       e.stopPropagation();
       if (!searchPanel.hidden) showSearchPanel(false);
       else clearBtn.click();
@@ -722,7 +727,7 @@ function selectSearchMatch(index) {
 
   document.querySelectorAll('.concept-node.search-current').forEach(n => n.classList.remove('search-current'));
   getNodeEl(node.id)?.classList.add('search-current');
-  centerOnNodeId(node.id);
+  if (document.body.dataset.view === 'map') centerOnNodeId(node.id);
 }
 
 function openSearchMatch(node) {
@@ -742,20 +747,17 @@ function resetFilter() {
 }
 
 // ==========================================================================
-// 📂 LECCIONES Y LOGICA DEL DRAWER (PANEL LATERAL)
+// 📂 LECCIÓN A PANTALLA COMPLETA (RUTA)
 // ==========================================================================
 
-function setupDrawerListeners() {
-  const closeBtn = document.getElementById('drawer-close');
-  const completedCheckbox = document.getElementById('node-completed-checkbox');
+function setupLessonListeners() {
   const tabs = document.querySelectorAll('.tab-btn');
   
-  // Cerrar Drawer
-  closeBtn.addEventListener('click', closeDrawer);
-  drawerOverlay.addEventListener('click', closeDrawer);
+  // ✕ vuelve a la vista de conjunto
+  document.getElementById('lesson-close').addEventListener('click', showMap);
   
   // Copiar enlace directo al tema
-  const shareBtn = document.getElementById('drawer-share');
+  const shareBtn = document.getElementById('lesson-share');
   let shareTimer;
   shareBtn.addEventListener('click', async () => {
     if (!appState.activeNode) return;
@@ -777,29 +779,73 @@ function setupDrawerListeners() {
     }, 1800);
   });
 
-  // Siguiente tema
-  document.getElementById('drawer-next-btn').addEventListener('click', () => {
-    const next = appState.activeNode && getNextLesson(appState.activeNode);
-    if (next) openDrawer(next);
-  });
-
-  // Checkbox de Completado
-  completedCheckbox.addEventListener('change', () => {
-    if (appState.activeNode) {
-      toggleNodeCompletion(appState.activeNode.id);
-    }
+  // Completar y seguir: marca el tema como hecho y abre el siguiente
+  document.getElementById('lesson-next-btn').addEventListener('click', () => {
+    const node = appState.activeNode;
+    if (!node) return;
+    const next = getNextLesson(node);
+    if (next) openLesson(next);
+    setNodeCompletion(node.id, true); // Después: el aviso de capítulo completado queda encima
+    if (!next) renderNextButton(node);
   });
   
-  // Botones de pestañas (Niveles)
+  // Botones de pestañas (Niveles): el nivel elegido se recuerda entre temas y visitas
   tabs.forEach(tab => {
-    tab.addEventListener('click', (e) => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      
-      appState.activeTab = tab.getAttribute('data-tab');
+    tab.addEventListener('click', () => {
+      appState.activeTab = tab.dataset.tab;
+      localStorage.setItem('ai-map-level', appState.activeTab);
+      renderTabs();
       renderLessonContent();
     });
   });
+
+  // Figuras de la lección: abren el visor
+  document.getElementById('lesson-extras').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-id]');
+    if (btn) openLightbox(conceptMap.find(n => n.id === btn.dataset.id));
+  });
+
+  // ¡Capítulo completado!
+  document.getElementById('chapter-done-btn').addEventListener('click', () => {
+    const { next } = document.getElementById('chapter-done-overlay').dataset;
+    hideChapterDone();
+    if (next) openLesson(conceptMap.find(n => n.id === next));
+    else showMap();
+  });
+}
+
+function setupSidebarListeners() {
+  const menuBtn = document.getElementById('menu-btn');
+  menuBtn.addEventListener('click', () => setSidebarOpen(!sidebar.classList.contains('open')));
+  sidebarOverlay.addEventListener('click', () => setSidebarOpen(false));
+  document.getElementById('show-map-btn').addEventListener('click', showMap);
+
+  // Clic en un tema del índice (el href queda para abrir en otra pestaña)
+  document.getElementById('path-index').addEventListener('click', (e) => {
+    const link = e.target.closest('a[data-id]');
+    if (!link || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    e.preventDefault();
+    openLesson(conceptMap.find(n => n.id === link.dataset.id));
+  });
+}
+
+// Índice como panel en móvil
+function setSidebarOpen(open) {
+  sidebar.classList.toggle('open', open);
+  sidebarOverlay.hidden = !open;
+  document.getElementById('menu-btn').setAttribute('aria-expanded', String(open));
+}
+
+// 'lesson' (ruta) o 'map' (vista de conjunto)
+function setView(view) {
+  document.body.dataset.view = view;
+  setSidebarOpen(false);
+  if (view === 'map') centerOnNodeId(appState.activeNode?.id || getResumeNodeId(), true);
+}
+
+function showMap() {
+  setUrlNode('mapa');
+  setView('map');
 }
 
 // ==========================================================================
@@ -807,33 +853,38 @@ function setupDrawerListeners() {
 // ==========================================================================
 
 // Refleja el tema abierto en la URL. Abrir crea entrada en el historial (el botón
-// atrás vuelve al tema anterior); cerrar la reemplaza para no dejar entradas vacías.
+// atrás vuelve al tema anterior); replace la sustituye.
 function setUrlNode(id, replace = false) {
-  if (location.hash === (id ? `#${id}` : '')) return;
-  const url = id ? `#${id}` : location.pathname + location.search;
-  if (replace || !id) history.replaceState(null, '', url);
-  else history.pushState(null, '', url);
+  if (location.hash === `#${id}`) return;
+  if (replace) history.replaceState(null, '', `#${id}`);
+  else history.pushState(null, '', `#${id}`);
 }
 
-// Abre lo que indique la URL (o cierra todo si no hay tema)
+// Abre lo que indique la URL: un tema, una imagen, el mapa o (sin nada) el primer tema pendiente
 function openFromUrl() {
   const id = decodeURIComponent(location.hash.slice(1));
   const node = conceptMap.find(n => n.id === id);
 
   if (lightboxOverlay.classList.contains('active') && node?.type !== 'satellite-image') closeLightbox(false);
-  if (!node) {
-    if (appState.activeNode) closeDrawer(false);
+  if (id === 'mapa') {
+    setView('map');
+  } else if (!node) {
+    openLesson(conceptMap.find(n => n.id === getResumeNodeId()), 'replace');
   } else if (node.type === 'satellite-image') {
+    if (!appState.activeNode) openLesson(parentLesson(node), false);
     openLightbox(node);
+  } else if (node.type === 'satellite-logo') {
+    openLesson(parentLesson(node), false, node.id);
   } else {
-    openDrawer(node);
+    openLesson(node, false);
   }
 }
 
-// Imágenes satélite se ven en el lightbox; el resto en el drawer
+// Imágenes satélite se ven en el visor; las fichas de logo dentro de su tema; el resto es un tema
 function openNode(node) {
   if (node.type === 'satellite-image') openLightbox(node);
-  else openDrawer(node);
+  else if (node.type === 'satellite-logo') openLesson(parentLesson(node), 'push', node.id);
+  else openLesson(node);
 }
 
 // Siguiente lección de la historia: el primer destino de connectsTo que no es satélite
@@ -843,101 +894,154 @@ function getNextLesson(node) {
     .find(n => n && !n.type);
 }
 
-function openDrawer(node) {
-  if (!appState.activeNode) appState.returnFocus = document.activeElement;
-  appState.activeNode = node;
-  setUrlNode(node.id);
-  
-  // Resaltar nodo activo visualmente
-  document.querySelectorAll('.concept-node').forEach(n => n.classList.remove('active-node'));
-  const activeNodeEl = getNodeEl(node.id);
-  if (activeNodeEl) activeNodeEl.classList.add('active-node');
-  
-  // Rellenar Badge de Capítulo y colores neón personalizados
-  const drawerBadge = document.getElementById('drawer-chapter-badge');
-  drawerBadge.innerText = `Capítulo ${node.chapter}`;
-  drawer.style.setProperty('--chapter-neon', chapterColor(node.chapter));
-  drawer.style.setProperty('--chapter-neon-rgb', chapterRgb(node.chapter));
-  
-  // Datos Generales
-  document.getElementById('drawer-title').innerText = node.title;
-  
-  // Estado Checkbox Completado
-  document.getElementById('node-completed-checkbox').checked = appState.completedNodes.includes(node.id);
-  
-  // Configuración de la Narrativa de Transición
-  const transitionCard = document.getElementById('drawer-transition-card');
-  if (node.transitionFromPrevious && node.transitionFromPrevious.trim().length > 0) {
-    transitionCard.style.display = 'flex';
-    document.getElementById('drawer-transition-text').innerHTML = formatMarkdown(node.transitionFromPrevious);
-  } else {
-    // Si es el primer tema, ocultamos la tarjeta de transición al no haber pasado previo
-    transitionCard.style.display = 'none';
-  }
+// Tema del que cuelga un satélite (subiendo por satélites intermedios)
+function parentLesson(node) {
+  let current = node;
+  while (current?.type) current = conceptMap.find(n => (n.connectsTo || []).includes(current.id));
+  return current || lessons[0];
+}
 
-  if (node.type === 'satellite-logo' || !node.type) {
-    if (node.type === 'satellite-logo') {
-      // Satélite con logo: resetear a basic (solo tienen ese nivel) y ocultar tabs/checkbox
-      appState.activeTab = 'basic';
-      document.querySelector('.drawer-tabs').style.display = 'none';
-      document.querySelector('.completion-card').style.display = 'none';
-    } else {
-      // Nodo conceptual normal: resetear a pestaña básica
-      appState.activeTab = 'basic';
-      document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-      document.getElementById('tab-basic-btn').classList.add('active');
-      document.querySelector('.drawer-tabs').style.display = 'flex';
-      document.querySelector('.completion-card').style.display = 'flex';
+// Satélites que cuelgan de un tema (también los que cuelgan de otro satélite)
+function lessonSatellites(lesson) {
+  const found = [];
+  const walk = ids => ids.forEach(id => {
+    const n = conceptMap.find(x => x.id === id);
+    if (n?.type) {
+      found.push(n);
+      walk(n.connectsTo || []);
     }
-  }
-  
-  const next = getNextLesson(node);
-  const nextBtn = document.getElementById('drawer-next-btn');
-  nextBtn.hidden = !next;
-  if (next) document.getElementById('drawer-next-title').textContent = next.title.split('. ')[1] || next.title;
+  });
+  walk(lesson.connectsTo || []);
+  return found;
+}
 
-  // Renderizar
-  renderLessonContent();
-  
-  // Activar Drawer y Overlay
-  drawer.classList.add('active');
-  drawer.setAttribute('aria-hidden', 'false');
-  document.getElementById('drawer-title').focus({ preventScroll: true });
-  if (window.innerWidth < 768) {
-    drawerOverlay.style.display = 'block';
+// urlMode: 'push' (nuevo paso en el historial), 'replace' o false (la URL ya es la correcta)
+function openLesson(node, urlMode = 'push', focusExtraId = null) {
+  if (urlMode) setUrlNode(focusExtraId || node.id, urlMode === 'replace');
+  setView('lesson');
+
+  const changed = appState.activeNode !== node;
+  appState.activeNode = node;
+
+  // Nodo activo en el mapa
+  document.querySelectorAll('.concept-node').forEach(n => n.classList.remove('active-node'));
+  getNodeEl(node.id)?.classList.add('active-node');
+
+  // Colores del capítulo
+  lessonEl.style.setProperty('--chapter-neon', chapterColor(node.chapter));
+  lessonEl.style.setProperty('--chapter-neon-rgb', chapterRgb(node.chapter));
+
+  const position = `${lessons.indexOf(node) + 1} de ${lessons.length}`;
+  document.getElementById('lesson-chapter-badge').innerText = `Capítulo ${node.chapter} · ${position}`;
+  document.getElementById('topbar-chapter').innerText = `Capítulo ${node.chapter}`;
+  document.getElementById('topbar-progress').innerText = `${lessons.indexOf(node) + 1}/${lessons.length}`;
+
+  if (changed) {
+    document.getElementById('lesson-title').innerText = node.title;
+
+    // ¿Cómo llegamos aquí? (el primer tema no tiene paso previo)
+    const transitionCard = document.getElementById('lesson-transition-card');
+    transitionCard.hidden = !node.transitionFromPrevious?.trim();
+    document.getElementById('lesson-transition-text').innerHTML = formatMarkdown(node.transitionFromPrevious);
+
+    renderTabs();
+    renderLessonContent();
+    renderLessonExtras(node);
+    renderDemo(node);
+
+    renderNextButton(node);
+
+    lessonView.scrollTop = 0;
+    document.getElementById('lesson-title').focus({ preventScroll: true });
   }
-  
-  // Centrar el mapa un poco a la izquierda de la pantalla en desktop para que no quede tapado por el panel
-  if (window.innerWidth >= 992) {
-    const shiftX = viewport.clientWidth * 0.12; // Desplazar coordenadas
-    const targetX = (viewport.clientWidth / 2) - shiftX;
-    const targetY = viewport.clientHeight / 2;
-    
-    canvas.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
-    appState.panX = targetX - node.coords.x * appState.scale;
-    appState.panY = targetY - node.coords.y * appState.scale;
-    clampPan();
-    updateCanvasTransform();
-    setTimeout(() => canvas.style.transition = 'none', 400);
-  } else {
-    centerOnNodeId(node.id);
+
+  renderPathIndex();
+
+  // Ficha de logo pedida (desde el mapa o un enlace): abrirla y llevarla a la vista
+  if (focusExtraId) {
+    const extra = document.getElementById(`extra-${focusExtraId}`);
+    if (extra) {
+      extra.open = true;
+      extra.scrollIntoView({ block: 'start' });
+    }
   }
 }
 
-function closeDrawer(updateUrl = true) {
-  appState.activeNode = null;
-  if (updateUrl) setUrlNode(null);
-  document.querySelectorAll('.concept-node').forEach(n => n.classList.remove('active-node'));
-  
-  drawer.classList.remove('active');
-  drawer.setAttribute('aria-hidden', 'true');
-  drawerOverlay.style.display = 'none';
+// "Completar y seguir" (o "Siguiente tema" si ya estaba hecho); en el último tema, terminar el viaje
+function renderNextButton(node) {
+  const next = getNextLesson(node);
+  const done = isCompleted(node.id);
+  document.getElementById('lesson-next-btn').hidden = !next && done;
+  document.getElementById('lesson-next-label').textContent = done ? 'Siguiente tema' : next ? 'Completar y seguir' : 'Último tema';
+  document.getElementById('lesson-next-title').textContent = next
+    ? next.title.split('. ')[1] || next.title
+    : 'Terminar el viaje';
+}
 
-  // Devolver el foco a donde estaba (p. ej. el nodo del mapa)
-  if (updateUrl && drawer.contains(document.activeElement)) {
-    appState.returnFocus?.focus?.({ preventScroll: true });
-  }
-  appState.returnFocus = null;
+function renderTabs() {
+  document.querySelectorAll('.tab-btn').forEach(t => {
+    const active = t.dataset.tab === appState.activeTab;
+    t.classList.toggle('active', active);
+    t.setAttribute('aria-selected', String(active));
+  });
+}
+
+// Satélites dentro de la lección: imágenes como figuras (abren el visor) y logos como fichas plegables
+function renderLessonExtras(node) {
+  document.getElementById('lesson-extras').innerHTML = lessonSatellites(node).map(s => s.type === 'satellite-image'
+    ? `<figure class="lesson-figure">
+        <button type="button" data-id="${s.id}" aria-label="Ampliar imagen: ${escapeHtml(s.title)}">
+          <img src="${s.imageUrl}" alt="${escapeHtml(s.title)}" loading="lazy">
+        </button>
+        <figcaption><strong>${escapeHtml(s.title)}</strong>${s.caption ? ` · ${escapeHtml(s.caption)}` : ''}</figcaption>
+      </figure>`
+    : `<details class="lesson-aside" id="extra-${s.id}">
+        <summary><img src="${s.logoUrl}" alt="" class="node-logo"> ${escapeHtml(s.title)}</summary>
+        <div class="tab-content-area">${formatMarkdown(s.levels?.basic?.content)}</div>
+      </details>`
+  ).join('');
+}
+
+// Pruébalo: cada demo es demos/<nombre>.js y exporta mount(elemento)
+function renderDemo(node) {
+  const section = document.getElementById('lesson-demo');
+  const mount = document.getElementById('lesson-demo-mount');
+  mount.innerHTML = '';
+  section.hidden = !node.demo;
+  if (!node.demo) return;
+
+  const target = document.createElement('div');
+  target.className = 'demo';
+  mount.append(target);
+  import(`./demos/${node.demo}.js`)
+    .then(m => { if (target.isConnected) m.mount(target); })
+    .catch(() => { target.textContent = 'No se pudo cargar la demo.'; });
+}
+
+// ==========================================================================
+// 🏆 ¡CAPÍTULO COMPLETADO!
+// ==========================================================================
+
+function showChapterDone(chapterId) {
+  const overlay = document.getElementById('chapter-done-overlay');
+  const chap = chapters.find(c => c.id === chapterId);
+  const nextChap = chapters.find(c => c.id === chapterId + 1);
+  const firstNext = nextChap && lessons.find(l => l.chapter === nextChap.id);
+
+  document.getElementById('chapter-done-title').textContent = nextChap ? '¡Capítulo completado!' : '¡Has completado el viaje!';
+  document.getElementById('chapter-done-text').textContent = nextChap
+    ? `Terminaste «${chap.name}». Lo siguiente: «${nextChap.name}».`
+    : `Terminaste «${chap.name}» y, con él, los ${lessons.length} temas del viaje.`;
+  const btn = document.getElementById('chapter-done-btn');
+  btn.textContent = firstNext ? `Ir al capítulo ${nextChap.id} →` : '🗺 Ver el viaje completo';
+  overlay.dataset.next = firstNext ? firstNext.id : '';
+  overlay.style.setProperty('--chapter-neon', chapterColor(chapterId));
+  overlay.hidden = false;
+  btn.focus();
+}
+
+function hideChapterDone() {
+  document.getElementById('chapter-done-overlay').hidden = true;
 }
 
 // ==========================================================================
@@ -991,11 +1095,12 @@ function openLightbox(node) {
 }
 
 function closeLightbox(updateUrl = true) {
-  // Si el drawer sigue abierto debajo, la URL vuelve a su tema
-  if (updateUrl) setUrlNode(appState.activeNode?.id, true);
+  // La URL vuelve a lo que hay debajo: el mapa o el tema abierto
+  if (updateUrl) setUrlNode(document.body.dataset.view === 'map' ? 'mapa' : appState.activeNode.id, true);
   lightboxOverlay.classList.remove('active');
   lightboxOverlay.setAttribute('aria-hidden', 'true');
   document.querySelectorAll('.concept-node').forEach(n => n.classList.remove('active-node'));
+  if (appState.activeNode) getNodeEl(appState.activeNode.id)?.classList.add('active-node');
   // Limpiar src después de la transición para evitar parpadeo
   setTimeout(() => { lightboxImg.src = ''; }, 350);
 }
@@ -1036,11 +1141,12 @@ function setupLightboxListeners() {
   lightboxOverlay.addEventListener('click', (e) => {
     if (e.target === lightboxOverlay) closeLightbox();
   });
-  // Escape cierra primero el lightbox (va encima) y luego el drawer
+  // Escape cierra lo que esté encima: visor, aviso de capítulo o índice (móvil)
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     if (lightboxOverlay.classList.contains('active')) closeLightbox();
-    else if (drawer.classList.contains('active')) closeDrawer();
+    else if (!document.getElementById('chapter-done-overlay').hidden) hideChapterDone();
+    else if (sidebar.classList.contains('open')) setSidebarOpen(false);
   });
 
   // Botones de zoom
@@ -1121,15 +1227,12 @@ function setupLightboxListeners() {
 function renderLessonContent() {
   if (!appState.activeNode) return;
   
-  const contentContainer = document.getElementById('drawer-tab-content');
+  const contentContainer = document.getElementById('lesson-tab-content');
   const levelData = appState.activeNode.levels[appState.activeTab];
   
   if (levelData) {
     // Aplicar formateador personalizado de Markdown a HTML
     contentContainer.innerHTML = formatMarkdown(levelData.content);
-    
-    // Asegurar que el scroll del drawer vuelva arriba al cambiar de tab
-    document.querySelector('.drawer-body').scrollTop = 0;
   } else {
     contentContainer.innerHTML = `<p class="text-muted">Contenido no disponible para este nivel.</p>`;
   }
@@ -1176,7 +1279,6 @@ function formatMarkdown(text) {
 
 function setupTutorial() {
   const overlay = document.getElementById('welcome-modal-overlay');
-  const startBtn = document.getElementById('welcome-start-btn');
   
   // Comprobar si el usuario ya vio el tutorial
   const tutorialSeen = localStorage.getItem('ai-map-tutorial-seen');
@@ -1186,12 +1288,15 @@ function setupTutorial() {
     overlay.style.display = 'flex';
   }
   
-  startBtn.addEventListener('click', () => {
+  const close = (then) => {
+    localStorage.setItem('ai-map-tutorial-seen', 'true');
     overlay.style.transition = 'opacity 0.4s ease';
     overlay.style.opacity = 0;
-    setTimeout(() => {
-      overlay.style.display = 'none';
-      localStorage.setItem('ai-map-tutorial-seen', 'true');
-    }, 400);
-  });
+    setTimeout(() => { overlay.style.display = 'none'; }, 400);
+    then();
+  };
+
+  // "Iniciar mi viaje": debajo ya está abierto el primer tema pendiente (o el del enlace)
+  document.getElementById('welcome-start-btn').addEventListener('click', () => close(() => document.getElementById('lesson-title').focus()));
+  document.getElementById('welcome-map-btn').addEventListener('click', () => close(showMap));
 }

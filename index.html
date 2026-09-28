@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>El viaje evolutivo de la IA | Mapa interactivo de aprendizaje</title>
+  <title>El viaje evolutivo de la IA | Ruta interactiva de aprendizaje</title>
   <meta name="description"
     content="Aprende Inteligencia Artificial a través de un viaje interactivo y evolutivo. Descubre cómo Machine Learning, Redes Neuronales y LLMs se conectan en una historia fascinante.">
 
@@ -24,10 +24,20 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body data-view="lesson">
 
-  <!-- Cabecera Principal (Glassmorphism) -->
-  <header id="main-header" class="glass-panel">
+  <!-- Barra superior (solo móvil): capítulo, progreso y botón del índice -->
+  <header id="topbar" class="glass-panel">
+    <button id="menu-btn" class="icon-btn" aria-label="Abrir índice" aria-controls="sidebar" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+    </button>
+    <span id="topbar-chapter"></span>
+    <span id="topbar-progress"></span>
+  </header>
+
+  <!-- Índice lateral: buscador, progreso, capítulos y acceso al mapa -->
+  <aside id="sidebar" class="glass-panel" aria-label="Índice del viaje">
     <div class="header-logo">
       <div class="logo-icon"></div>
       <div class="logo-text">
@@ -44,7 +54,7 @@
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
       <input type="text" id="search-input" placeholder="Buscar tema (ej. Neurona)"
-        aria-label="Buscar concepto en el mapa" enterkeyhint="search" autocomplete="off"
+        aria-label="Buscar tema" enterkeyhint="search" autocomplete="off"
         role="combobox" aria-expanded="false" aria-controls="search-results" aria-autocomplete="list">
       <kbd class="search-kbd" title="Pulsa / para buscar">/</kbd>
       <button id="clear-search" class="clear-btn" style="display: none;" aria-label="Limpiar búsqueda">&times;</button>
@@ -64,16 +74,93 @@
       <div class="progress-info">
         <span class="progress-label">Tu progreso:</span>
         <span id="progress-percent">0%</span>
-        <span id="progress-fraction" class="text-muted">(0/23 completados)</span>
+        <span id="progress-fraction" class="text-muted"></span>
       </div>
       <div class="progress-bar-container">
         <div id="progress-fill"></div>
       </div>
     </div>
-  </header>
 
-  <!-- Viewport del Mapa Interactivo -->
-  <main id="map-viewport" class="viewport-grab">
+    <!-- Capítulos y temas (lo rellena app.js) -->
+    <nav id="path-index" aria-label="Temas"></nav>
+
+    <button id="show-map-btn" class="map-btn">🗺 Ver el viaje completo</button>
+  </aside>
+
+  <div id="sidebar-overlay" hidden></div>
+
+  <!-- Vista de lección (ruta) -->
+  <main id="lesson-view">
+    <article id="lesson">
+      <div class="drawer-header">
+        <span id="lesson-chapter-badge" class="chapter-badge">Capítulo 1</span>
+        <div class="drawer-actions">
+          <span class="share-feedback" role="status"></span>
+          <button id="lesson-share" class="share-btn" title="Copiar enlace a este tema" aria-label="Copiar enlace a este tema">
+            <svg class="icon-share" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <svg class="icon-check" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </button>
+          <button id="lesson-close" class="close-btn" title="Ver mapa" aria-label="Cerrar lección y ver el mapa">&times;</button>
+        </div>
+      </div>
+
+      <h2 id="lesson-title" class="drawer-concept-title" tabindex="-1"></h2>
+
+      <!-- ¿Cómo llegamos aquí? -->
+      <div id="lesson-transition-card" class="transition-card">
+        <span class="transition-header">¿Cómo llegamos aquí?</span>
+        <div id="lesson-transition-text"></div>
+      </div>
+
+      <!-- Niveles de profundidad -->
+      <div class="drawer-tabs" role="tablist" aria-label="Nivel de profundidad">
+        <button class="tab-btn" role="tab" data-tab="basic">🌱 Básico</button>
+        <button class="tab-btn" role="tab" data-tab="intermediate">🌿 Intermedio</button>
+        <button class="tab-btn" role="tab" data-tab="technical">🚀 Técnico</button>
+      </div>
+
+      <div id="lesson-tab-content" class="tab-content-area" role="tabpanel"></div>
+
+      <!-- Figuras (satélites de imagen) y fichas (satélites de logo) de este tema -->
+      <div id="lesson-extras"></div>
+
+      <!-- Pruébalo: demo interactiva -->
+      <section id="lesson-demo" class="lesson-section" hidden>
+        <h3 class="lesson-section-title">🧪 Pruébalo</h3>
+        <div id="lesson-demo-mount"></div>
+      </section>
+
+      <!-- Completar el tema y continuar al siguiente de la historia -->
+      <div class="next-lesson-bar">
+        <button id="lesson-next-btn" class="next-lesson-btn">
+          <span class="next-lesson-text">
+            <small id="lesson-next-label">Completar y seguir</small>
+            <span id="lesson-next-title"></span>
+          </span>
+          <span class="next-lesson-circle" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </article>
+  </main>
+
+  <!-- Vista de conjunto: el mapa -->
+  <section id="map-viewport" class="viewport-grab" aria-label="Mapa del viaje">
     <!-- El Lienzo del Mapa (Arrastrable y Zoomable) -->
     <div id="map-canvas">
       <!-- Capa de Conexiones SVG -->
@@ -94,7 +181,7 @@
       <!-- Capa de Nodos del Mapa -->
       <div id="nodes-container"></div>
     </div>
-  </main>
+  </section>
 
   <!-- Controles Flotantes del Canvas -->
   <div id="map-controls" class="glass-panel">
@@ -121,94 +208,6 @@
       </svg>
     </button>
   </div>
-
-  <!-- Leyenda de Capítulos Flotante -->
-  <div id="legend-container" class="glass-panel collapsed">
-    <button id="legend-toggle" class="legend-header">
-      <span>Capítulos del Viaje</span>
-      <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="6 9 12 15 18 9"></polyline>
-      </svg>
-    </button>
-    <div id="legend-list" class="legend-content"></div>
-  </div>
-
-  <!-- Panel Lateral / Drawer de Lecciones (Glassmorphism Premium) -->
-  <aside id="drawer" class="glass-panel" aria-hidden="true">
-    <div class="drawer-header">
-      <div class="drawer-badge-container">
-        <span id="drawer-chapter-badge" class="chapter-badge">Capítulo 1</span>
-      </div>
-      <div class="drawer-actions">
-        <span class="share-feedback" role="status"></span>
-        <button id="drawer-share" class="share-btn" title="Copiar enlace a este tema" aria-label="Copiar enlace a este tema">
-          <svg class="icon-share" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="18" cy="5" r="3"></circle>
-            <circle cx="6" cy="12" r="3"></circle>
-            <circle cx="18" cy="19" r="3"></circle>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-          </svg>
-          <svg class="icon-check" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </button>
-        <button id="drawer-close" class="close-btn" aria-label="Cerrar panel de detalles">&times;</button>
-      </div>
-    </div>
-
-    <div class="drawer-body">
-      <!-- Título del Concepto -->
-      <h2 id="drawer-title" class="drawer-concept-title" tabindex="-1"></h2>
-
-      <!-- Tarjeta de Transición Narrativa: ¿Cómo llegamos aquí? -->
-      <div id="drawer-transition-card" class="transition-card">
-        <p id="drawer-transition-text"></p>
-      </div>
-
-      <!-- Tabs de Niveles de Aprendizaje Incremental -->
-      <div class="drawer-tabs">
-        <button class="tab-btn active" data-tab="basic" id="tab-basic-btn">🌱 Básico</button>
-        <button class="tab-btn" data-tab="intermediate" id="tab-intermediate-btn">🌿 Intermedio</button>
-        <button class="tab-btn" data-tab="technical" id="tab-technical-btn">🚀 Técnico</button>
-      </div>
-
-      <!-- Contenedor de Contenido del Nivel -->
-      <div id="drawer-tab-content" class="tab-content-area">
-        <!-- Renderizado dinámico de la lección -->
-      </div>
-
-      <!-- Gamificación: Marcar como Completado -->
-      <div class="completion-card">
-        <label class="completion-checkbox-label">
-          <input type="checkbox" id="node-completed-checkbox" class="completed-checkbox">
-          <span class="custom-checkbox"></span>
-          <span class="checkbox-text">Marcar este concepto como Aprendido / Completado</span>
-        </label>
-      </div>
-
-      <!-- Continuar al siguiente tema de la historia -->
-      <button id="drawer-next-btn" class="next-lesson-btn" hidden>
-        <span class="next-lesson-text">
-          <small>Siguiente tema</small>
-          <span id="drawer-next-title"></span>
-        </span>
-        <span class="next-lesson-circle" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </span>
-      </button>
-    </div>
-  </aside>
-
-  <!-- Overlay para oscurecer el fondo al abrir paneles en móvil -->
-  <div id="drawer-overlay" style="display: none;"></div>
 
   <!-- Lightbox para nodos tipo satellite-image -->
   <div id="lightbox-overlay" aria-hidden="true" aria-modal="true" role="dialog" aria-label="Visor de imagen">
@@ -241,13 +240,12 @@
     </div>
   </div>
 
-  <!-- Alerta Inicial o Tutorial del Mapa -->
+  <!-- Bienvenida (primera visita) -->
   <div id="welcome-modal-overlay" class="welcome-overlay">
     <div class="welcome-card glass-panel animate-fade-in">
       <div class="welcome-icon">⚡</div>
       <h2>¡Te damos la bienvenida al Viaje Evolutivo de la IA!</h2>
-      <p>Estás ante un <strong>mapa interactivo de aprendizaje</strong> estructurado como una historia viva de
-        superación técnica.</p>
+      <p>Una <strong>ruta de aprendizaje</strong> estructurada como una historia viva de superación técnica.</p>
       <p>No aprenderás términos sueltos; descubrirás cómo la IA fue superando sus propios límites a lo largo del tiempo,
         llevándonos de las reglas lógicas a las redes neuronales, el Deep Learning, los Transformers y los agentes
         autónomos.</p>
@@ -255,13 +253,13 @@
       <div class="welcome-tips">
         <div class="tip-item">
           <span class="tip-num">1</span>
-          <p><strong>Navega libremente</strong>: Arrastra el lienzo con el ratón o deslízalo con tus dedos en móvil. Haz
-            zoom para acercarte o alejarte.</p>
+          <p><strong>Sigue la ruta</strong>: 29 temas en orden. Al terminar uno, pulsa <strong>Completar y seguir →</strong>;
+            el índice te muestra dónde vas.</p>
         </div>
         <div class="tip-item">
           <span class="tip-num">2</span>
-          <p><strong>Aprende a tu propio ritmo</strong>: Haz clic en un tema para ver su lección con <strong>3 niveles
-              de profundidad incremental</strong>.</p>
+          <p><strong>Elige tu profundidad</strong>: cada lección tiene <strong>3 niveles</strong> (básico, intermedio,
+            técnico) y muchas incluyen una demo para experimentar.</p>
         </div>
         <div class="tip-item">
           <span class="tip-num">3</span>
@@ -270,7 +268,20 @@
         </div>
       </div>
 
-      <button id="welcome-start-btn" class="welcome-btn shadow-neon">Iniciar mi Viaje</button>
+      <div class="welcome-actions">
+        <button id="welcome-start-btn" class="welcome-btn shadow-neon">Iniciar mi Viaje</button>
+        <button id="welcome-map-btn" class="map-btn">🗺 Ver el viaje completo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ¡Capítulo completado! -->
+  <div id="chapter-done-overlay" class="welcome-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="chapter-done-title">
+    <div class="welcome-card glass-panel animate-fade-in">
+      <div class="welcome-icon">🏆</div>
+      <h2 id="chapter-done-title">¡Capítulo completado!</h2>
+      <p id="chapter-done-text"></p>
+      <button id="chapter-done-btn" class="welcome-btn shadow-neon">Continuar</button>
     </div>
   </div>
 
