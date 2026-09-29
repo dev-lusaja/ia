@@ -907,20 +907,11 @@ body {
   transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.next-lesson-circle svg {
-  transition: transform 0.2s ease;
-}
-
 .next-lesson-btn:hover .next-lesson-circle,
 .next-lesson-btn:focus-visible .next-lesson-circle {
   background: var(--chapter-neon, var(--neon-cian));
   color: var(--text-dark);
   box-shadow: 0 0 12px rgba(var(--chapter-neon-rgb), 0.4);
-}
-
-.next-lesson-btn:hover .next-lesson-circle svg,
-.next-lesson-btn:focus-visible .next-lesson-circle svg {
-  transform: translateX(3px);
 }
 
 .next-lesson-btn:focus-visible {
@@ -944,6 +935,145 @@ body {
 
 .tab-content-area strong {
   color: var(--text-primary);
+}
+
+/* Línea de tiempo (bloque ```timeline en data.js) */
+.tab-content-area .timeline {
+  list-style: none;
+  position: relative;
+  margin: 4px 0 8px;
+  padding-left: 22px;
+}
+
+.tab-content-area .timeline::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: rgba(var(--chapter-neon-rgb, 0, 255, 255), 0.35);
+}
+
+.tab-content-area .timeline li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+
+.tab-content-area .timeline li:last-child {
+  margin-bottom: 0;
+}
+
+.tab-content-area .timeline li::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--chapter-neon, var(--neon-cian));
+  box-shadow: 0 0 8px rgba(var(--chapter-neon-rgb, 0, 255, 255), 0.5);
+}
+
+.tab-content-area .timeline-date {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--chapter-neon, var(--neon-cian));
+}
+
+.tab-content-area .timeline-desc {
+  font-size: 0.92em;
+}
+
+/* Títulos de sección (### en data.js) y subsección (párrafo solo en negrita) */
+.tab-content-area .content-section {
+  border-left: 5px solid var(--chapter-neon, var(--neon-cian));
+}
+
+.tab-content-area .content-section > summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.tab-content-area .content-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.tab-content-area .content-section > summary:hover .content-section-hint {
+  text-decoration: underline;
+}
+
+.tab-content-area .content-section > summary:focus-visible {
+  outline: 2px solid var(--chapter-neon, var(--neon-cian));
+  outline-offset: 2px;
+}
+
+.tab-content-area .content-section-title {
+  flex: 1;
+  color: var(--text-primary);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+/* "Ver más" / "Ocultar" con la misma flecha que el resto de plegables */
+.tab-content-area .content-section-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--chapter-neon, var(--neon-cian));
+}
+
+.tab-content-area .content-section-hint::before {
+  content: 'Ver más';
+}
+
+.tab-content-area .content-section[open] .content-section-hint::before {
+  content: 'Ocultar';
+}
+
+.tab-content-area .content-section-hint::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  margin-bottom: 3px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--transition-speed);
+}
+
+.tab-content-area .content-section[open] .content-section-hint::after {
+  transform: rotate(225deg);
+  margin-bottom: -3px;
+}
+
+.tab-content-area .content-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 14px 14px;
+}
+
+.tab-content-area .content-heading {
+  margin-top: 8px;
+  padding-left: 12px;
+  border-left: 3px solid var(--chapter-neon, var(--neon-cian));
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .tab-content-area ul,

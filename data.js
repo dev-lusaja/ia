@@ -173,17 +173,21 @@ const conceptMap = [
       },
       intermediate: {
         title: "🌿 Historia y Clasificación",
-        content: `**Breve historia**
+        content: `**Breve historia: el intento de construirla**
 
-        - **1950 · Alan Turing** pregunta "¿Pueden pensar las máquinas?" y propone el *juego de la imitación* (test de Turing): si en una conversación escrita no logramos distinguir a la máquina de una persona, ¿con qué derecho decimos que no piensa?
-        - **1956 · Conferencia de Dartmouth**: John McCarthy, Marvin Minsky y otros acuñan el término "Inteligencia Artificial". El optimismo era enorme: creían resolverla en una generación.
-        - **Años 60 y 70**: primeros programas simbólicos. ELIZA (1966) imitaba a un terapeuta usando reglas de patrones de texto.
-        - **1965 · Lotfi Zadeh** propone la **lógica difusa**: reglas que admiten verdades a medias ("hace *bastante* calor") en lugar de solo verdadero o falso. Décadas después controlaría metros, cámaras y lavadoras.
-        - **Años 70 y 80 · Sistemas Expertos**: miles de reglas escritas junto a especialistas (MYCIN diagnosticaba infecciones; XCON configuraba computadoras). Útiles en su nicho, pero caros de mantener y frágiles fuera de él.
-        - **Inviernos de la IA** (≈1974-1980 y ≈1987-1993): las promesas no se cumplieron y la financiación se desplomó.
-        - **1997 · Deep Blue** vence a Kasparov al ajedrez: fuerza bruta más reglas de evaluación diseñadas por humanos.
+        Esta pregunta no es nueva: los pioneros de la informática se la hicieron hace más de 70 años. Y su primera respuesta fue la intuición más natural: **si la inteligencia consiste en seguir reglas, escribamos las reglas**.
 
-        La IA ha evolucionado principalmente a través de dos enfoques:
+        \`\`\`timeline
+        1950 | Alan Turing | Pregunta "¿Pueden pensar las máquinas?" y propone el *test de Turing*.
+        1956 | Dartmouth | Nace el nombre "Inteligencia Artificial". Creen resolverla en una generación.
+        1966 | ELIZA | Imita a un terapeuta con reglas de texto. Parece comprender, pero solo reordena frases.
+        70s-80s | Sistemas Expertos | Miles de reglas escritas con especialistas (MYCIN, XCON). Útiles, pero frágiles.
+        ≈1974-1993 | ❄️ Inviernos de la IA | Las reglas chocan con el mundo real y la financiación se desploma.
+        1997 | Deep Blue | Vence a Kasparov con fuerza bruta y reglas humanas, pero no sabe hacer nada más.
+        90s-2000s | El giro hacia los datos | Los sistemas **aprenden las reglas de ejemplos**, como los filtros de spam.
+        \`\`\`
+
+        **La respuesta, entonces**: sí, podemos construir máquinas que hacen tareas inteligentes, pero no escribiendo a mano todo lo que saben. Esa lección dejó dos grandes enfoques:
 
         - **IA Simbólica (Basada en Reglas)**: Sistemas que utilizan reglas lógicas definidas por humanos, como los Sistemas Expertos.
         - **IA Basada en Datos (Machine Learning)**: Enfoque moderno donde los sistemas aprenden patrones y deducen reglas a partir de ejemplos.
@@ -199,7 +203,7 @@ const conceptMap = [
         title: "🚀 De las Reglas a los Datos",
         content: `En el nivel intermedio vimos los dos grandes enfoques de la IA. Aquí veremos cómo funcionan por dentro y por qué la historia pasó de uno al otro.
 
-        **ENFOQUE 1 · IA Simbólica: un humano escribe el conocimiento**
+        ### IA Simbólica: un humano escribe el conocimiento
 
         **1.1 Reglas lógicas**
 
@@ -245,7 +249,9 @@ const conceptMap = [
 
         **El límite del enfoque simbólico**: reglas, probabilidades y grados difusos tenían que **escribirlos expertos a mano**. ¿De dónde sale ese "60% del spam contiene *gratis*"? Alguien tenía que estimarlo, y un sistema real necesita miles de valores así que cambian con el tiempo. A gran escala, era impracticable.
 
-        **ENFOQUE 2 · IA Basada en Datos: la máquina extrae el conocimiento**
+        ---
+
+        ### IA Basada en Datos: la máquina extrae el conocimiento
 
         La idea es no escribir los números, sino **medirlos en los datos**. Volvamos al spam: si tenemos 10 000 correos ya etiquetados como spam o normales, basta con contar.
 
@@ -257,6 +263,8 @@ const conceptMap = [
         El mismo principio escala a problemas mucho más difíciles: en lugar de programar qué características tiene un gato, un modelo analiza millones de imágenes etiquetadas y ajusta automáticamente sus parámetros internos para reconocer los patrones comunes.
 
         Ese cambio, de **escribir el conocimiento** a **aprenderlo de los datos**, es el hilo del resto del viaje. El siguiente tema explica cómo aprende exactamente una máquina.
+
+        ---
         `
       }
     }

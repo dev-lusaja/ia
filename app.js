@@ -1259,6 +1259,18 @@ function formatMarkdown(text) {
   const cut = indents.length ? Math.min(...indents) : 0;
   let md = [lines[0].trim(), ...lines.slice(1).map(l => l.slice(cut))].join('\n');
 
+  // Líneas de tiempo: bloque ```timeline con una línea "fecha | título | texto" por hito
+  const timelines = [];
+  md = md.replace(/```timeline\n([\s\S]*?)```/g, (_, body) => {
+    const items = body.trim().split('\n').map(line => {
+      const [date, title, desc = ''] = line.split('|').map(s => s.trim());
+      return `<li><span class="timeline-date">${date}</span>` +
+        `<strong class="timeline-title">${marked.parseInline(title)}</strong>` +
+        `<span class="timeline-desc">${marked.parseInline(desc)}</span></li>`;
+    });
+    return `\n\n%%TIMELINE${timelines.push(`<ol class="timeline">${items.join('')}</ol>`) - 1}%%\n\n`;
+  });
+
   // Apartar fórmulas antes de marked para que no toque sus _ ni *
   const math = [];
   const hold = (formula, display) => `%%MATH${math.push({ formula, display }) - 1}%%`;
@@ -1266,6 +1278,15 @@ function formatMarkdown(text) {
          .replace(/\$([^\n$]+?)\$/g, (_, f) => hold(f, false));
 
   return marked.parse(md, { breaks: true })
+    // Un párrafo que es solo negrita actúa de título de sección (salvo los esquemas "A → B → C")
+    .replace(/<p><strong>([^<]*(?:<(?!\/strong>)[^<]*)*)<\/strong><\/p>/g,
+      (m, t) => t.includes('→') ? m : `<p class="content-heading">${t}</p>`)
+    .replace(/<p>%%TIMELINE(\d+)%%<\/p>/g, (_, i) => timelines[i])
+    // Cada "### Título" abre una sección plegable que llega hasta el siguiente ###, un --- o el final
+    .replace(/<h3>([\s\S]*?)<\/h3>([\s\S]*?)(?:<hr>\s*|(?=<h3>)|$)/g, (_, title, body) =>
+      `<details class="content-section"><summary><span class="content-section-title">${title}</span>` +
+      `<span class="content-section-hint" aria-hidden="true"></span></summary>` +
+      `<div class="content-section-body">${body}</div></details>`)
     .replace(/<p>%%MATH(\d+)%%<\/p>|%%MATH(\d+)%%/g, (_, b, i) => {
       const { formula, display } = math[b ?? i];
       const html = katex.renderToString(formula.trim(), { displayMode: display, throwOnError: false });
@@ -1298,5 +1319,4 @@ function setupTutorial() {
 
   // "Iniciar mi viaje": debajo ya está abierto el primer tema pendiente (o el del enlace)
   document.getElementById('welcome-start-btn').addEventListener('click', () => close(() => document.getElementById('lesson-title').focus()));
-  document.getElementById('welcome-map-btn').addEventListener('click', () => close(showMap));
 }
