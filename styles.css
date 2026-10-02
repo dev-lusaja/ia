@@ -4,26 +4,25 @@
 
 :root {
   /* Colores de Fondo y Estructura */
-  --bg-main: hsl(224, 25%, 5%);
-  --bg-canvas: hsl(224, 25%, 3%);
-  --bg-glass: rgba(10, 16, 30, 0.7);
-  --bg-glass-heavy: rgba(10, 16, 30, 0.9);
+  --bg-main: hsl(222, 18%, 11%);
+  --bg-canvas: hsl(222, 18%, 8%);
+  --bg-glass: rgba(23, 26, 33, 0.75);
+  --bg-glass-heavy: rgba(23, 26, 33, 0.92);
   --border-glass: rgba(255, 255, 255, 0.08);
   --border-glass-active: rgba(255, 255, 255, 0.15);
 
   /* Paleta Tipográfica */
-  --text-primary: hsl(210, 40%, 98%);
-  --text-secondary: hsl(215, 20%, 75%);
-  --text-muted: hsl(215, 15%, 52%);
-  --text-dark: hsl(224, 25%, 5%);
+  --text-primary: hsl(215, 25%, 86%);
+  --text-secondary: hsl(215, 16%, 72%);
+  --text-muted: hsl(215, 12%, 56%);
+  --text-dark: hsl(222, 18%, 11%);
 
   /* Acentos de interfaz (los colores de capítulo viven en data.js → chapters[].rgb) */
-  --neon-cian: hsl(180, 100%, 50%);
-  --neon-azul: hsl(210, 100%, 55%);
-  --neon-violeta: hsl(260, 100%, 65%);
-  --neon-verde: hsl(145, 100%, 50%);
+  --neon-cian: rgb(86, 211, 218);
+  --neon-azul: rgb(134, 195, 255);
+  --neon-violeta: rgb(188, 178, 255);
+  --neon-verde: rgb(129, 211, 159);
 
-  --neon-completed: hsl(145, 100%, 50%);
 
   /* Fuentes */
   --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -33,8 +32,6 @@
   --transition-speed: 0.3s;
   --transition-bounce: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  --shadow-neon-cian: 0 0 15px rgba(0, 255, 255, 0.3);
-  --shadow-neon-green: 0 0 15px rgba(0, 255, 128, 0.3);
 
   /* Layout: ancho del índice lateral y dónde empieza la vista principal */
   --sidebar-width: 300px;
@@ -106,26 +103,14 @@ body {
   height: 32px;
   border-radius: 8px;
   background: linear-gradient(135deg, var(--neon-cian), var(--neon-violeta));
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
   position: relative;
-  animation: logo-glow 4s ease-in-out infinite alternate;
-}
-
-@keyframes logo-glow {
-  0% {
-    filter: hue-rotate(0deg);
-  }
-
-  100% {
-    filter: hue-rotate(90deg);
-  }
 }
 
 .logo-text h1 {
   font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: -0.5px;
-  background: linear-gradient(90deg, #fff, var(--text-secondary));
+  background: linear-gradient(90deg, var(--text-primary), var(--text-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -169,7 +154,6 @@ body {
 #search-input:focus {
   outline: none;
   border-color: var(--neon-cian);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
   background: rgba(0, 0, 0, 0.4);
 }
 
@@ -294,7 +278,7 @@ body {
 }
 
 #search-results mark {
-  background: rgba(0, 255, 255, 0.18);
+  background: rgba(86, 211, 218, 0.18);
   color: var(--text-primary);
   border-radius: 3px;
   padding: 0 1px;
@@ -322,7 +306,6 @@ body {
 #progress-percent {
   font-weight: 700;
   color: var(--neon-verde);
-  text-shadow: 0 0 10px rgba(0, 255, 128, 0.2);
 }
 
 #progress-fraction {
@@ -343,353 +326,7 @@ body {
   width: 0%;
   background: linear-gradient(90deg, var(--neon-azul), var(--neon-verde));
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 255, 128, 0.4);
   transition: width 0.6s cubic-bezier(0.1, 0.8, 0.2, 1);
-}
-
-/* ==========================================================================
-   Viewport and Canvas
-   ========================================================================== */
-
-#map-viewport {
-  position: fixed;
-  top: 0;
-  left: var(--main-left);
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  overflow: hidden;
-  background-color: var(--bg-canvas);
-  /* Pan y pellizco los maneja app.js: el zoom del navegador no aplica sobre el mapa */
-  touch-action: none;
-}
-
-.viewport-grab {
-  cursor: grab;
-}
-
-.viewport-grabbing {
-  cursor: grabbing;
-}
-
-#map-canvas {
-  position: absolute;
-  width: 1400px;
-  height: 6400px;
-  transform-origin: 0 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.02) 1.5px, transparent 1.5px);
-  background-size: 48px 48px;
-  z-index: 2;
-}
-
-#map-svg-connections {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.connection-line {
-  fill: none;
-  stroke: var(--neon-color, rgba(255, 255, 255, 0.12));
-  stroke-width: 4px;
-  stroke-linecap: round;
-  transition: stroke var(--transition-speed), stroke-width var(--transition-speed);
-}
-
-/* Impulsos eléctricos parpadeantes que viajan por las conexiones */
-.connection-pulse {
-  fill: none;
-  stroke: var(--neon-color);
-  stroke-width: 5px;
-  stroke-linecap: round;
-  filter: url(#neon-glow);
-  /* Valores relativos al pathLength="100" del SVG:
-     dash de 8, gap de 35 → funciona en curvas cortas y largas */
-  stroke-dasharray: 8 35;
-  stroke-dashoffset: 0;
-  animation: pulse-flow 4s linear infinite;
-  opacity: 0.85;
-}
-
-@keyframes pulse-flow {
-  from {
-    stroke-dashoffset: 43;
-  }
-
-  to {
-    stroke-dashoffset: -43;
-  }
-}
-
-/* Impulso Sináptico — conexiones a satélites tipo neurona disparando */
-.connection-electric {
-  fill: none;
-  stroke: var(--neon-color);
-  stroke-width: 1.5px;
-  stroke-linecap: round;
-  filter: url(#neon-glow);
-  /* Dash corto + gap grande = chispa discreta viajando */
-  stroke-dasharray: 3 25;
-  animation: synapse-fire 2.2s ease-in-out infinite;
-}
-
-/* Mientras se arrastra o hace zoom, los pulsos se congelan: menos trabajo por frame */
-.map-moving .connection-pulse,
-.map-moving .connection-electric {
-  animation-play-state: paused;
-}
-
-@keyframes synapse-fire {
-  0% {
-    opacity: 0;
-    stroke-dashoffset: 100;
-  }
-
-  10% {
-    opacity: 0.9;
-  }
-
-  15% {
-    opacity: 0.3;
-  }
-
-  20% {
-    opacity: 1.0;
-  }
-
-  70% {
-    opacity: 0.6;
-    stroke-dashoffset: -100;
-  }
-
-  85% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 0;
-    stroke-dashoffset: -100;
-  }
-}
-
-#nodes-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  pointer-events: none;
-  /* Permite clicks solo en los hijos */
-}
-
-/* ==========================================================================
-   Node Component
-   ========================================================================== */
-
-.concept-node {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  pointer-events: auto;
-  /* Activa clicks en el nodo */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 65px;
-  height: 65px;
-  background: var(--bg-glass-heavy);
-  border: 2px solid var(--neon-color);
-  border-radius: 50%;
-  color: var(--text-primary);
-  font-family: var(--font-sans);
-  padding: 0;
-  appearance: none;
-  cursor: pointer;
-  transition: transform var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275),
-    border-color var(--transition-speed),
-    box-shadow var(--transition-speed),
-    opacity var(--transition-speed);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-}
-
-/* Nodos principales: fondo con tinte del color de capítulo */
-.concept-node.main-node {
-  background: radial-gradient(
-    ellipse at center,
-    rgba(var(--neon-rgb), 0.6) 0%,
-    rgba(var(--neon-rgb), 0.25) 100%
-  );
-  background-color: rgba(10, 16, 30, 0.6);
-  box-shadow:
-    0 6px 20px rgba(0, 0, 0, 0.5),
-    inset 0 0 18px rgba(var(--neon-rgb), 0.3);
-}
-
-.concept-node.main-node:hover {
-  background: radial-gradient(
-    ellipse at center,
-    rgba(var(--neon-rgb), 0.8) 0%,
-    rgba(var(--neon-rgb), 0.45) 100%
-  );
-  background-color: rgba(10, 16, 30, 0.8);
-}
-
-/* Número indicador dentro del nodo redondo */
-.node-indicator {
-  font-weight: 800;
-  font-size: 1.3rem;
-  color: var(--text-primary);
-  transition: all var(--transition-speed);
-}
-
-/* Título posicionado por fuera del círculo */
-.node-title {
-  position: absolute;
-  top: 100%;
-  margin-top: 12px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  white-space: nowrap;
-  letter-spacing: -0.2px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
-  transition: color var(--transition-speed);
-}
-
-/* Nodos Satélites más pequeños */
-.concept-node.satellite-node {
-  width: 60px;
-  height: 60px;
-  border-width: 1.5px;
-  /* opacity: 0.85; */
-}
-
-.concept-node.satellite-node:hover {
-  opacity: 1;
-}
-
-.concept-node.satellite-node .node-title {
-  font-size: 0.85rem;
-  margin-top: 8px;
-  font-weight: 500;
-}
-
-.concept-node.satellite-node .node-logo {
-  width: 80%;
-  height: 80%;
-  padding: 2px;
-}
-
-/* Foco con teclado: mismo realce que hover + anillo visible */
-.concept-node:focus-visible {
-  outline: 3px solid #fff;
-  outline-offset: 4px;
-  z-index: 5;
-}
-
-.drawer-concept-title:focus {
-  outline: none;
-}
-
-/* Estados de Hover de los Nodos */
-.concept-node:hover {
-  transform: translate(-50%, -50%) scale(1.08);
-  box-shadow: 0 0 25px var(--neon-color), 0 10px 25px rgba(0, 0, 0, 0.5);
-  border-color: #fff;
-  z-index: 5;
-}
-
-.concept-node:hover .node-indicator {
-  color: #fff;
-  text-shadow: 0 0 10px var(--neon-color);
-}
-
-/* Estado: Completado (Gamificación) */
-/* .concept-node.completed {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(var(--neon-rgb), 0.22));
-} */
-
-.concept-node.completed::after {
-  content: '';
-  width: 14px;
-  height: 14px;
-  background: var(--neon-verde);
-  border: 2px solid var(--bg-main);
-  border-radius: 50%;
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  box-shadow: 0 0 8px var(--neon-verde);
-}
-
-/* Estado: Activo / Abierto en Drawer */
-.concept-node.active-node {
-  border-color: #fff;
-  box-shadow: 0 0 25px var(--neon-color);
-}
-
-/* Estado: Atenuado por Filtro de Búsqueda */
-.concept-node.dimmed {
-  opacity: 0.18;
-  filter: grayscale(60%);
-  pointer-events: none;
-}
-
-.concept-node.highlighted {
-  transform: translate(-50%, -50%) scale(1.15);
-  box-shadow: 0 0 35px var(--neon-color);
-  border-color: #fff;
-  z-index: 6;
-}
-
-/* Resultado actual al recorrer con Enter */
-.concept-node.search-current {
-  transform: translate(-50%, -50%) scale(1.3);
-  box-shadow: 0 0 50px var(--neon-color), 0 0 0 3px #fff;
-  z-index: 7;
-}
-
-/* ==========================================================================
-   Controles Flotantes
-   ========================================================================== */
-
-#map-controls {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 8px;
-  border-radius: 12px;
-}
-
-#map-controls button {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  border: 1px solid var(--border-glass);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-speed);
-}
-
-#map-controls button:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-primary);
-  border-color: var(--border-glass-active);
-}
-
-#map-controls button:active {
-  transform: scale(0.95);
 }
 
 /* ==========================================================================
@@ -712,25 +349,9 @@ body {
   background: rgba(var(--chapter-neon-rgb), 0.1);
   color: var(--chapter-neon);
   border: 1px solid rgba(var(--chapter-neon-rgb), 0.2);
-  box-shadow: 0 0 10px rgba(var(--chapter-neon-rgb), 0.1);
 }
 
-.close-btn {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 1.8rem;
-  line-height: 1;
-  cursor: pointer;
-  padding: 4px;
-  transition: color var(--transition-speed);
-}
-
-.close-btn:hover {
-  color: var(--text-primary);
-}
-
-/* Acciones de la cabecera: compartir + cerrar */
+/* Acciones de la cabecera: compartir */
 .drawer-actions {
   display: flex;
   align-items: center;
@@ -824,41 +445,6 @@ body {
   font-style: italic;
 }
 
-/* Tabs de Niveles */
-.drawer-tabs {
-  display: flex;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--border-glass);
-  padding: 4px;
-  border-radius: 30px;
-  gap: 4px;
-}
-
-.tab-btn {
-  flex: 1;
-  height: 38px;
-  border: none;
-  background: none;
-  color: var(--text-secondary);
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 0.85rem;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all var(--transition-speed);
-}
-
-.tab-btn:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.tab-btn.active {
-  background: var(--chapter-neon, var(--neon-cian));
-  color: var(--text-dark);
-  box-shadow: 0 0 10px rgba(var(--chapter-neon-rgb), 0.3);
-}
-
 /* Botón "Siguiente tema": texto + círculo con flecha */
 .next-lesson-btn {
   display: flex;
@@ -895,6 +481,39 @@ body {
   opacity: 0.6;
 }
 
+/* Flechas laterales de tema: fijas a media altura, a los lados del texto */
+.lesson-arrow {
+  position: fixed;
+  top: 50%;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  border: 1px solid var(--border-glass);
+  background: var(--bg-main);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.lesson-arrow:hover,
+.lesson-arrow:focus-visible {
+  color: var(--chapter-neon);
+  border-color: rgba(var(--chapter-neon-rgb), 0.6);
+  outline: none;
+}
+
+.lesson-arrow-prev {
+  left: calc(var(--main-left) + 16px);
+}
+
+.lesson-arrow-next {
+  right: 16px;
+}
+
 .next-lesson-circle {
   flex-shrink: 0;
   display: grid;
@@ -911,7 +530,6 @@ body {
 .next-lesson-btn:focus-visible .next-lesson-circle {
   background: var(--chapter-neon, var(--neon-cian));
   color: var(--text-dark);
-  box-shadow: 0 0 12px rgba(var(--chapter-neon-rgb), 0.4);
 }
 
 .next-lesson-btn:focus-visible {
@@ -952,7 +570,7 @@ body {
   top: 6px;
   bottom: 6px;
   width: 2px;
-  background: rgba(var(--chapter-neon-rgb, 0, 255, 255), 0.35);
+  background: rgba(var(--chapter-neon-rgb, 86, 211, 218), 0.35);
 }
 
 .tab-content-area .timeline li {
@@ -976,7 +594,6 @@ body {
   height: 12px;
   border-radius: 50%;
   background: var(--chapter-neon, var(--neon-cian));
-  box-shadow: 0 0 8px rgba(var(--chapter-neon-rgb, 0, 255, 255), 0.5);
 }
 
 .tab-content-area .timeline-date {
@@ -1099,7 +716,7 @@ body {
 .tab-content-area code {
   font-family: var(--font-mono);
   font-size: 0.82rem;
-  color: hsl(45, 100%, 75%);
+  color: hsl(38, 55%, 72%);
   /* Tono amarillo agradable para código */
 }
 
@@ -1197,7 +814,7 @@ body {
   height: 100%;
   height: 100dvh;
   z-index: 200;
-  background: rgba(5, 8, 15, 0.8);
+  background: rgba(12, 14, 19, 0.8);
   backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
@@ -1229,7 +846,7 @@ body {
   font-size: 1.6rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #fff, var(--text-secondary));
+  background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -1259,7 +876,7 @@ body {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: rgba(0, 255, 255, 0.1);
+  background: rgba(86, 211, 218, 0.1);
   color: var(--neon-cian);
   border: 1px solid var(--neon-cian);
   display: flex;
@@ -1268,7 +885,6 @@ body {
   font-weight: 700;
   font-size: 0.78rem;
   flex-shrink: 0;
-  box-shadow: var(--shadow-neon-cian);
 }
 
 .tip-item p {
@@ -1287,12 +903,10 @@ body {
   border-radius: 30px;
   cursor: pointer;
   transition: all var(--transition-speed);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
 }
 
 .welcome-btn:hover {
   transform: scale(1.04);
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
 }
 
 .welcome-btn:active {
@@ -1359,7 +973,7 @@ body {
   height: 40px;
   border-radius: 50%;
   object-fit: contain;
-  background-color: #f8fafc;
+  background-color: hsl(215, 20%, 88%);
   padding: 4px;
 }
 
@@ -1374,15 +988,14 @@ body {
 .md-link {
   color: var(--chapter-neon, var(--neon-cian));
   text-decoration: underline;
-  text-decoration-color: rgba(var(--chapter-neon-rgb, 0, 255, 255), 0.35);
+  text-decoration-color: rgba(var(--chapter-neon-rgb, 86, 211, 218), 0.35);
   text-underline-offset: 3px;
-  transition: text-shadow var(--transition-speed), text-decoration-color var(--transition-speed);
+  transition: text-decoration-color var(--transition-speed);
   word-break: break-all;
 }
 
 .md-link:hover {
   text-decoration-color: var(--chapter-neon, var(--neon-cian));
-  text-shadow: 0 0 8px rgba(var(--chapter-neon-rgb, 0, 255, 255), 0.4);
 }
 
 /* ==========================================================================
@@ -1418,11 +1031,11 @@ body {
   flex-direction: column;
   gap: 0;
   background: var(--bg-glass);
-  border: 1px solid rgba(var(--chapter-neon-rgb, 0, 255, 255), 0.2);
+  border: 1px solid rgba(var(--chapter-neon-rgb, 86, 211, 218), 0.2);
   border-radius: 20px;
   box-shadow:
-    0 0 0 1px rgba(var(--chapter-neon-rgb, 0, 255, 255), 0.05),
-    0 0 60px rgba(var(--chapter-neon-rgb, 0, 255, 255), 0.08),
+    0 0 0 1px rgba(var(--chapter-neon-rgb, 86, 211, 218), 0.05),
+    0 0 60px rgba(var(--chapter-neon-rgb, 86, 211, 218), 0.08),
     0 32px 64px rgba(0, 0, 0, 0.6);
   overflow: hidden;
   transform: scale(0.94) translateY(12px);
@@ -1496,9 +1109,9 @@ body {
   justify-content: center;
   min-height: 300px;
   max-height: calc(90vh - 140px);
-  background: radial-gradient(circle at center, rgba(var(--chapter-neon-rgb, 0, 255, 255), 0.02), transparent 70%);
+  background: radial-gradient(circle at center, rgba(var(--chapter-neon-rgb, 86, 211, 218), 0.02), transparent 70%);
   position: relative;
-  /* Pellizco propio para la imagen (como #map-viewport); el resto de la página sí permite zoom del navegador */
+  /* Pellizco propio para la imagen; el resto de la página sí permite zoom del navegador */
   touch-action: none;
 }
 
@@ -1737,43 +1350,11 @@ body {
   color: var(--chapter-neon);
 }
 
-.map-btn {
-  width: 100%;
-  padding: 11px 16px;
-  border-radius: 30px;
-  border: 1px solid var(--border-glass-active);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-primary);
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 0.88rem;
-  cursor: pointer;
-  transition: background var(--transition-speed), border-color var(--transition-speed);
-}
-
-.map-btn:hover,
-.map-btn:focus-visible {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--neon-cian);
-  outline: none;
-}
-
 .welcome-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-}
-
-.welcome-actions .map-btn {
-  width: auto;
-}
-
-/* Vistas: la ruta (lección) o el mapa */
-body[data-view="lesson"] #map-viewport,
-body[data-view="lesson"] #map-controls,
-body[data-view="map"] #lesson-view {
-  display: none;
 }
 
 #lesson-view {
@@ -1783,12 +1364,12 @@ body[data-view="map"] #lesson-view {
   right: 0;
   bottom: 0;
   overflow-y: auto;
-  padding: 32px 24px 0;
+  padding: 32px 72px 0; /* los lados dejan sitio a las flechas de tema */
   user-select: text;
 }
 
 #lesson {
-  max-width: 720px;
+  max-width: 920px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -1875,6 +1456,93 @@ body[data-view="map"] #lesson-view {
   font-size: 0.92rem;
 }
 
+/* Etiqueta de cada nivel del tema («Concepto base», «Profundiza · …») */
+.level-label {
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-glass);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.level-label span {
+  color: var(--chapter-neon);
+}
+
+#lesson-intermediate:empty,
+#lesson-deep:empty {
+  display: none;
+}
+
+/* Regla lógica «Si A ∧ B ⟹ C» dibujada: una tarjeta por combinación de entradas (HTML en data.js) */
+.logic-cases {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  .logic-cases {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.logic-case {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 10px;
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.logic-case.on {
+  border-color: rgba(var(--chapter-neon-rgb), 0.5);
+}
+
+.logic-inputs {
+  display: flex;
+  gap: 6px;
+}
+
+.logic-in {
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+}
+
+.logic-in.on {
+  background: rgba(var(--chapter-neon-rgb), 0.18);
+  color: var(--chapter-neon);
+}
+
+.logic-out {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.logic-case.on .logic-out {
+  background: var(--chapter-neon);
+  border-color: var(--chapter-neon);
+}
+
+.logic-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.logic-case.on .logic-label {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 /* Siguiente tema: al pie de la lección (fijo abajo en móvil) */
 .next-lesson-bar {
   display: flex;
@@ -1884,6 +1552,34 @@ body[data-view="map"] #lesson-view {
 
 .next-lesson-btn .next-lesson-text {
   font-size: 0.95rem;
+}
+
+/* "🤔 Antes de seguir": pregunta con la respuesta plegada (<details class="predict"> en data.js) */
+.tab-content-area .predict {
+  padding: 14px 16px;
+  border: 1px solid rgba(var(--chapter-neon-rgb), 0.3);
+  border-radius: 12px;
+  background: rgba(var(--chapter-neon-rgb), 0.05);
+}
+
+.tab-content-area .predict summary {
+  cursor: pointer;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.tab-content-area .predict summary::after {
+  content: ' Ver respuesta';
+  font-size: 0.8rem;
+  color: var(--chapter-neon);
+}
+
+.tab-content-area .predict[open] summary::after {
+  content: '';
+}
+
+.tab-content-area .predict[open] summary {
+  margin-bottom: 10px;
 }
 
 /* ==========================================================================
@@ -1963,7 +1659,8 @@ body[data-view="map"] #lesson-view {
 
 .demo button:hover,
 .demo button:focus-visible,
-.demo button[aria-pressed="true"] {
+.demo button[aria-pressed="true"],
+.demo button[aria-selected="true"] {
   background: var(--chapter-neon);
   color: var(--text-dark);
   outline: none;
@@ -2050,6 +1747,187 @@ body[data-view="map"] #lesson-view {
   text-align: right;
 }
 
+/* Neurona: pulsos que recorren dendritas, axón y terminales */
+.neuron-label {
+  font-size: 11px;
+  fill: var(--text-muted);
+}
+
+.neuron-soma,
+.neuron-charge {
+  transition: fill 0.3s 0.4s, transform 0.3s 0.4s;
+}
+
+.neuron-charge {
+  transform-box: fill-box;
+  transform-origin: left;
+}
+
+.neuron-pulse {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 10 100;
+  animation: neuron-pulse 0.5s ease-in both;
+}
+
+@keyframes neuron-pulse {
+  from { stroke-dashoffset: 10; }
+  to { stroke-dashoffset: -100; }
+}
+
+/* Explorador de la neurona: partes que se pueden tocar y ficha con lo que hace cada una */
+.nx-line {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-linecap: round;
+  transition: stroke 0.2s;
+}
+
+.nx-fill {
+  fill: rgba(255, 255, 255, 0.1);
+  stroke: rgba(255, 255, 255, 0.22);
+  transition: fill 0.2s, stroke 0.2s;
+}
+
+.nx-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 18;
+}
+
+.nx-part {
+  cursor: pointer;
+}
+
+.nx-part:hover .nx-line,
+.nx-part:hover .nx-fill {
+  stroke: var(--text-primary);
+}
+
+.nx-part.on .nx-line {
+  stroke: var(--chapter-neon);
+}
+
+.nx-part.on .nx-fill {
+  fill: rgba(var(--chapter-neon-rgb), 0.3);
+  stroke: var(--chapter-neon);
+}
+
+.nx-part.on .neuron-label {
+  fill: var(--chapter-neon);
+}
+
+.nx {
+  display: grid;
+  gap: 14px;
+}
+
+/* Lado a lado cuando la demo es ancha; el contenedor es .demo, no la ventana (la barra lateral le quita ancho) */
+.demo {
+  container-type: inline-size;
+}
+
+@container (min-width: 600px) {
+  .nx {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+}
+
+.nx .neuron-label {
+  font-size: 13px;
+}
+
+.nx-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nx-status {
+  min-height: 3em;
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.nx-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.nx-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.demo .nx-tabs button {
+  padding: 5px 11px;
+  font-size: 0.8rem;
+}
+
+.nx-panels {
+  display: grid;
+}
+
+.nx-text {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.nx-text.on {
+  visibility: visible;
+}
+
+/* ELIZA: chat */
+.chat-log {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.chat-msg {
+  max-width: 80%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.chat-user {
+  align-self: flex-end;
+  background: rgba(var(--chapter-neon-rgb), 0.16);
+}
+
+.chat-bot {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.chat-rule {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
 /* Atención */
 .attn-word {
   cursor: pointer;
@@ -2112,13 +1990,17 @@ body[data-view="map"] #lesson-view {
     color: var(--text-secondary);
   }
 
-  #lesson-view,
-  #map-viewport {
+  #lesson-view {
     top: 56px;
   }
 
   #lesson-view {
     padding: 20px 16px 0;
+  }
+
+  /* En pantallas angostas no hay margen para las flechas: queda la barra de abajo */
+  .lesson-arrow {
+    display: none;
   }
 
   .drawer-concept-title {
@@ -2165,11 +2047,5 @@ body[data-view="map"] #lesson-view {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-
-  /* Los pulsos solo tienen sentido en movimiento */
-  .connection-pulse,
-  .connection-electric {
-    display: none;
   }
 }

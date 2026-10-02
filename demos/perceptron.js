@@ -58,7 +58,7 @@ export function draw(el, points, observe, reflect) {
       const ok = predict(x, y) === label;
       hits += ok;
       return `<circle cx="${px(x)}" cy="${px(-y)}" r="7"
-        style="fill: ${label ? 'var(--chapter-neon)' : 'var(--text-primary)'}; stroke: ${ok ? 'transparent' : 'hsl(0, 90%, 60%)'}"
+        style="fill: ${label ? 'var(--chapter-neon)' : 'var(--text-primary)'}; stroke: ${ok ? 'transparent' : 'hsl(0, 75%, 68%)'}"
         stroke-width="3"/>`;
     }).join('');
     // Recta w1·x + w2·y + b = 0 recortada al cuadrado (dos puntos lejanos bastan: el SVG la recorta)

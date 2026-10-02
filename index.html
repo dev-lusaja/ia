@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 
-<body data-view="lesson">
+<body>
 
   <!-- Barra superior (solo móvil): capítulo, progreso y botón del índice -->
   <header id="topbar" class="glass-panel">
@@ -36,7 +36,7 @@
     <span id="topbar-progress"></span>
   </header>
 
-  <!-- Índice lateral: buscador, progreso, capítulos y acceso al mapa -->
+  <!-- Índice lateral: buscador, progreso y capítulos -->
   <aside id="sidebar" class="glass-panel" aria-label="Índice del viaje">
     <div class="header-logo">
       <div class="logo-icon"></div>
@@ -83,8 +83,6 @@
 
     <!-- Capítulos y temas (lo rellena app.js) -->
     <nav id="path-index" aria-label="Temas"></nav>
-
-    <button id="show-map-btn" class="map-btn">🗺 Ver el viaje completo</button>
   </aside>
 
   <div id="sidebar-overlay" hidden></div>
@@ -92,6 +90,19 @@
   <!-- Vista de lección (ruta) -->
   <main id="lesson-view">
     <article id="lesson">
+      <!-- Flechas a los lados: ir al tema anterior o al siguiente sin completar (en escritorio) -->
+      <button id="lesson-prev-arrow" class="lesson-arrow lesson-arrow-prev" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button id="lesson-next-arrow" class="lesson-arrow lesson-arrow-next" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
       <div class="drawer-header">
         <span id="lesson-chapter-badge" class="chapter-badge">Capítulo 1</span>
         <div class="drawer-actions">
@@ -110,7 +121,6 @@
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </button>
-          <button id="lesson-close" class="close-btn" title="Ver mapa" aria-label="Cerrar lección y ver el mapa">&times;</button>
         </div>
       </div>
 
@@ -122,23 +132,21 @@
         <div id="lesson-transition-text"></div>
       </div>
 
-      <!-- Niveles de profundidad -->
-      <div class="drawer-tabs" role="tablist" aria-label="Nivel de profundidad">
-        <button class="tab-btn" role="tab" data-tab="basic">🌱 Básico</button>
-        <button class="tab-btn" role="tab" data-tab="intermediate">🌿 Intermedio</button>
-        <button class="tab-btn" role="tab" data-tab="technical">🚀 Técnico</button>
-      </div>
-
-      <div id="lesson-tab-content" class="tab-content-area" role="tabpanel"></div>
-
-      <!-- Figuras (satélites de imagen) y fichas (satélites de logo) de este tema -->
-      <div id="lesson-extras"></div>
+      <!-- Orden del tema: concepto base → intermedio → ilustración (demo y figuras) → perspectiva computacional -->
+      <div id="lesson-tab-content" class="tab-content-area"></div>
+      <div id="lesson-intermediate" class="tab-content-area"></div>
 
       <!-- Pruébalo: demo interactiva -->
       <section id="lesson-demo" class="lesson-section" hidden>
         <h3 class="lesson-section-title">🧪 Pruébalo</h3>
         <div id="lesson-demo-mount"></div>
       </section>
+
+      <!-- Figuras (satélites de imagen) y fichas (satélites de logo) de este tema -->
+      <div id="lesson-extras"></div>
+
+      <!-- Perspectiva computacional (nivel técnico) -->
+      <div id="lesson-deep" class="tab-content-area"></div>
 
       <!-- Completar el tema y continuar al siguiente de la historia -->
       <div class="next-lesson-bar">
@@ -158,56 +166,6 @@
       </div>
     </article>
   </main>
-
-  <!-- Vista de conjunto: el mapa -->
-  <section id="map-viewport" class="viewport-grab" aria-label="Mapa del viaje">
-    <!-- El Lienzo del Mapa (Arrastrable y Zoomable) -->
-    <div id="map-canvas">
-      <!-- Capa de Conexiones SVG -->
-      <svg id="map-svg-connections" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <!-- Filtro de Resplandor Neón para Conexiones -->
-          <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        <g id="connections-group"></g>
-      </svg>
-
-      <!-- Capa de Nodos del Mapa -->
-      <div id="nodes-container"></div>
-    </div>
-  </section>
-
-  <!-- Controles Flotantes del Canvas -->
-  <div id="map-controls" class="glass-panel">
-    <button id="zoom-in" title="Acercar mapa" aria-label="Acercar mapa">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-    </button>
-    <button id="zoom-out" title="Alejar mapa" aria-label="Alejar mapa">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-    </button>
-    <button id="zoom-reset" title="Centrar mapa" aria-label="Restaurar zoom y centrar">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 3h6v6"></path>
-        <path d="M9 21H3v-6"></path>
-        <path d="M21 3l-7 7"></path>
-        <path d="M3 21l7-7"></path>
-      </svg>
-    </button>
-  </div>
 
   <!-- Lightbox para nodos tipo satellite-image -->
   <div id="lightbox-overlay" aria-hidden="true" aria-modal="true" role="dialog" aria-label="Visor de imagen">
@@ -258,8 +216,8 @@
         </div>
         <div class="tip-item">
           <span class="tip-num">2</span>
-          <p><strong>Elige tu profundidad</strong>: cada lección tiene <strong>3 niveles</strong> (básico, intermedio,
-            técnico) y muchas incluyen una demo para experimentar.</p>
+          <p><strong>Lee, prueba y profundiza</strong>: cada tema cuenta lo esencial, muchos incluyen una demo para
+            experimentar y, al final, secciones <strong>Profundiza</strong> con más detalle (intermedio y técnico).</p>
         </div>
         <div class="tip-item">
           <span class="tip-num">3</span>

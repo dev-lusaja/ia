@@ -1,49 +1,45 @@
 // Color de cada capítulo en "r, g, b": único lugar donde se define.
 // app.js lo usa como rgb(...) para bordes/textos y rgba(..., alpha) para brillos.
 const chapters = [
-  { id: 1, name: "1. El Sueño de Pensar (Lógica)", rgb: "0, 255, 255" },            // cian
-  { id: 2, name: "2. Dejar que la Máquina Aprenda (ML)", rgb: "26, 140, 255" },     // azul
-  { id: 3, name: "3. La Red Autodiseñada (Neural Nets)", rgb: "136, 77, 255" },     // violeta
-  { id: 4, name: "4. Ir Más Profundo (Deep Learning)", rgb: "255, 51, 187" },       // magenta
-  { id: 5, name: "5. El Idioma de los Vectores (Embeddings)", rgb: "255, 83, 26" }, // naranja
-  { id: 6, name: "6. La Gran Revolución del Lenguaje (Transformers)", rgb: "255, 191, 0" }, // oro
-  { id: 7, name: "7. Ver, Recordar y Actuar (Multimodalidad y Agentes)", rgb: "0, 255, 106" }, // verde
-  { id: 8, name: "8. El Impacto y la Realidad (Futuro)", rgb: "255, 51, 51" }       // rojo
+  { id: 1, name: "1. El Sueño de Pensar (Lógica)", rgb: "86, 211, 218" },           // cian suave
+  { id: 2, name: "2. Dejar que la Máquina Aprenda (ML)", rgb: "134, 195, 255" },    // azul cielo
+  { id: 3, name: "3. La Red Autodiseñada (Neural Nets)", rgb: "188, 178, 255" },    // lavanda
+  { id: 4, name: "4. Ir Más Profundo (Deep Learning)", rgb: "230, 164, 224" },      // orquídea
+  { id: 5, name: "5. El Idioma de los Vectores (Embeddings)", rgb: "245, 171, 119" }, // durazno
+  { id: 6, name: "6. La Gran Revolución del Lenguaje (Transformers)", rgb: "219, 186, 102" }, // ocre dorado
+  { id: 7, name: "7. Ver, Recordar y Actuar (Multimodalidad y Agentes)", rgb: "129, 211, 159" }, // verde menta
+  { id: 8, name: "8. El Impacto y la Realidad (Futuro)", rgb: "253, 161, 158" }     // coral
 ];
 
 const conceptMap = [
   // --- CAPÍTULO 1 ---
   {
-    id: "que-es-pensar",
-    title: "1. ¿Qué es pensar?",
+    id: "que-es-el-pensamiento",
+    title: "1. ¿Qué es el pensamiento?",
     chapter: 1,
-    coords: { x: 400, y: 100 },
     connectsTo: ["que-significa-ser-inteligente"],
     transitionFromPrevious: "",
     levels: {
       basic: {
         title: "🌱 Concepto Simple",
-        content: `Pensar no es una sola acción. Es la combinación de varios procesos trabajando juntos. 
-        
-        Imagina que vas a cruzar una calle:
-        
-        1. **Percepción**: Ves un auto acercándose rápidamente.
-        2. **Memoria**: Recuerdas que un auto en movimiento puede ser peligroso.
-        3. **Aprendizaje**: Gracias a experiencias pasadas, entiendes cuándo es seguro cruzar.
-        4. **Razonamiento**: Concluyes que si cruzas ahora, podrías ser atropellado.
-        5. **Decisión**: Decides esperar antes de cruzar.
+        content: `Todo empezó en 1950, cuando el matemático británico **Alan Turing** se hizo una pregunta: *¿pueden pensar las máquinas?* Más de setenta años después sigue abierta, y es el hilo de todo este viaje. Para responderla, primero hay que entender qué hacemos los **humanos** cuando pensamos.
 
-        Pensar es el proceso mediante el cual recibimos información, la interpretamos usando experiencias y conocimiento, y la transformamos en acciones.`
-      },
-      intermediate: {
-        title: "🌿 Desglose Cognitivo",
-        content: `En la ciencia cognitiva, el pensamiento se divide en fases procesables:
-                
-        - **Percepción**: Captura de señales del entorno y transformación en información interpretable.
-        - **Memoria**: Almacenamiento y recuperación de información sensorial, de corto plazo y de largo plazo.
-        - **Aprendizaje**: Modificación del comportamiento interno basada en la experiencia para adaptarse mejor al entorno.
-        - **Razonamiento**: Uso de deducción e inducción para relacionar información y generar nuevas conclusiones.
-        - **Toma de decisiones**: Selección de una acción conveniente bajo un entorno de incertidumbre.`
+        **El pensamiento**
+
+        Pensar no es una sola acción. La ciencia cognitiva lo divide en cinco procesos que trabajan juntos.
+
+        1. **Percepción**: captar señales del entorno y convertirlas en información. *Ves un auto acercándose rápidamente.*
+        2. **Memoria**: guardar y recuperar lo vivido, sea de hace un segundo o de hace años. *Recuerdas que un auto en movimiento puede ser peligroso.*
+        3. **Aprendizaje**: cambiar tu forma de actuar gracias a la experiencia. *Por experiencias pasadas, sabes cuándo es seguro cruzar.*
+        4. **Razonamiento**: relacionar lo que sabes para sacar conclusiones nuevas. *Concluyes que si cruzas ahora, podrías ser atropellado.*
+        5. **Decisión**: elegir qué hacer aunque no tengas toda la información. *Decides esperar antes de cruzar.*
+
+        Pensar, en resumen, es recibir información, interpretarla con lo que ya sabes y convertirla en acciones.
+
+        **Las neuronas**
+
+        Todo eso ocurre en unos 86 000 millones de **neuronas** conectadas entre sí. Cada una es una célula diminuta que recibe señales, las suma y decide si pasa el aviso a las siguientes.
+        `
       },
       technical: {
         title: "🚀 Perspectiva Computacional",
@@ -54,6 +50,15 @@ const conceptMap = [
         - **Razonamiento**: Motores de inferencia lógica de primer orden o sistemas basados en reglas lógicas condicionales:
           
         $$\\text{Si } A \\land B \\implies C$$
+
+        Por ejemplo, al cruzar la calle: **A** = «el semáforo peatonal está en verde», **B** = «no viene ningún auto» y **C** = «cruzo». La regla solo se cumple cuando las dos entradas son verdaderas:
+
+        <div class="logic-cases" role="img" aria-label="Las cuatro combinaciones de A y B: solo cuando ambas son verdaderas se cumple C, cruzar">
+        <div class="logic-case on"><div class="logic-inputs"><span class="logic-in on">A ✓</span><span class="logic-in on">B ✓</span></div><span class="logic-out"></span><span class="logic-label">C: cruzas</span></div>
+        <div class="logic-case"><div class="logic-inputs"><span class="logic-in on">A ✓</span><span class="logic-in">B ✗</span></div><span class="logic-out"></span><span class="logic-label">C: esperas</span></div>
+        <div class="logic-case"><div class="logic-inputs"><span class="logic-in">A ✗</span><span class="logic-in on">B ✓</span></div><span class="logic-out"></span><span class="logic-label">C: esperas</span></div>
+        <div class="logic-case"><div class="logic-inputs"><span class="logic-in">A ✗</span><span class="logic-in">B ✗</span></div><span class="logic-out"></span><span class="logic-label">C: esperas</span></div>
+        </div>
 
         En este paradigma simbólico clásico, el pensamiento se entiende como la manipulación formal de representaciones mediante reglas explícitas.
 
@@ -66,17 +71,23 @@ const conceptMap = [
     id: "que-significa-ser-inteligente",
     title: "2. ¿Qué significa ser inteligente?",
     chapter: 1,
-    coords: { x: 800, y: 350 },
-    connectsTo: ["que-es-la-ia", "neurona_humana"],
-    transitionFromPrevious: "Ya sabemos cómo procesamos información en nuestra mente, pero ¿cuándo cruza ese proceso la línea para convertirse en 'inteligencia'? ¿Es solo seguir reglas o hay algo más?",
+    connectsTo: ["que-es-la-ia"],
+    transitionFromPrevious: "Turing sabía que «pensar» es una palabra resbaladiza, así que propuso juzgar a las máquinas por lo que **hacen**: si se comportan de forma inteligente. Pero eso abre otra pregunta: ¿qué significa exactamente ser inteligente? ¿Es solo seguir reglas o hay algo más?",
     levels: {
       basic: {
         title: "🌱 Concepto Simple",
-        content: `Ser inteligente no es saberse todas las respuestas de memoria. Es saber **qué hacer cuando no conoces la respuesta**.
+        content: `<details class="predict">
+        <summary>🤔 Antes de seguir: ¿quién es más inteligente, <strong>Deep Blue</strong> (la computadora que venció al campeón mundial de ajedrez en 1997) o un <strong>pulpo</strong>?</summary>
 
-          La inteligencia es la capacidad de enfrentar un problema nuevo, detectar patrones y usar experiencias previas para resolverlo. 
+        Depende de qué llames inteligencia. Deep Blue jugaba al ajedrez mejor que cualquier persona, pero no sabía hacer **nada más**: ni siquiera jugar a las damas. Un pulpo, en cambio, puede aprender a abrir un frasco con comida que nunca había visto, observando, probando y adaptándose al obstáculo. Casi todas las definiciones de inteligencia se quedan con el pulpo.
 
-          *Ejemplo*: Un pulpo puede aprender a abrir un frasco con comida observando, probando y adaptándose al obstáculo. No nació sabiendo hacerlo; encontró una solución nueva.`
+        </details>
+
+        Ser inteligente no es saberse todas las respuestas de memoria. Es saber **qué hacer cuando no conoces la respuesta**.
+
+        La inteligencia es la capacidad de enfrentar un problema nuevo, detectar patrones y usar experiencias previas para resolverlo. Por eso importa más la **amplitud** (desenvolverse en muchas situaciones distintas) que la destreza en una sola tarea.
+
+        Esa diferencia separa dos tipos de IA que verás en el tema siguiente: la que es brillante en una sola cosa, como Deep Blue, y la que sabría adaptarse a casi cualquier cosa, como nosotros.`
       },
       intermediate: {
         title: "🌿 Las Capacidades de la Inteligencia",
@@ -140,36 +151,31 @@ const conceptMap = [
     }
   },
   {
-    id: "neurona_humana",
-    title: "Neurona humana",
-    type: "satellite-image",
-    logoUrl: "public/img/icons/neurona_icon.jpg",
-    imageUrl: "public/img/neurona_humana.png",
-    caption: "Estructura de una neurona biológica y sus componentes principales.",
-    chapter: 1,
-    coords: { x: 980, y: 230 },
-    connectsTo: [],
-  },
-  {
     id: "que-es-la-ia",
     title: "3. ¿Qué es la Inteligencia Artificial?",
     chapter: 1,
-    coords: { x: 400, y: 600 },
     connectsTo: ["como-aprende-una-maquina", "categorias_ia"],
     transitionFromPrevious: "Si entendemos el pensamiento y definimos la inteligencia, el siguiente paso lógico es obvio: ¿podemos construirla artificialmente en una máquina?",
     levels: {
       basic: {
         title: "🌱 Concepto Simple",
-        content: `La Inteligencia Artificial (IA) es software diseñado para realizar tareas asociadas a la inteligencia humana, como percibir, comprender lenguaje, razonar o generar contenido.
+        content: `**Verano de 1956.** Un grupo de científicos se reúne en la universidad de Dartmouth (EE. UU.) con un plan ambicioso: descubrir cómo hacer que las máquinas usen el lenguaje, formen conceptos y resuelvan problemas. Creen que, trabajando juntos **un solo verano**, lograrán un avance importante. Para el proyecto inventan un nombre: **Inteligencia Artificial**.
 
-        Las primeras IA funcionaban mediante reglas explícitas programadas por humanos. Por ejemplo:
+        Hoy la definimos así: la IA es software diseñado para realizar tareas asociadas a la inteligencia humana, como percibir, comprender lenguaje, razonar o generar contenido.
 
-        > "Si un correo contiene ciertas palabras sospechosas, marcarlo como spam".
+        Su primera idea fue la más natural: **si la inteligencia consiste en seguir reglas, escribamos las reglas**.
+
+        \`\`\`timeline
+        1950 | Alan Turing | Pregunta "¿Pueden pensar las máquinas?".
+        1956 | Dartmouth | Nace el nombre "Inteligencia Artificial".
+        1966 | ELIZA | Un programa de reglas que conversa como un terapeuta.
+        ≈1974-1993 | ❄️ Inviernos de la IA | Las reglas chocan con el mundo real y la financiación se desploma.
+        \`\`\`
+
+        **ELIZA** fue la estrella de esa época. Su creador, Joseph Weizenbaum, contó que su propia secretaria, que lo había visto programarla durante meses, le pidió que saliera de la sala para poder "hablar en privado" con ella. Pero ELIZA no entendía nada: buscaba palabras clave y devolvía tu frase reorganizada. **Pruébala en la demo de abajo e intenta pillarla.**
 
         **El gran problema de las reglas**:
-        El mundo real tiene demasiadas excepciones y variaciones. A medida que aumentan los casos posibles, escribir reglas manuales se vuelve imposible.
-
-        La realidad es demasiado compleja para describirla completamente mediante reglas fijas.`
+        El mundo real tiene demasiadas excepciones y variaciones. Cada regla nueva arregla un caso y deja fuera muchos otros. A medida que aumentan los casos posibles, escribir reglas a mano se vuelve imposible.`
       },
       intermediate: {
         title: "🌿 Historia y Clasificación",
@@ -277,7 +283,6 @@ const conceptMap = [
     imageUrl: "public/img/categorias_ia.png",
     caption: "Categorías de la IA según su alcance: ANI (estrecha, la única que existe hoy), AGI (general) y ASI (superinteligencia).",
     chapter: 1,
-    coords: { x: 220, y: 480 },
     connectsTo: [],
   },
   // --- CAPÍTULO 2 ---
@@ -285,7 +290,6 @@ const conceptMap = [
     id: "como-aprende-una-maquina",
     title: "4. ¿Cómo aprende una máquina?",
     chapter: 2,
-    coords: { x: 800, y: 850 },
     connectsTo: ["machine-learning-tradicional", "machine_learning"],
     transitionFromPrevious: "Dado que escribir millones de reglas a mano para que una IA entienda el mundo es imposible, los científicos cambiaron de estrategia: ¿y si en lugar de darle las reglas, le damos los datos y dejamos que la máquina las descubra sola?",
     levels: {
@@ -359,14 +363,12 @@ const conceptMap = [
     imageUrl: "public/img/machine_learning.png",
     caption: "Cómo aprende una máquina: datos etiquetados, una predicción y la medida de su error (función de pérdida).",
     chapter: 2,
-    coords: { x: 980, y: 730 },
     connectsTo: [],
   },
   {
     id: "machine-learning-tradicional",
     title: "5. Machine Learning Tradicional",
     chapter: 2,
-    coords: { x: 400, y: 1100 },
     connectsTo: ["aprendizaje-por-refuerzo"],
     transitionFromPrevious: "Ya sabemos que una máquina aprende minimizando errores sobre los datos. Pero, ¿qué herramientas o algoritmos específicos utilizamos para encontrar esos patrones en los datos? Así nace el Machine Learning tradicional.",
     levels: {
@@ -456,7 +458,6 @@ const conceptMap = [
     id: "aprendizaje-por-refuerzo",
     title: "6. Aprendizaje por Refuerzo",
     chapter: 2,
-    coords: { x: 800, y: 1350 },
     connectsTo: ["feature-engineering"],
     transitionFromPrevious: "Ya sabemos cómo predecir precios o clasificar correos analizando datos estáticos. Pero, ¿cómo aprende una máquina a interactuar con un entorno en movimiento, como jugar Mario Bros o conducir un auto? Ahí es donde entra el Aprendizaje por Refuerzo.",
     levels: {
@@ -533,7 +534,6 @@ const conceptMap = [
     id: "feature-engineering",
     title: "7. El Cuello de Botella: Características a Mano",
     chapter: 2,
-    coords: { x: 400, y: 1600 },
     connectsTo: ["redes-neuronales"],
     transitionFromPrevious: "Regresión, árboles de decisión, k-means, refuerzo... Todos funcionan muy bien cuando los datos llegan como una tabla ordenada: metros cuadrados, número de habitaciones, edad del cliente. Pero ¿qué pasa cuando el dato es una foto, una grabación de voz o un párrafo de texto?",
     levels: {
@@ -594,7 +594,6 @@ const conceptMap = [
     id: "redes-neuronales",
     title: "8. Redes Neuronales Artificiales",
     chapter: 3,
-    coords: { x: 800, y: 1850 },
     connectsTo: ["limite-redes-tempranas", "neurona_artificial"],
     transitionFromPrevious: "Acabamos de ver el gran obstáculo del Machine Learning clásico: los humanos tenían que diseñar a mano las características de los datos complejos (imágenes, audios, texto). La solución fue una estructura inspirada en el cerebro que aprende a extraer sus propias características: las Redes Neuronales.",
     levels: {
@@ -676,14 +675,12 @@ const conceptMap = [
     imageUrl: "public/img/perceptron.png",
     caption: "Diagrama del perceptrón artificial: entradas, pesos, función de activación y salida.",
     chapter: 3,
-    coords: { x: 980, y: 1730 },
     connectsTo: [],
   },
   {
     id: "limite-redes-tempranas",
     title: "9. Los límites de las primeras redes neuronales",
     chapter: 3,
-    coords: { x: 400, y: 2100 },
     connectsTo: ["deep-learning"],
     transitionFromPrevious: "Las Redes Neuronales eran una idea maravillosa en papel. Sin embargo, desde finales de los 60 hasta bien entrados los 2000 avanzaron muy despacio, y el campo atravesó los llamados 'Inviernos de la IA'. ¿Por qué no podíamos hacer que estas redes resolvieran problemas del mundo real?",
     levels: {
@@ -754,7 +751,6 @@ const conceptMap = [
     id: "deep-learning",
     title: "10. Deep Learning (Aprendizaje Profundo)",
     chapter: 4,
-    coords: { x: 800, y: 2350 },
     connectsTo: ["arquitecturas-especializadas", "nvidia"],
     transitionFromPrevious: "A finales de la década de 2000, todo cambió. La explosión de internet nos dio cantidades enormes de datos (fotos, textos, videos) y las tarjetas gráficas (GPUs) abrieron la puerta a la computación en paralelo masiva. Junto con mejores técnicas de entrenamiento, eso permitió apilar decenas de capas ocultas. Nació el Deep Learning.",
     levels: {
@@ -807,7 +803,6 @@ const conceptMap = [
     type: "satellite-logo",
     logoUrl: "public/img/icons/nvidia_icon.png",
     chapter: 4,
-    coords: { x: 980, y: 2230 },
     connectsTo: [],
     levels: {
       basic: {
@@ -836,7 +831,6 @@ const conceptMap = [
     id: "arquitecturas-especializadas",
     title: "11. Arquitecturas Especializadas",
     chapter: 4,
-    coords: { x: 400, y: 2600 },
     connectsTo: ["limite-secuencial", "cnn"],
     transitionFromPrevious: "Una vez que pudimos construir redes neuronales profundas, nos dimos cuenta de que una sola arquitectura no servía para todo. Una imagen estructurada en 2D requiere un procesamiento muy diferente al de una cadena secuencial de texto en el tiempo. Así nacieron las arquitecturas especializadas.",
     levels: {
@@ -891,14 +885,12 @@ const conceptMap = [
     imageUrl: "public/img/CNN.png",
     caption: "Estructura de una Red Convolucional.",
     chapter: 4,
-    coords: { x: 220, y: 2480 },
     connectsTo: [],
   },
   {
     id: "limite-secuencial",
     title: "12. El Límite Secuencial",
     chapter: 4,
-    coords: { x: 800, y: 2850 },
     connectsTo: ["mecanismo-de-atencion"],
     transitionFromPrevious: "Las RNNs y LSTMs llevaron el Deep Learning al texto y la voz. Sin embargo, al intentar traducir libros enteros o mantener conversaciones largas con IAs, nos topamos con un muro insalvable. El procesamiento secuencial tenía una limitación fundamental.",
     levels: {
@@ -975,7 +967,6 @@ const conceptMap = [
     id: "mecanismo-de-atencion",
     title: "13. La Atención: Mirar Atrás sin Olvidar",
     chapter: 4,
-    coords: { x: 400, y: 3100 },
     connectsTo: ["digitalizacion-de-significados"],
     transitionFromPrevious: "Los traductores con LSTM tenían que resumir toda la frase original en un único vector antes de empezar a traducirla. Con frases largas, ese resumen se quedaba corto. En 2014, un grupo de investigadores de Montreal se preguntó: ¿y si el traductor, en lugar de depender de un resumen, pudiera volver a mirar la frase original cada vez que escribe una palabra?",
     levels: {
@@ -1041,7 +1032,6 @@ const conceptMap = [
     id: "digitalizacion-de-significados",
     title: "14. Digitalización de Significados",
     chapter: 5,
-    coords: { x: 800, y: 3350 },
     connectsTo: ["espacio-latente", "tokens"],
     transitionFromPrevious: "La atención decide qué palabras son relevantes comparando vectores entre sí. Antes de dar el último salto hacia el Transformer, hagamos una pausa para entender algo que venimos dando por sentado desde las RNN: las computadoras solo entienden números. ¿Cómo se convierte una palabra en un vector, y por qué ese vector puede capturar su significado?",
     levels: {
@@ -1110,14 +1100,12 @@ const conceptMap = [
     imageUrl: "public/img/tokens.jpg",
     caption: "Cómo se divide un texto en tokens y cada token recibe un número.",
     chapter: 5,
-    coords: { x: 980, y: 3230 },
     connectsTo: [],
   },
   {
     id: "espacio-latente",
     title: "15. El Espacio Latente",
     chapter: 5,
-    coords: { x: 400, y: 3600 },
     connectsTo: ["arquitectura-transformer"],
     transitionFromPrevious: "Una vez que hemos convertido las palabras en listas de coordenadas (vectores), ¿dónde viven esas coordenadas y cómo hace la IA para calcular qué palabras o frases se parecen entre sí en el mundo real?",
     levels: {
@@ -1179,7 +1167,6 @@ const conceptMap = [
     id: "arquitectura-transformer",
     title: "16. La Arquitectura Transformer",
     chapter: 6,
-    coords: { x: 800, y: 3850 },
     connectsTo: ["llm", "self_attention", "transformer_architecture"],
     transitionFromPrevious: "Ya tenemos las dos piezas: palabras convertidas en vectores con significado y un mecanismo de atención que compara esos vectores. En 2017, un equipo de Google publicó 'Attention Is All You Need' con una idea radical: eliminar la recurrencia por completo y construir la red solo con atención. Así podía procesar todas las palabras en paralelo. Nació el Transformer.",
     levels: {
@@ -1284,7 +1271,6 @@ const conceptMap = [
     imageUrl: "public/img/self_attention.png",
     caption: "Funcionamiento del Self-Attention.",
     chapter: 6,
-    coords: { x: 980, y: 3730 },
     connectsTo: [],
   },
   {
@@ -1295,14 +1281,12 @@ const conceptMap = [
     imageUrl: "public/img/transformer_architecture.png",
     caption: "Ejemplo de traducción de una frase usando la arquitectura Transformer.",
     chapter: 6,
-    coords: { x: 980, y: 3980 },
     connectsTo: [],
   },
   {
     id: "llm",
     title: "17. Modelos de Lenguaje Grandes (LLM)",
     chapter: 6,
-    coords: { x: 400, y: 4100 },
     connectsTo: ["alineacion-y-conexion-de-modelos", "llm_example"],
     transitionFromPrevious: "El Transformer era tan paralelizable que por fin se podía entrenar con cantidades enormes de texto. Y los investigadores descubrieron algo sorprendente: al hacerlo más grande y darle más datos y más cómputo, mejoraba de forma constante y predecible. De GPT-1 (2018, 117 millones de parámetros) a GPT-3 (2020, 175 000 millones) nacieron los Modelos de Lenguaje Grandes (LLMs).",
     levels: {
@@ -1394,14 +1378,12 @@ const conceptMap = [
     imageUrl: "public/img/llm.png",
     caption: "Funcionamiento del LLM.",
     chapter: 6,
-    coords: { x: 220, y: 3980 },
     connectsTo: [],
   },
   {
     id: "alineacion-y-conexion-de-modelos",
     title: "18. Alineación: de Predictor a Asistente",
     chapter: 6,
-    coords: { x: 800, y: 4350 },
     connectsTo: ["modelos-de-razonamiento"],
     transitionFromPrevious: "Un LLM recién preentrenado (llamado modelo base) no sigue instrucciones: solo continúa texto. Si le escribes '¿Cuál es la capital de Francia?', puede responder 'Paris' o puede continuar con '¿Y la de Italia? ¿Y la de España?', como si estuviera completando la lista de preguntas de un examen. Para convertirlo en un asistente útil y seguro hay que alinearlo.",
     levels: {
@@ -1484,7 +1466,6 @@ const conceptMap = [
     id: "modelos-de-razonamiento",
     title: "19. Modelos que Razonan",
     chapter: 6,
-    coords: { x: 400, y: 4600 },
     connectsTo: ["ia-generativa-multimodal"],
     transitionFromPrevious: "Un LLM alineado responde al instante, escribiendo un token tras otro sin pararse a pensar. Para conversar funciona bien, pero falla en problemas de varios pasos: un error temprano en un cálculo arruina todo lo que viene después. ¿Y si le diéramos tiempo para pensar antes de responder?",
     levels: {
@@ -1558,7 +1539,6 @@ const conceptMap = [
     id: "ia-generativa-multimodal",
     title: "20. IA Generativa y Multimodal",
     chapter: 7,
-    coords: { x: 800, y: 4850 },
     connectsTo: ["contexto-y-prompts", "ia_generativa", "ia_generativa_multmodal"],
     transitionFromPrevious: "Hasta aquí todo ha sido texto. Pero en paralelo a los LLM, otra línea de investigación aprendía a crear imágenes, audio y video. Cuando ambas líneas se unieron, nacieron modelos capaces de ver, escuchar, hablar y dibujar dentro de una misma conversación.",
     levels: {
@@ -1646,7 +1626,6 @@ const conceptMap = [
     imageUrl: "public/img/ia_generativa.png",
     caption: "Representación de una IA generativa capaz de crear contenido digital a partir de instrucciones.",
     chapter: 7,
-    coords: { x: 980, y: 4730 },
     connectsTo: [],
   },
   {
@@ -1657,7 +1636,6 @@ const conceptMap = [
     imageUrl: "public/img/ia_generativa_multimodal.png",
     caption: "Representación de una IA generativa multimodal capaz de procesar y generar texto, imágenes, audio y video en una misma conversación.",
     chapter: 7,
-    coords: { x: 980, y: 4980 },
     connectsTo: ["chatgpt", "gemini", "claude"],
   },
   {
@@ -1666,7 +1644,6 @@ const conceptMap = [
     type: "satellite-logo",
     logoUrl: "public/img/icons/chatgpt_icon.svg",
     chapter: 7,
-    coords: { x: 1140, y: 4850 },
     connectsTo: [],
     levels: {
       basic: {
@@ -1691,7 +1668,6 @@ const conceptMap = [
     type: "satellite-logo",
     logoUrl: "public/img/icons/gemini_icon.webp",
     chapter: 7,
-    coords: { x: 1140, y: 4980 },
     connectsTo: [],
     levels: {
       basic: {
@@ -1716,7 +1692,6 @@ const conceptMap = [
     type: "satellite-logo",
     logoUrl: "public/img/icons/claude_icon.png",
     chapter: 7,
-    coords: { x: 1140, y: 5110 },
     connectsTo: [],
     levels: {
       basic: {
@@ -1739,7 +1714,6 @@ const conceptMap = [
     id: "contexto-y-prompts",
     title: "21. Hablar con la IA: Prompts y Contexto",
     chapter: 7,
-    coords: { x: 400, y: 5100 },
     connectsTo: ["rag"],
     transitionFromPrevious: "Ya tenemos modelos que razonan, ven y generan. Pero todos comparten una regla de oro: un modelo solo puede usar dos fuentes de información. Una es lo que aprendió en sus pesos durante el entrenamiento; la otra, lo que tú le pones delante en su ventana de contexto. Aprender a usar esa ventana es la habilidad más práctica de todo este viaje.",
     levels: {
@@ -1812,7 +1786,6 @@ const conceptMap = [
     id: "rag",
     title: "22. RAG (Generación Aumentada por Recuperación)",
     chapter: 7,
-    coords: { x: 800, y: 5350 },
     connectsTo: ["herramientas-y-mcp"],
     transitionFromPrevious: "El modelo solo conoce sus pesos, congelados en una fecha de corte, y lo que pongamos en su contexto. Entonces, si le preguntas por un documento interno de tu empresa o una noticia de hoy, lo lógico es buscar automáticamente la información relevante y ponérsela delante. Esa es la idea del RAG (Lewis et al., 2020).",
     levels: {
@@ -1872,7 +1845,6 @@ const conceptMap = [
     id: "herramientas-y-mcp",
     title: "23. Herramientas: Darle Manos a la IA",
     chapter: 7,
-    coords: { x: 400, y: 5600 },
     connectsTo: ["agentes-autonomos"],
     transitionFromPrevious: "RAG le da al modelo información para leer. Pero hay tareas que no se resuelven leyendo: calcular con exactitud, consultar el tiempo de hoy, reservar una reunión o ejecutar código. Para eso, el modelo necesita poder usar herramientas.",
     levels: {
@@ -1956,7 +1928,6 @@ const conceptMap = [
     id: "agentes-autonomos",
     title: "24. Agentes Autónomos",
     chapter: 7,
-    coords: { x: 800, y: 5850 },
     connectsTo: ["sistemas-multiagente"],
     transitionFromPrevious: "Con herramientas, el modelo ya puede actuar una vez. Un agente va más allá: encadena decenas o cientos de acciones por su cuenta, decide cada paso según lo que observa y no se detiene hasta cumplir el objetivo.",
     levels: {
@@ -2029,7 +2000,6 @@ const conceptMap = [
     id: "sistemas-multiagente",
     title: "25. Sistemas Multiagente",
     chapter: 7,
-    coords: { x: 400, y: 6100 },
     connectsTo: ["modelos-infraestructura-costos"],
     transitionFromPrevious: "Un solo agente con muchas herramientas puede hacer mucho, pero en tareas enormes su contexto se llena, se distrae o se atasca. Para esos casos aplicamos una idea muy humana: dividir el trabajo en un equipo de especialistas.",
     levels: {
@@ -2082,7 +2052,6 @@ const conceptMap = [
     id: "modelos-infraestructura-costos",
     title: "26. Modelos, Infraestructura y Costos",
     chapter: 8,
-    coords: { x: 800, y: 6350 },
     connectsTo: ["etica-seguridad-gobernanza"],
     transitionFromPrevious: "Ya sabemos cómo funcionan los modelos y cómo se convierten en agentes. Pero al llevarlos del laboratorio al mundo real chocamos con la realidad física y económica: entrenarlos y ejecutarlos exige una cantidad inmensa de cómputo, energía y dinero.",
     levels: {
@@ -2150,7 +2119,6 @@ const conceptMap = [
     id: "etica-seguridad-gobernanza",
     title: "27. Seguridad de la IA",
     chapter: 8,
-    coords: { x: 400, y: 6600 },
     connectsTo: ["ia-y-sociedad"],
     transitionFromPrevious: "Cuanto más poder les damos a estos sistemas (leer tu correo, ejecutar código, hacer compras), más importa una pregunta: ¿qué pasa cuando algo sale mal, o cuando alguien intenta que salga mal?",
     levels: {
@@ -2213,7 +2181,6 @@ const conceptMap = [
     id: "ia-y-sociedad",
     title: "28. IA y Sociedad",
     chapter: 8,
-    coords: { x: 800, y: 6850 },
     connectsTo: ["hacia-donde-va-la-ia"],
     transitionFromPrevious: "La seguridad técnica es solo una parte. La IA ya está cambiando cómo trabajamos, qué creemos que es real y cuánta energía consumimos. Estas preguntas no las resuelven solo los ingenieros: nos afectan a todos.",
     levels: {
@@ -2277,7 +2244,6 @@ const conceptMap = [
     id: "hacia-donde-va-la-ia",
     title: "29. Hacia dónde va la IA (El horizonte)",
     chapter: 8,
-    coords: { x: 400, y: 7100 },
     connectsTo: [],
     transitionFromPrevious: "Hemos recorrido todo el camino: desde qué significa pensar, pasando por el aprendizaje automático, las redes profundas y los Transformers, hasta agentes que usan herramientas y los retos que plantean. Queda la gran pregunta: ¿hacia dónde se dirige todo esto?",
     levels: {
@@ -2327,6 +2293,8 @@ const conceptMap = [
 
 // Demo interactiva de cada tema: módulo demos/<nombre>.js (exporta mount(elemento)).
 const lessonDemos = {
+  "que-es-el-pensamiento": "neurona",
+  "que-es-la-ia": "eliza",
   "como-aprende-una-maquina": "gradiente",
   "redes-neuronales": "perceptron",
   "limite-redes-tempranas": "xor",
