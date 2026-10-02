@@ -423,21 +423,6 @@ body {
   gap: 10px;
 }
 
-.transition-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--chapter-neon);
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.transition-header svg {
-  transform: rotate(90deg);
-}
-
 #lesson-transition-text {
   font-size: 0.9rem;
   line-height: 1.45;
@@ -738,6 +723,7 @@ body {
   padding: 8px 14px;
   border-bottom: 1px solid var(--border-glass);
   text-align: left;
+  vertical-align: top;
 }
 
 .tab-content-area th {
@@ -1456,7 +1442,7 @@ body {
   font-size: 0.92rem;
 }
 
-/* Etiqueta de cada nivel del tema («Concepto base», «Profundiza · …») */
+/* Etiqueta de cada parte del tema («Concepto base», «Perspectiva computacional») */
 .level-label {
   padding-bottom: 6px;
   border-bottom: 1px solid var(--border-glass);
@@ -1469,9 +1455,204 @@ body {
   color: var(--chapter-neon);
 }
 
-#lesson-intermediate:empty,
 #lesson-deep:empty {
   display: none;
+}
+
+/* Bloques visuales del contenido (```flow, ```cards, ```bars en data.js; ver formatMarkdown) */
+.tab-content-area .viz-flow,
+.tab-content-area .viz-cards,
+.tab-content-area .viz-bars {
+  list-style: none;
+  margin: 4px 0 8px;
+  padding: 0;
+}
+
+/* Flujo: pasos en fila unidos por flechas (en columna si no caben) */
+.tab-content-area .viz-flow {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 28px;
+}
+
+.viz-flow li,
+.viz-cards li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 12px;
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  line-height: 1.4;
+}
+
+.viz-flow li {
+  align-items: center;
+  text-align: center;
+}
+
+.viz-flow li + li::before {
+  content: '→';
+  position: absolute;
+  left: -22px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--chapter-neon);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.viz-icon {
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.viz-flow strong,
+.viz-cards strong {
+  font-size: 0.95rem;
+}
+
+.viz-flow li > span:last-child,
+.viz-cards li > span:last-child {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Tarjetas: ejemplos o categorías; .on resalta */
+.tab-content-area .viz-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+}
+
+.viz-flow li.on,
+.viz-cards li.on {
+  border-color: rgba(var(--chapter-neon-rgb), 0.55);
+  background: rgba(var(--chapter-neon-rgb), 0.08);
+}
+
+/* Barras: comparar cantidades (el valor es el ancho en %) */
+.tab-content-area .viz-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.viz-bars li {
+  display: grid;
+  grid-template-columns: minmax(7em, 11em) 1fr 9em;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.viz-bar-label {
+  color: var(--text-primary);
+}
+
+.viz-bar-track {
+  height: 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.viz-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  background: rgba(var(--chapter-neon-rgb), 0.45);
+}
+
+.viz-bars li.on .viz-bar-fill {
+  background: var(--chapter-neon);
+}
+
+.viz-bar-note {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .tab-content-area .viz-flow {
+    grid-auto-flow: row;
+    gap: 26px;
+  }
+
+  .viz-flow li + li::before {
+    content: '↓';
+    left: 50%;
+    top: -22px;
+    transform: translateX(-50%);
+  }
+
+  .viz-bars li {
+    grid-template-columns: 1fr auto;
+  }
+
+  .viz-bar-track {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+/* Diagramas a medida: <figure class="viz-figure"><svg>…</svg><figcaption>…</figcaption></figure> en data.js */
+.tab-content-area .viz-figure {
+  margin: 4px 0 8px;
+}
+
+.viz-figure svg {
+  display: block;
+  width: 100%;
+  margin: 0 auto; /* centra los diagramas con style="max-width: …" */
+  height: auto;
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.viz-figure figcaption {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.viz-figure text {
+  font-family: var(--font-sans);
+  fill: var(--text-secondary);
+}
+
+.viz-figure text:not([font-size]) {
+  font-size: 13px;
+}
+
+.viz-figure .hi {
+  fill: var(--chapter-neon);
+}
+
+.viz-figure .line {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.25);
+  stroke-width: 2;
+}
+
+.viz-figure .line.hi {
+  fill: none;
+  stroke: var(--chapter-neon);
+}
+
+.viz-figure .box {
+  fill: rgba(255, 255, 255, 0.05);
+  stroke: rgba(255, 255, 255, 0.2);
+}
+
+.viz-figure .box.hi {
+  fill: rgba(var(--chapter-neon-rgb), 0.15);
+  stroke: var(--chapter-neon);
 }
 
 /* Regla lógica «Si A ∧ B ⟹ C» dibujada: una tarjeta por combinación de entradas (HTML en data.js) */
@@ -1926,6 +2107,137 @@ body {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   color: var(--text-muted);
+}
+
+/* Evaluador RLHF: dos respuestas para elegir y lo que va premiando el modelo de recompensa */
+.eval-round {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--chapter-neon);
+}
+
+.eval-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.demo .eval-option {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  text-align: left;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.demo .eval-option:disabled {
+  cursor: default;
+}
+
+.demo .eval-option:disabled:not([aria-pressed="true"]) {
+  opacity: 0.5;
+}
+
+.eval-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.eval-learned {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.eval-learned li {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  background: rgba(var(--chapter-neon-rgb), 0.12);
+  color: var(--text-primary);
+}
+
+.eval-learned li.bad {
+  background: hsla(0, 75%, 68%, 0.15);
+}
+
+/* RAG: títulos de fragmento más anchos que las palabras de la demo de temperatura */
+.rag-search .prob-row {
+  grid-template-columns: minmax(9em, 15em) 1fr 3em;
+}
+
+/* Bucle del agente: fases arriba y registro de pasos */
+.agent-task {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.agent-phases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.agent-phases li {
+  padding: 4px 10px;
+  border: 1px solid var(--border-glass);
+  border-radius: 14px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  transition: background 0.2s, color 0.2s;
+}
+
+.agent-phases li.on {
+  background: var(--chapter-neon);
+  border-color: var(--chapter-neon);
+  color: var(--text-dark);
+}
+
+.agent-log {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 340px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.agent-step {
+  display: grid;
+  grid-template-columns: 7.5em 1fr;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.agent-step.bad {
+  background: hsla(0, 75%, 68%, 0.12);
+}
+
+.agent-step.final {
+  background: rgba(var(--chapter-neon-rgb), 0.14);
+  color: var(--text-primary);
+}
+
+.agent-phase {
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 /* Atención */

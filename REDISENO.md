@@ -4,7 +4,7 @@ Plan para pasar del mapa como única navegación a una **ruta lineal tipo Duolin
 
 > Estado: **implementado** (fases 1, 2, 4 y 5 sin racha). **El quiz (sección 5, fase 3) se descartó**: los temas se completan con el botón «Completar y seguir →», que además abre el siguiente.
 > Decisiones tomadas: portada = ruta; niveles como pestañas (se recuerda el último); sin racha de días.
-> Cambio posterior (2026-10): las pestañas de nivel se quitaron. El tema se lee de corrido, todo a la vista, al estilo de organización de Brilliant: concepto base → intermedio → ilustración (demo/figuras) → perspectiva computacional (técnico), siempre abierta.
+> Cambio posterior (2026-10): las pestañas de nivel se quitaron. El tema se lee de corrido, todo a la vista, al estilo de organización de Brilliant: concepto base → ilustración (demo/figuras) → perspectiva computacional, siempre abierta. Desde 2026-10 no hay nivel intermedio: se fusionó en el concepto base.
 
 ---
 

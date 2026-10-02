@@ -465,7 +465,7 @@ function openLesson(node, urlMode = 'push', focusExtraId = null) {
   if (changed) {
     document.getElementById('lesson-title').innerText = node.title;
 
-    // ¿Cómo llegamos aquí? (el primer tema no tiene paso previo)
+    // De dónde viene el tema (el primero no tiene paso previo)
     const transitionCard = document.getElementById('lesson-transition-card');
     transitionCard.hidden = !node.transitionFromPrevious?.trim();
     document.getElementById('lesson-transition-text').innerHTML = formatMarkdown(node.transitionFromPrevious);
@@ -745,17 +745,15 @@ function setupLightboxListeners() {
   });
 }
 
-// Los niveles se leen seguidos y todos a la vista: básico, intermedio y, después de la demo, el técnico
+// El tema se lee de corrido: concepto base (basic) y, después de la demo, la perspectiva computacional (technical)
 function renderLessonContent() {
-  const { basic, intermediate, technical } = appState.activeNode.levels;
+  const { basic, technical } = appState.activeNode.levels;
   // El título propio del nivel se omite si solo repite la etiqueta («🚀 Perspectiva Computacional»)
   const plain = t => t.toLowerCase().replace(/[^a-záéíóúñü ]/g, '').trim();
   const label = (text, title = '') =>
     `<div class="level-label"><span>${text}</span>${title && plain(title) !== plain(text) ? ` ${escapeHtml(title)}` : ''}</div>`;
   document.getElementById('lesson-tab-content').innerHTML = basic
     ? label('Concepto base') + formatMarkdown(basic.content) : '';
-  document.getElementById('lesson-intermediate').innerHTML = intermediate
-    ? label('Profundiza', intermediate.title) + formatMarkdown(intermediate.content) : '';
   document.getElementById('lesson-deep').innerHTML = technical
     ? label('Perspectiva computacional', technical.title) + formatMarkdown(technical.content) : '';
 }
@@ -772,6 +770,17 @@ marked.use({
   }
 });
 
+// Contenido de cada elemento de los bloques visuales, según sus campos "a | b | c"
+const VIZ_ITEMS = {
+  timeline: (date, title, desc = '') => `<span class="timeline-date">${date}</span>` +
+    `<strong class="timeline-title">${title}</strong><span class="timeline-desc">${desc}</span>`,
+  flow: (icon, title, desc = '') => `<span class="viz-icon">${icon}</span><strong>${title}</strong><span>${desc}</span>`,
+  cards: (icon, title, desc = '') => `<span class="viz-icon">${icon}</span><strong>${title}</strong><span>${desc}</span>`,
+  bars: (label, value, note = '') => `<span class="viz-bar-label">${label}</span>` +
+    `<span class="viz-bar-track"><span class="viz-bar-fill" style="width: ${parseFloat(value)}%"></span></span>` +
+    `<span class="viz-bar-note">${note}</span>`,
+};
+
 function formatMarkdown(text) {
   if (!text) return '';
 
@@ -781,29 +790,29 @@ function formatMarkdown(text) {
   const cut = indents.length ? Math.min(...indents) : 0;
   let md = [lines[0].trim(), ...lines.slice(1).map(l => l.slice(cut))].join('\n');
 
-  // Líneas de tiempo: bloque ```timeline con una línea "fecha | título | texto" por hito
-  const timelines = [];
-  md = md.replace(/```timeline\n([\s\S]*?)```/g, (_, body) => {
-    const items = body.trim().split('\n').map(line => {
-      const [date, title, desc = ''] = line.split('|').map(s => s.trim());
-      return `<li><span class="timeline-date">${date}</span>` +
-        `<strong class="timeline-title">${marked.parseInline(title)}</strong>` +
-        `<span class="timeline-desc">${marked.parseInline(desc)}</span></li>`;
-    });
-    return `\n\n%%TIMELINE${timelines.push(`<ol class="timeline">${items.join('')}</ol>`) - 1}%%\n\n`;
-  });
-
   // Apartar fórmulas antes de marked para que no toque sus _ ni *
   const math = [];
   const hold = (formula, display) => `%%MATH${math.push({ formula, display }) - 1}%%`;
   md = md.replace(/\$\$([\s\S]+?)\$\$/g, (_, f) => `\n\n${hold(f, true)}\n\n`)
          .replace(/\$([^\n$]+?)\$/g, (_, f) => hold(f, false));
 
+  // Bloques visuales: ```tipo con una línea "a | b | c" por elemento; "!" al inicio resalta el elemento
+  const blocks = [];
+  md = md.replace(/```(timeline|flow|cards|bars)\n([\s\S]*?)```/g, (_, kind, body) => {
+    const items = body.trim().split('\n').map(line => {
+      const on = line.trim().startsWith('!');
+      const fields = line.trim().replace(/^!\s*/, '').split('|').map(f => marked.parseInline(f.trim()));
+      return `<li${on ? ' class="on"' : ''}>${VIZ_ITEMS[kind](...fields)}</li>`;
+    });
+    const html = `<ol class="${kind === 'timeline' ? 'timeline' : `viz-${kind}`}">${items.join('')}</ol>`;
+    return `\n\n%%BLOCK${blocks.push(html) - 1}%%\n\n`;
+  });
+
   return marked.parse(md, { breaks: true })
     // Un párrafo que es solo negrita actúa de título de sección (salvo los esquemas "A → B → C")
     .replace(/<p><strong>([^<]*(?:<(?!\/strong>)[^<]*)*)<\/strong><\/p>/g,
       (m, t) => t.includes('→') ? m : `<p class="content-heading">${t}</p>`)
-    .replace(/<p>%%TIMELINE(\d+)%%<\/p>/g, (_, i) => timelines[i])
+    .replace(/<p>%%BLOCK(\d+)%%<\/p>/g, (_, i) => blocks[i])
     // Cada "### Título" abre una sección plegable que llega hasta el siguiente ###, un --- o el final
     .replace(/<h3>([\s\S]*?)<\/h3>([\s\S]*?)(?:<hr>\s*|(?=<h3>)|$)/g, (_, title, body) =>
       `<details class="content-section"><summary><span class="content-section-title">${title}</span>` +
