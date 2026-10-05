@@ -75,51 +75,48 @@ const conceptMap = [
       basic: {
         title: "Concepto base",
         content: `
-        Ser inteligente no es saberse todas las respuestas de memoria. Es saber **qué hacer cuando no conoces la respuesta**.
-
-        **Capacidades**
-
-        La inteligencia no es una sola habilidad, sino varias que trabajan juntas. El pulpo frente al frasco las usa todas:
-
-        <details class="predict">
-        <summary>¿Quién es más inteligente, <strong>Deep Blue</strong> (la computadora que venció al campeón mundial de ajedrez en 1997) o un <strong>pulpo</strong>?</summary>
-
-        Depende de qué llames inteligencia. Deep Blue jugaba al ajedrez mejor que cualquier persona, pero no sabía hacer **nada más**: ni siquiera jugar a las damas. Un pulpo, en cambio, puede aprender a abrir un frasco con comida que nunca había visto, observando, probando y adaptándose al obstáculo. Casi todas las definiciones de inteligencia se quedan con el pulpo.
-
-        </details>
+        Ser inteligente no es saberse todas las respuestas de memoria. Es saber **qué hacer cuando no conoces la respuesta**. La inteligencia no es una sola habilidad, sino varias que trabajan juntas.
 
         \`\`\`cards
-        🔍 | Reconocer patrones | Encontrar orden en lo que parece caos. *Nota que la tapa gira cuando la empuja de lado.*
-        🔄 | Adaptarse | Cambiar de estrategia cuando el entorno cambia. *Si un tirón no funciona, prueba a girar.*
-        🧩 | Resolver problemas | Encadenar acciones hasta llegar a una meta. *Sujetar, girar, empujar y sacar la comida.*
-        📈 | Aprender | Hacerlo mejor la próxima vez. *El segundo frasco lo abre mucho más rápido.*
+        scan-search | Reconocer patrones | Encontrar orden en lo que parece caos.
+        refresh-cw | Adaptarse | Cambiar de estrategia cuando el entorno cambia.
+        puzzle | Resolver problemas | Encadenar acciones hasta llegar a una meta.
+        trending-up | Aprender | Hacerlo mejor la próxima vez.
         \`\`\`
+
+        <div class="media-row">
+        <div>
+
+        ¿Quién es más inteligente, <strong>Deep Blue</strong> (la computadora que venció al campeón mundial de ajedrez en 1997) o un <strong>pulpo</strong>?
+        Depende de qué llames inteligencia. Deep Blue jugaba al ajedrez mejor que cualquier persona, pero no sabía hacer <strong>nada más</strong>: ni siquiera jugar a las damas. Un pulpo, en cambio, puede aprender a abrir un frasco con comida que nunca había visto, observando, probando y adaptándose al obstáculo. Casi todas las definiciones de inteligencia se quedan con el pulpo.
+
+        </div>
+        <img src="public/img/octopus.webp" alt="Un pulpo abriendo un frasco con comida">
+        </div>
 
         **Destreza frente a amplitud**
 
         Lo que separa al pulpo de Deep Blue no es lo bien que hacen una cosa, sino **cuántas cosas distintas** pueden hacer:
 
-        | Tarea | Deep Blue | Pulpo | Tú |
-        |---|---|---|---|
-        | Ganar al ajedrez a un campeón | ✅ | ❌ | ❌ |
-        | Jugar a las damas | ❌ | ❌ | ✅ |
-        | Abrir un frasco nuevo | ❌ | ✅ | ✅ |
-        | Aprender algo que nunca vio | ❌ | ✅ | ✅ |
+        | Tarea | Deep Blue | Pulpo |
+        |---|---|---|
+        | Ganar al ajedrez a un campeón | ✅ | ❌ |
+        | Jugar a las damas | ❌ | ❌ |
+        | Abrir un frasco nuevo | ❌ | ✅ |
+        | Aprender algo que nunca vio | ❌ | ✅ |
 
-        Deep Blue tiene una **destreza** enorme en una sola tarea. El pulpo y tú tienen **amplitud**: se desenvuelven en situaciones que nadie les preparó. Casi todas las definiciones de inteligencia valoran más la amplitud, y esa misma diferencia separa la IA que existe hoy de la que todavía no existe.`
+        Deep Blue tiene una **destreza** enorme en una sola tarea. El pulpo y tú tienen **amplitud**: se desenvuelven en situaciones que nadie les preparó. Casi todas las definiciones de inteligencia valoran más la amplitud.`
       },
       technical: {
-        title: "🚀 Definición Formal: la Inteligencia Universal",
+        title: "",
         content: `En 2007, Shane Legg y Marcus Hutter reunieron decenas de definiciones de inteligencia de psicólogos e investigadores de IA y las resumieron en una sola frase:
 
         > *"La inteligencia mide la capacidad de un agente para alcanzar objetivos en una amplia variedad de entornos."*
+        > - **Agente**: quien toma decisiones (una persona, un animal, un programa).
+        > - **Entorno**: el "mundo" o problema en el que actúa: un laberinto, una partida de ajedrez, una conversación.
+        > - **Objetivo/Recompensa**: un número que indica qué tan bien le va al agente. Cuanto más alto, mejor ha cumplido su objetivo.
 
-        Después la convirtieron en una fórmula. Antes de verla, tres palabras que volverán más adelante:
-        - **Agente**: quien toma decisiones (una persona, un animal, un programa).
-        - **Entorno**: el "mundo" o problema en el que actúa: un laberinto, una partida de ajedrez, una conversación.
-        - **Recompensa**: un número que indica qué tan bien le va al agente. Cuanto más alto, mejor ha cumplido su objetivo.
-
-        **La fórmula**
+        Después la convirtieron en una fórmula.
 
         $$\\Upsilon(\\pi) = \\sum_{\\mu \\in E} 2^{-K(\\mu)} \\, V_\\mu^\\pi$$
 
@@ -170,7 +167,7 @@ const conceptMap = [
         Aunque A juega al ajedrez mucho mejor, B obtiene una puntuación cuatro veces mayor: según esta definición, la inteligencia es **amplitud**, no destreza en una sola tarea.
 
         **Lo que la fórmula no puede hacer**
-        Es una definición teórica, no una prueba que se pueda aplicar a una IA real: hay infinitos entornos y la complejidad $K$ no se puede calcular con exactitud, porque no existe ningún algoritmo que encuentre siempre el programa más corto. Su valor está en precisar qué queremos decir con "inteligencia": la capacidad de desenvolverse en muchas situaciones distintas. Es justo la diferencia entre la IA estrecha y la IA general del tema siguiente.`
+        Es una definición teórica, no una prueba que se pueda aplicar a una IA real: hay infinitos entornos y la complejidad $K$ no se puede calcular con exactitud, porque no existe ningún algoritmo que encuentre siempre el programa más corto. Su valor está en precisar qué queremos decir con "inteligencia".`
       }
     }
   },
@@ -178,7 +175,7 @@ const conceptMap = [
     id: "que-es-la-ia",
     title: "3. ¿Qué es la Inteligencia Artificial?",
     chapter: 1,
-    connectsTo: ["como-aprende-una-maquina", "categorias_ia"],
+    connectsTo: ["como-aprende-una-maquina"],
     transitionFromPrevious: "Si entendemos el pensamiento y definimos la inteligencia, el siguiente paso lógico es obvio: ¿podemos construirla artificialmente en una máquina?",
     levels: {
       basic: {
@@ -187,37 +184,42 @@ const conceptMap = [
 
         Hoy la definimos así: la IA es software diseñado para realizar tareas asociadas a la inteligencia humana, como percibir, comprender lenguaje, razonar o generar contenido.
 
+        La definición dice **qué** debe hacer la IA, pero no **cómo** construirla. Esa fue la gran pregunta de aquellos científicos: ¿cómo se le enseña a una máquina a hacer algo inteligente?
+
         **La primera idea: escribir las reglas**
 
-        La intuición más natural era que, **si la inteligencia consiste en seguir reglas, basta con escribirlas**. Durante décadas, la IA fue eso:
+        La respuesta más natural era que, **si la inteligencia consiste en seguir reglas, basta con escribirlas**. Un programador anotaba, una por una, instrucciones del tipo *"si pasa esto, haz aquello"*, y la máquina solo las seguía.
 
-        \`\`\`timeline
-        1956 | Dartmouth | Nace el nombre "Inteligencia Artificial". Creen resolverla en una generación.
-        1966 | ELIZA | Imita a un terapeuta con reglas de texto. Parece comprender, pero solo reordena frases.
-        70s-80s | Sistemas expertos | Miles de reglas escritas con especialistas (MYCIN, XCON). Útiles, pero frágiles.
-        ≈1974-1993 | ❄️ Inviernos de la IA | Las reglas chocan con el mundo real y la financiación se desploma.
-        1997 | Deep Blue | Vence a Kasparov con fuerza bruta y reglas humanas, pero no sabe hacer nada más.
-        90s-2000s | El giro hacia los datos | Los sistemas **aprenden las reglas de ejemplos**, como los filtros de spam.
+        El ejemplo más famoso es **ELIZA** (1966), un programa que conversaba como un terapeuta. Así funcionaba por dentro:
+
+        \`\`\`flow
+        message-square | Tú escribes | "Me siento solo desde que discutí con mi madre."
+        !search | Regla escrita a mano | *Si aparece "madre", pregunta por la familia.*
+        reply | ELIZA responde | "Cuéntame más sobre tu familia."
         \`\`\`
 
-        **ELIZA** fue la estrella de esa época. Su creador, Joseph Weizenbaum, contó que su propia secretaria, que lo había visto programarla durante meses, le pidió que saliera de la sala para poder "hablar en privado" con ella. Pero ELIZA no entendía nada: buscaba palabras clave y devolvía tu frase reorganizada.
+        Funcionaba tan bien que mucha gente creía que ELIZA la entendía. Pero no entendía nada: solo buscaba palabras clave y respondía con la regla que alguien había escrito. Compruébalo tú mismo con esta versión simplificada:
+
+        <div class="demo-slot"></div>
+
+        Con la misma idea se construyeron los **sistemas expertos**: miles de reglas escritas junto a médicos o ingenieros. Funcionaban bien en su terreno, pero fallaban ante cualquier caso que nadie había previsto.
 
         **El problema de las reglas**
 
         El mundo real tiene demasiadas excepciones. Imagina las reglas para reconocer un gato:
 
         \`\`\`flow
-        📝 | Regla | "Si tiene orejas puntiagudas y bigotes, es un gato."
-        🦊 | Excepción | Un zorro también las tiene. *Agregas: "y no es naranja".*
-        🐈 | Otra excepción | Existen gatos naranjas. *Otra regla más...*
-        ♾️ | Sin fin | Cada regla arregla un caso y rompe otros.
+        scroll-text | Regla | "Si tiene orejas puntiagudas y bigotes, es un gato."
+        triangle-alert | Excepción | Un zorro también las tiene. *Agregas: "y no es naranja".*
+        cat | Otra excepción | Existen gatos naranjas. *Otra regla más...*
+        infinity | Sin fin | Cada regla arregla un caso y rompe otros.
         \`\`\`
 
-        A medida que crecen los casos posibles, escribir reglas a mano se vuelve imposible.
+        A medida que crecen los casos posibles, escribir reglas a mano se vuelve imposible. Tras años de promesas incumplidas, la financiación se desplomó: fueron los **inviernos de la IA**. La salida fue darle la vuelta al problema: en vez de escribir las reglas, que la máquina **las aprenda de ejemplos**.
 
         **Los dos enfoques**
 
-        De esa lección nacieron las dos grandes formas de construir IA:
+        Así quedaron las dos grandes formas de construir IA:
 
         | | IA simbólica | IA basada en datos |
         |---|---|---|
@@ -230,18 +232,18 @@ const conceptMap = [
         La IA también se clasifica según **cuántas cosas** puede hacer, la amplitud del tema anterior:
 
         \`\`\`cards
-        !🎯 | ANI · IA estrecha | Muy buena en tareas concretas: traducir, detectar tumores, recomendar canciones. **Toda la IA que existe hoy** está aquí.
-        🧠 | AGI · IA general | Hipotética. Aprendería y se adaptaría a casi cualquier tarea intelectual, como una persona.
-        🚀 | ASI · Superinteligencia | Hipotética. Superaría a los mejores expertos humanos en casi todo: ciencia, estrategia, creatividad.
+        !target | ANI · IA estrecha | Muy buena en tareas concretas: traducir, detectar tumores, recomendar canciones. **Toda la IA que existe hoy** está aquí.
+        brain | AGI · IA general | Hipotética. Aprendería y se adaptaría a casi cualquier tarea intelectual, como una persona.
+        rocket | ASI · Superinteligencia | Hipotética. Superaría a los mejores expertos humanos en casi todo: ciencia, estrategia, creatividad.
         \`\`\`
 
-        Ni la AGI ni la ASI existen, y no hay acuerdo sobre si llegarán ni cuándo. Los asistentes actuales, como ChatGPT, son tan versátiles que su lugar exacto se debate (tema 29). La idea de la superinteligencia viene de I. J. Good (1965), que imaginó una máquina capaz de diseñar máquinas mejores que ella misma, y es el centro de muchos debates sobre seguridad (tema 27).`
+        Ni la AGI ni la ASI existen todavía, y nadie sabe con certeza si llegarán ni cuándo. Por ahora, toda IA real, por impresionante que parezca, sigue siendo estrecha.`
       },
       technical: {
-        title: "🚀 De las Reglas a los Datos",
+        title: "",
         content: `Arriba vimos los dos grandes enfoques de la IA. Aquí veremos cómo funcionan por dentro y por qué la historia pasó de uno al otro.
 
-        ### IA Simbólica: un humano escribe el conocimiento
+        ## pen-line | IA Simbólica: un humano escribe el conocimiento
 
         **1.1 Reglas lógicas**
 
@@ -253,7 +255,7 @@ const conceptMap = [
 
         Se lee: *"X es un gato **si** (\`:-\`) X tiene garras **y** (\`,\`) X maúlla"*. \`X\` es una variable: el motor la sustituye por cada animal que conoce y comprueba si se cumplen las condiciones.
 
-        El problema: cada condición es **todo o nada**. Un gato que no maúlla en ese momento deja de ser gato para el sistema, y un perro que imita maullidos (y tiene garras) pasaría por gato. El mundo real está lleno de **dudas** y de **matices**, y la IA simbólica los afrontó con dos extensiones de sus reglas. Ambas siguen siendo simbólicas, porque los números también los escriben los expertos.
+        El problema: cada condición es **todo o nada**. Un gato que no maúlla en ese momento deja de ser gato para el sistema, y un perro que imita maullidos (y tiene garras) pasaría por gato. El mundo real está lleno de **dudas**, y la IA simbólica las afrontó añadiendo probabilidades a sus reglas.
 
         **1.2 Reglas con dudas: probabilidad (Teorema de Bayes)**
 
@@ -277,24 +279,17 @@ const conceptMap = [
 
         $$P(H|E) = \\frac{0{,}6 \\times 0{,}2}{0{,}16} = \\frac{0{,}12}{0{,}16} = 0{,}75$$
 
-        \`\`\`bars
-        Antes de ver «gratis» | 20 | 20 %
-        !Después de ver «gratis» | 75 | 75 %
-        \`\`\`
+        **¿De dónde sale ese 75 %?** Piensa en 100 correos: 20 son spam y 80 son normales. *Gratis* aparece en 12 de los spam (el 60 %) y en 4 de los normales (el 5 %). Si miramos solo los 16 correos que dicen *gratis*, 12 son spam: **12 de 16 = 75 %**.
 
-        Ver la palabra *gratis* hace que la probabilidad de spam suba del **20% al 75%**. Las **redes bayesianas** encadenan muchos cálculos como este (síntomas → enfermedades, averías → causas) y se usaron mucho en diagnóstico.
+        <figure class="viz-figure"><svg viewBox="0 0 520 300" style="max-width: 520px" role="img" aria-label="De 100 correos, 20 son spam; de los 16 que dicen gratis, 12 son spam"><text x="129" y="28" text-anchor="middle" font-size="15">100 correos</text><text x="403" y="72" text-anchor="middle" font-size="15">Los 16 que dicen «gratis»</text><rect class="hi" x="20" y="44" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="42" y="44" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="64" y="44" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="86" y="44" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="108" y="44" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="130" y="44" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="152" y="44" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="174" y="44" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="196" y="44" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="218" y="44" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="20" y="66" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="42" y="66" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="64" y="66" width="18" height="18" rx="3"/><rect class="hi" x="86" y="66" width="18" height="18" rx="3"/><rect class="hi" x="108" y="66" width="18" height="18" rx="3"/><rect class="hi" x="130" y="66" width="18" height="18" rx="3"/><rect class="hi" x="152" y="66" width="18" height="18" rx="3"/><rect class="hi" x="174" y="66" width="18" height="18" rx="3"/><rect class="hi" x="196" y="66" width="18" height="18" rx="3"/><rect class="hi" x="218" y="66" width="18" height="18" rx="3"/><rect class="box" x="20" y="88" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="box" x="42" y="88" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="box" x="64" y="88" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="box" x="86" y="88" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="box" x="108" y="88" width="18" height="18" rx="3"/><rect class="box" x="130" y="88" width="18" height="18" rx="3"/><rect class="box" x="152" y="88" width="18" height="18" rx="3"/><rect class="box" x="174" y="88" width="18" height="18" rx="3"/><rect class="box" x="196" y="88" width="18" height="18" rx="3"/><rect class="box" x="218" y="88" width="18" height="18" rx="3"/><rect class="box" x="20" y="110" width="18" height="18" rx="3"/><rect class="box" x="42" y="110" width="18" height="18" rx="3"/><rect class="box" x="64" y="110" width="18" height="18" rx="3"/><rect class="box" x="86" y="110" width="18" height="18" rx="3"/><rect class="box" x="108" y="110" width="18" height="18" rx="3"/><rect class="box" x="130" y="110" width="18" height="18" rx="3"/><rect class="box" x="152" y="110" width="18" height="18" rx="3"/><rect class="box" x="174" y="110" width="18" height="18" rx="3"/><rect class="box" x="196" y="110" width="18" height="18" rx="3"/><rect class="box" x="218" y="110" width="18" height="18" rx="3"/><rect class="box" x="20" y="132" width="18" height="18" rx="3"/><rect class="box" x="42" y="132" width="18" height="18" rx="3"/><rect class="box" x="64" y="132" width="18" height="18" rx="3"/><rect class="box" x="86" y="132" width="18" height="18" rx="3"/><rect class="box" x="108" y="132" width="18" height="18" rx="3"/><rect class="box" x="130" y="132" width="18" height="18" rx="3"/><rect class="box" x="152" y="132" width="18" height="18" rx="3"/><rect class="box" x="174" y="132" width="18" height="18" rx="3"/><rect class="box" x="196" y="132" width="18" height="18" rx="3"/><rect class="box" x="218" y="132" width="18" height="18" rx="3"/><rect class="box" x="20" y="154" width="18" height="18" rx="3"/><rect class="box" x="42" y="154" width="18" height="18" rx="3"/><rect class="box" x="64" y="154" width="18" height="18" rx="3"/><rect class="box" x="86" y="154" width="18" height="18" rx="3"/><rect class="box" x="108" y="154" width="18" height="18" rx="3"/><rect class="box" x="130" y="154" width="18" height="18" rx="3"/><rect class="box" x="152" y="154" width="18" height="18" rx="3"/><rect class="box" x="174" y="154" width="18" height="18" rx="3"/><rect class="box" x="196" y="154" width="18" height="18" rx="3"/><rect class="box" x="218" y="154" width="18" height="18" rx="3"/><rect class="box" x="20" y="176" width="18" height="18" rx="3"/><rect class="box" x="42" y="176" width="18" height="18" rx="3"/><rect class="box" x="64" y="176" width="18" height="18" rx="3"/><rect class="box" x="86" y="176" width="18" height="18" rx="3"/><rect class="box" x="108" y="176" width="18" height="18" rx="3"/><rect class="box" x="130" y="176" width="18" height="18" rx="3"/><rect class="box" x="152" y="176" width="18" height="18" rx="3"/><rect class="box" x="174" y="176" width="18" height="18" rx="3"/><rect class="box" x="196" y="176" width="18" height="18" rx="3"/><rect class="box" x="218" y="176" width="18" height="18" rx="3"/><rect class="box" x="20" y="198" width="18" height="18" rx="3"/><rect class="box" x="42" y="198" width="18" height="18" rx="3"/><rect class="box" x="64" y="198" width="18" height="18" rx="3"/><rect class="box" x="86" y="198" width="18" height="18" rx="3"/><rect class="box" x="108" y="198" width="18" height="18" rx="3"/><rect class="box" x="130" y="198" width="18" height="18" rx="3"/><rect class="box" x="152" y="198" width="18" height="18" rx="3"/><rect class="box" x="174" y="198" width="18" height="18" rx="3"/><rect class="box" x="196" y="198" width="18" height="18" rx="3"/><rect class="box" x="218" y="198" width="18" height="18" rx="3"/><rect class="box" x="20" y="220" width="18" height="18" rx="3"/><rect class="box" x="42" y="220" width="18" height="18" rx="3"/><rect class="box" x="64" y="220" width="18" height="18" rx="3"/><rect class="box" x="86" y="220" width="18" height="18" rx="3"/><rect class="box" x="108" y="220" width="18" height="18" rx="3"/><rect class="box" x="130" y="220" width="18" height="18" rx="3"/><rect class="box" x="152" y="220" width="18" height="18" rx="3"/><rect class="box" x="174" y="220" width="18" height="18" rx="3"/><rect class="box" x="196" y="220" width="18" height="18" rx="3"/><rect class="box" x="218" y="220" width="18" height="18" rx="3"/><rect class="box" x="20" y="242" width="18" height="18" rx="3"/><rect class="box" x="42" y="242" width="18" height="18" rx="3"/><rect class="box" x="64" y="242" width="18" height="18" rx="3"/><rect class="box" x="86" y="242" width="18" height="18" rx="3"/><rect class="box" x="108" y="242" width="18" height="18" rx="3"/><rect class="box" x="130" y="242" width="18" height="18" rx="3"/><rect class="box" x="152" y="242" width="18" height="18" rx="3"/><rect class="box" x="174" y="242" width="18" height="18" rx="3"/><rect class="box" x="196" y="242" width="18" height="18" rx="3"/><rect class="box" x="218" y="242" width="18" height="18" rx="3"/><rect class="hi" x="360" y="88" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="382" y="88" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="404" y="88" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="426" y="88" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="360" y="110" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="382" y="110" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="404" y="110" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="426" y="110" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="360" y="132" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="382" y="132" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="404" y="132" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="hi" x="426" y="132" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="box" x="360" y="154" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="box" x="382" y="154" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="box" x="404" y="154" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><rect class="box" x="426" y="154" width="18" height="18" rx="3" style="stroke: rgb(255, 184, 77); stroke-width: 2.5"/><path class="line hi" d="M262 154 H340 M330 146 L340 154 L330 162"/><text x="129" y="282" text-anchor="middle">20 de 100 son spam: 20 %</text><text x="403" y="200" text-anchor="middle" class="hi" font-size="16" font-weight="700">12 de 16 son spam: 75 %</text></svg><figcaption>Cuadros de color: spam. Cuadros vacíos: correo normal. Borde naranja: el correo dice «gratis». Números ilustrativos.</figcaption></figure>
 
-        **1.3 Reglas con matices: lógica difusa (Lotfi Zadeh, 1965)**
+        Una sola palabra sube tanto la sospecha porque *gratis* es **12 veces más frecuente** en el spam que en el correo normal (60 % frente a 5 %). Un sistema real repite este cálculo con muchas pistas a la vez, y cada una sube o baja la probabilidad. Las **redes bayesianas** llevaron la misma idea al diagnóstico: de los síntomas a la enfermedad más probable, o de una avería a su causa.
 
-        Algunas cosas no son ciertas o falsas, sino que lo son **en cierto grado**: 27 °C no es "calor" ni "no calor", es *bastante* calor. Zadeh propuso que la verdad fuera un número entre 0 y 1: "hace calor" podría ser verdad en un 0,7. Las reglas difusas combinan esos grados, de modo que un aire acondicionado sube su potencia poco a poco en lugar de saltar de apagado a máximo. Triunfó en sistemas de control, desde el metro de Sendai (Japón, 1987) hasta lavadoras y cámaras.
-
-        La diferencia con 1.2: la probabilidad mide **incertidumbre** (*"¿lloverá mañana?"*: lloverá o no, pero no lo sé), mientras que la lógica difusa mide **vaguedad** (*"¿esta persona es alta?"*: sé que mide 1,78 m, pero "alto" no tiene un límite exacto).
-
-        **El límite del enfoque simbólico**: reglas, probabilidades y grados difusos tenían que **escribirlos expertos a mano**. ¿De dónde sale ese "60% del spam contiene *gratis*"? Alguien tenía que estimarlo, y un sistema real necesita miles de valores así que cambian con el tiempo. A gran escala, era impracticable.
+        **El límite del enfoque simbólico**: reglas y probabilidades tenían que **escribirlos expertos a mano**. ¿De dónde sale ese "60% del spam contiene *gratis*"? Alguien tenía que estimarlo, y un sistema real necesita miles de valores así que cambian con el tiempo. A gran escala, era impracticable.
 
         ---
 
-        ### IA Basada en Datos: la máquina extrae el conocimiento
+        ## database | IA Basada en Datos: la máquina extrae el conocimiento
 
         La idea es no escribir los números, sino **medirlos en los datos**. Volvamos al spam: si tenemos 10 000 correos ya etiquetados como spam o normales, basta con contar.
 
@@ -305,105 +300,150 @@ const conceptMap = [
 
         El mismo principio escala a problemas mucho más difíciles: en lugar de programar qué características tiene un gato, un modelo analiza millones de imágenes etiquetadas y ajusta automáticamente sus parámetros internos para reconocer los patrones comunes.
 
-        Ese cambio, de **escribir el conocimiento** a **aprenderlo de los datos**, es el hilo del resto del viaje. El siguiente tema explica cómo aprende exactamente una máquina.`
+        Ese cambio, de **escribir el conocimiento** a **aprenderlo de los datos**, es el hilo del resto del viaje.`
       }
     }
-  },
-  {
-    id: "categorias_ia",
-    title: "Categorías",
-    type: "satellite-image",
-    logoUrl: "public/img/icons/categories.png",
-    imageUrl: "public/img/categorias_ia.png",
-    caption: "Categorías de la IA según su alcance: ANI (estrecha, la única que existe hoy), AGI (general) y ASI (superinteligencia).",
-    chapter: 1,
-    connectsTo: [],
   },
   // --- CAPÍTULO 2 ---
   {
     id: "como-aprende-una-maquina",
     title: "4. ¿Cómo aprende una máquina?",
     chapter: 2,
-    connectsTo: ["machine-learning-tradicional", "machine_learning"],
-    transitionFromPrevious: "Dado que escribir millones de reglas a mano para que una IA entienda el mundo es imposible, los científicos cambiaron de estrategia: ¿y si en lugar de darle las reglas, le damos los datos y dejamos que la máquina las descubra sola?",
+    connectsTo: ["machine-learning-tradicional"],
+    transitionFromPrevious: "Que la máquina saque las reglas de los ejemplos suena bien, pero una computadora solo hace lo que dice su código: no tiene experiencia ni intuición. Si nadie le escribe la regla, ¿de dónde la saca?",
     levels: {
       basic: {
         title: "Concepto base",
-        content: `En 1959, **Arthur Samuel**, un ingeniero de IBM, presentó un programa que jugaba a las damas. Lo sorprendente no era que jugara, sino **cómo** había aprendido: Samuel no le escribió las mejores jugadas, sino que lo dejó jugar miles de partidas contra sí mismo y anotar qué funcionaba. Con el tiempo llegó a ganar a jugadores aficionados respetables. Samuel lo llamó **aprendizaje automático** (*machine learning*): darle a una máquina la capacidad de aprender sin programarla explícitamente.
+        content: `En 1959 **Arthur Samuel**, un ingeniero de IBM, presenta un programa de damas que mejora solo, partida tras partida, sin que nadie le haya escrito cómo ganar. Lo llama **aprendizaje automático** (*machine learning*).
 
-        **Los ingredientes**
+        ¿Cómo puede un programa mejorar solo? Veámoslo con un problema sencillo.
 
-        Para aprender, una máquina necesita cuatro cosas. Pensemos en un modelo que predice el precio de una casa:
+        **Adivinar un precio**
 
-        \`\`\`cards
-        📚 | Datos | Ejemplos con su respuesta correcta. *Casas con sus metros y habitaciones (las características) y su precio real (la etiqueta).*
-        🤔 | Predicción | Lo que el modelo responde con lo que sabe hasta ahora. *Al principio adivina casi al azar.*
-        📏 | Error | Cuánto se equivocó, medido con la **función de pérdida**. *Dijo 80 000 € y valía 200 000 €.*
-        🔧 | Ajuste | Cambiar sus **parámetros** internos para equivocarse menos. *Darle más importancia a los metros.*
-        \`\`\`
+        Te piden adivinar cuánto cuesta una casa de 100 m², y no sabes nada del mercado. Decides que cada metro vale 800 dólares y multiplicas: 100 × 800 = &#36;80 000.
 
-        Un **modelo** es justo eso: una estructura matemática con parámetros ajustables que aprende patrones a partir de datos.
+        Luego te dicen cuánto te equivocaste: **te faltaron &#36;120 000**. Y te piden que lo intentes otra vez.
 
-        **El ciclo de entrenamiento**
+        Ahora tienes una pista: te quedaste corto, y por mucho. Subes tu número a 1 040 dólares por metro y ahora respondes &#36;104 000. Esta vez te faltan &#36;96 000: sigues lejos, pero más cerca. Lo intentas otra vez, y otra, y con cada intento el error se achica.
 
-        Aprender es repetir el mismo ciclo, millones de veces:
+        Eso que acabas de hacer es **aprender**.
 
-        \`\`\`flow
-        📥 | Ejemplo | Una casa de 100 m²
-        🤔 | Predice | "Vale 80 000 €"
-        📏 | Mide el error | Faltaron 120 000 €
-        🔧 | Ajusta | Corrige sus parámetros
-        \`\`\`
+        **Cómo lo hace la máquina**
 
-        Con cada vuelta, el error se reduce:
+        <div class="media-row" style="align-items: start"><div>
 
-        \`\`\`bars
-        Intento 1 | 100 | 120 000 €
-        Intento 2 | 42 | 50 000 €
-        Intento 5 | 13 | 15 000 €
-        !Intento 50 | 2 | 2 000 €
-        \`\`\`
+        Una máquina hace lo mismo, solo que con miles de casas. Esa multiplicación, escrita como fórmula, es su **modelo**, y el número que vas corrigiendo, el 800, su **parámetro**.
+
+        Un modelo real tiene desde unas decenas hasta miles de millones de parámetros, y todos empiezan con valores al azar.
+
+        </div><figure class="viz-figure">
+        <svg viewBox="0 0 520 200" style="max-width: 520px" role="img" aria-label="La fórmula precio = 800 × metros: toda la fórmula es el modelo, metros es el dato que le das, 800 es el parámetro y precio es la respuesta">
+        <path class="line hi" d="M60 64 V52 H460 V64"/>
+        <text x="260" y="38" text-anchor="middle" class="hi" font-size="16" font-weight="700">modelo: toda la fórmula</text>
+        <rect class="box hi" x="220" y="80" width="80" height="46" rx="8"/>
+        <text x="110" y="113" text-anchor="middle" font-size="28">precio</text>
+        <text x="182" y="113" text-anchor="middle" font-size="28">=</text>
+        <text x="260" y="113" text-anchor="middle" class="hi" font-size="28" font-weight="700">800</text>
+        <text x="338" y="113" text-anchor="middle" font-size="28">×</text>
+        <text x="415" y="113" text-anchor="middle" font-size="28">metros</text>
+        <path class="line" d="M110 130 V150 M415 130 V150"/>
+        <path class="line hi" d="M260 130 V150"/>
+        <text x="110" y="170" text-anchor="middle" font-size="15" font-weight="700">respuesta</text>
+        <text x="110" y="188" text-anchor="middle" font-size="12">lo que predice</text>
+        <text x="260" y="170" text-anchor="middle" class="hi" font-size="15" font-weight="700">parámetro</text>
+        <text x="260" y="188" text-anchor="middle" font-size="12">se corrige al aprender</text>
+        <text x="415" y="170" text-anchor="middle" font-size="15" font-weight="700">dato</text>
+        <text x="415" y="188" text-anchor="middle" font-size="12">lo que le das</text>
+        </svg>
+        </figure></div>
+
+        Nadie le escribe a la máquina los valores correctos. Los encuentra probando y corrigiendo, en un ciclo que repite millones de veces:
+
+        <figure class="viz-figure">
+        <svg viewBox="0 0 520 340" style="max-width: 520px" role="img" aria-label="Ciclo de entrenamiento: ejemplo, predice, mide el error, ajusta, y vuelta a empezar">
+        <defs><marker id="ciclo-flecha" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="hi" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+        <path class="line hi" marker-end="url(#ciclo-flecha)" d="M340 66 A160 120 0 0 1 405 119"/>
+        <path class="line hi" marker-end="url(#ciclo-flecha)" d="M405 221 A160 120 0 0 1 345 272"/>
+        <path class="line hi" marker-end="url(#ciclo-flecha)" d="M180 274 A160 120 0 0 1 115 221"/>
+        <path class="line hi" marker-end="url(#ciclo-flecha)" d="M115 119 A160 120 0 0 1 180 66"/>
+        <rect class="box" x="185" y="22" width="150" height="56" rx="10"/>
+        <rect class="box" x="345" y="142" width="150" height="56" rx="10"/>
+        <rect class="box" x="185" y="262" width="150" height="56" rx="10"/>
+        <rect class="box" x="25" y="142" width="150" height="56" rx="10"/>
+        <text x="260" y="45" text-anchor="middle" font-size="15" font-weight="700">1. Ejemplo</text>
+        <text x="260" y="65" text-anchor="middle" font-size="12">Una casa de 100 m²</text>
+        <text x="420" y="165" text-anchor="middle" font-size="15" font-weight="700">2. Predice</text>
+        <text x="420" y="185" text-anchor="middle" font-size="12">«Vale &#36;80 000»</text>
+        <text x="260" y="285" text-anchor="middle" font-size="15" font-weight="700">3. Mide el error</text>
+        <text x="260" y="305" text-anchor="middle" font-size="12">Faltaron &#36;120 000</text>
+        <text x="100" y="165" text-anchor="middle" font-size="15" font-weight="700">4. Ajusta</text>
+        <text x="100" y="185" text-anchor="middle" font-size="12">Sube el 800 a 1 040</text>
+        <text x="260" y="166" text-anchor="middle" class="hi" font-size="17" font-weight="700">× millones</text>
+        <text x="260" y="188" text-anchor="middle" font-size="13">de vueltas</text>
+        </svg>
+        <figcaption>Tras ajustar, el modelo toma otro ejemplo y repite. Cada vuelta corrige un poco el error.</figcaption>
+        </figure>
 
         **Bajar la montaña a ciegas**
 
-        ¿Cómo sabe el modelo **hacia dónde** ajustar? Imagina que estás en una montaña con niebla y quieres bajar al valle. No ves el camino, pero sí notas hacia dónde baja el suelo bajo tus pies. Das un paso en esa dirección, vuelves a tantear y repites. Eso es el **descenso de gradiente**: el valle es el punto de menor error.
+        Tú subiste el 800 porque te faltaba dinero. Pero con miles de millones de parámetros, ¿cómo sabe la máquina cuál subir, cuál bajar y cuánto?
 
-        El tamaño de cada paso se llama **tasa de aprendizaje**, y elegirlo bien importa:
+        Probar todas las combinaciones de parámetros llevaría una eternidad. En su lugar, la máquina calcula la pendiente solo donde está parada. La pendiente le dice dos cosas de cada parámetro: **hacia dónde** moverlo y **cuánto**. Es como bajar una montaña de noche: no ves el fondo, pero sientes el suelo bajo tus pies. Repetir ese paso es el **descenso de gradiente**.
 
-        \`\`\`cards
-        🐢 | Pasos muy pequeños | Llegas, pero tardas muchísimo.
-        !✅ | Pasos adecuados | Bajas rápido y te detienes en el valle.
-        🦘 | Pasos enormes | Saltas de una ladera a otra y te pasas de largo.
-        \`\`\``
+        - **Lejos del fondo**: la pendiente es empinada y el paso es largo. *En el 800, saltas a 1 040.*
+        - **Cerca del fondo**: la pendiente se aplana y los pasos se acortan solos. *De 1 900 pasas a 1 920.*
+        - **En el fondo**: la pendiente es cero. *En 2 000, el error ya no sube ni baja, y la máquina se detiene.*
+
+        El largo de cada paso también depende de la **tasa de aprendizaje**, un número que eliges tú. Si es muy pequeña, la máquina tarda cientos de pasos en bajar; si es demasiado grande, salta de un lado al otro del fondo sin llegar nunca.
+
+        <div class="demo-slot"></div>
+
+        Para una máquina, aprender no es entender: es corregir sus parámetros, paso a paso, hasta equivocarse lo menos posible.`
       },
       technical: {
-        title: "🚀 Modelado Matemático del Aprendizaje",
-        content: `Formalmente, el aprendizaje automático puede modelarse como un problema de optimización.
-        Definimos un dataset:
+        title: "",
+        content: `Formalmente, el aprendizaje automático es un **problema de optimización**: buscar el valor de los parámetros que hace mínimo el error. Así se escribe el ejemplo de las casas con símbolos.
+
+        <div class="math-split">
+
+        Los ejemplos de entrenamiento forman un **dataset**. Cada ejemplo tiene una entrada $x$ (sus *características*) y la respuesta esperada $y$ (su *etiqueta*). En las casas, $x$ son los metros e $y$ el precio real.
 
         $$\\mathcal{D} = \\{ (x_1, y_1), (x_2, y_2), \\dots, (x_n, y_n) \\}$$
 
-        💡 _Un dataset es un conjunto de ejemplos utilizados para entrenar el modelo. Cada ejemplo contiene datos de entrada $x$ y la respuesta esperada $y$._
-
-        El objetivo es encontrar una función matemática parametrizada $f(x; \\theta)$ capaz de aproximar correctamente las salidas:
+        El objetivo es encontrar una función matemática parametrizada $f(x; \\theta)$ capaz de aproximar correctamente las salidas, donde $\\theta$ representa los parámetros del modelo. En el ejemplo, $f(x; \\theta) = \\theta \\cdot x$ y $\\theta$ empieza en 800.
 
         $$f(x_i; \\theta) \\approx y_i$$
 
-        Donde $\\theta$ representa los parámetros internos del modelo.
-
-        Para medir qué tan incorrectas son las predicciones, definimos una función de pérdida. En problemas de regresión, una de las más comunes es el Error Cuadrático Medio (MSE)
+        Para medir cuánto se equivocan las predicciones se usa una **función de pérdida**. En problemas de regresión, una de las más comunes es el Error Cuadrático Medio (MSE). El error se eleva al cuadrado para que los fallos por arriba y por abajo no se cancelen entre sí, y para que un error grande pese mucho más que uno pequeño.
 
         $$L(\\theta) = \\frac{1}{n} \\sum_{i=1}^{n} (f(x_i; \\theta) - y_i)^2$$
 
-        El aprendizaje consiste en encontrar los parámetros óptimos que minimizan dicha pérdida, es decir:
+        El aprendizaje consiste en encontrar los parámetros óptimos que minimizan dicha pérdida: el fondo del valle.
 
         $$\\theta^* = \\arg\\min_\\theta L(\\theta)$$
 
-        Casi nunca existe una fórmula cerrada para $\\theta^*$, así que se busca de forma iterativa con **descenso de gradiente**: el gradiente $\\nabla_\\theta L$ apunta hacia donde la pérdida crece más rápido, y damos un paso en sentido contrario:
+        Casi nunca existe una fórmula cerrada para $\\theta^*$, así que se busca de forma iterativa con **descenso de gradiente**. El gradiente $\\nabla_\\theta L$ es la pendiente de la montaña bajo tus pies (una pendiente por cada parámetro): apunta hacia donde la pérdida crece más rápido, y el paso va en sentido contrario.
 
         $$\\theta \\leftarrow \\theta - \\eta \\, \\nabla_\\theta L(\\theta)$$
 
-        donde $\\eta$ es la tasa de aprendizaje. En la práctica se usa el **descenso de gradiente estocástico** (SGD): el gradiente se estima con un pequeño lote de ejemplos en lugar de todo el dataset, lo que hace cada paso mucho más barato.
+        </div>
+
+        Aquí $\\eta$ es la **tasa de aprendizaje**: el largo de cada paso montaña abajo.
+
+        **Un paso, con números**
+
+        Una sola casa: $x = 100$ m² e $y = 200\\,000$. Empiezas con $\\theta = 800$ y $\\eta = 0{,}00001$ (valores ilustrativos).
+
+        1. Predicción: $f = 800 \\cdot 100 = 80\\,000$
+        2. Pérdida: $L = (80\\,000 - 200\\,000)^2 = 1{,}44 \\times 10^{10}$
+        3. Gradiente: $\\frac{dL}{d\\theta} = 2\\,(\\theta x - y)\\,x = 2 \\cdot (-120\\,000) \\cdot 100 = -24\\,000\\,000$
+        4. Ajuste: $\\theta \\leftarrow 800 - 0{,}00001 \\cdot (-24\\,000\\,000) = 1\\,040$
+
+        El gradiente es negativo: subir $\\theta$ baja el error, así que el paso aumenta $\\theta$. Con $\\theta = 1\\,040$ la casa «vale» &#36;104 000 y el error baja de &#36;120 000 a &#36;96 000: es el mismo paso de tu segundo intento. Repitiendo el paso, $\\theta$ se acerca a 2 000, el valor con error cero.
+
+        Con una sola casa, la regla de actualización se simplifica a $\\theta \\leftarrow \\theta - 20\\,000\\,\\eta\\,(\\theta - 2\\,000)$, y se ve qué hace la tasa de aprendizaje: con $\\eta = 0{,}00001$, cada paso recorta un 20 % la distancia al mínimo; con $\\eta = 0{,}000001$, solo un 2 %; con $\\eta = 0{,}0001$, $\\theta$ salta de 800 a 3 200 y de vuelta a 800 para siempre, y el error nunca baja.
+
+        En la práctica hay miles de casas y muchos parámetros, y se usa el **descenso de gradiente estocástico** (SGD): el gradiente se estima con un pequeño lote de ejemplos en lugar de todo el dataset, lo que hace cada paso mucho más barato.
 
         <figure class="viz-figure">
         <svg viewBox="0 0 400 170" role="img" aria-label="Curva de la pérdida: baja rápido al principio y cada vez más despacio">
@@ -419,21 +459,9 @@ const conceptMap = [
         <figcaption>Cada paso de descenso de gradiente reduce la pérdida: mucho al principio y cada vez menos al acercarse al mínimo.</figcaption>
         </figure>
 
-        En esencia, aprender significa ajustar parámetros para reducir el error de predicción.
-
-        💡 _Matemáticamente, un modelo puede entenderse como una función parametrizada que transforma datos de entrada en predicciones._`
+        En esencia, aprender significa ajustar parámetros para reducir el error de predicción.`
       }
     }
-  },
-  {
-    id: "machine_learning",
-    title: "Aprendizaje",
-    type: "satellite-image",
-    logoUrl: "public/img/icons/machine-learning.png",
-    imageUrl: "public/img/machine_learning.png",
-    caption: "Cómo aprende una máquina: datos etiquetados, una predicción y la medida de su error (función de pérdida).",
-    chapter: 2,
-    connectsTo: [],
   },
   {
     id: "machine-learning-tradicional",
@@ -604,7 +632,7 @@ const conceptMap = [
 
         **Dónde se usa**
 
-        Además de juegos como el Go o el ajedrez, el refuerzo enseña a robots a caminar, a coches a conducir en simulación y a sistemas a ahorrar energía. Y volverá dos veces en el capítulo 6: para convertir a los modelos de lenguaje en asistentes útiles (tema 18) y para enseñarles a razonar (tema 19).`
+        Además de juegos como el Go o el ajedrez, el refuerzo enseña a robots a caminar, a coches a conducir en simulación y a sistemas a ahorrar energía.`
       },
       technical: {
         title: "🚀 Ecuación de Bellman y Q-Learning",
@@ -1293,7 +1321,7 @@ const conceptMap = [
 
         El decodificador usa $c_t$ junto a $s_{t-1}$ para predecir la siguiente palabra. Como $c_t$ se recalcula en cada paso, desaparece el cuello de botella de un único vector $c = h_T$.
 
-        Fíjate en que la versión de producto escalar mide la relevancia como la **similitud entre vectores**. Para entender por qué eso funciona, necesitamos entender qué significan geométricamente esos vectores. Es el tema del capítulo 5.`
+        Fíjate en que la versión de producto escalar mide la relevancia como la **similitud entre vectores**.`
       }
     }
   },
@@ -2014,7 +2042,7 @@ const conceptMap = [
         📊 | Crear | Le pides un gráfico o una imagen para tu presentación.
         \`\`\`
 
-        La misma tecnología que crea arte permite crear **deepfakes**: fotos, audios o videos falsos de personas reales. Volveremos a ellos en el tema 28.`
+        La misma tecnología que crea arte permite crear **deepfakes**: fotos, audios o videos falsos de personas reales.`
       },
       technical: {
         title: "🚀 Difusión, Guía por Texto y CLIP",
@@ -2364,7 +2392,7 @@ const conceptMap = [
 
         **Cada herramienta es una puerta**
 
-        Una herramienta conecta al modelo con el mundo real. Por eso las acciones importantes, como pagar, borrar o enviar, deberían pedir tu confirmación. Y lo que devuelve una herramienta (una web, un correo) puede traer instrucciones maliciosas escondidas: lo veremos en el tema 27.`
+        Una herramienta conecta al modelo con el mundo real. Por eso las acciones importantes, como pagar, borrar o enviar, deberían pedir tu confirmación. Y lo que devuelve una herramienta (una web, un correo) puede traer instrucciones maliciosas escondidas.`
       },
       technical: {
         title: "🚀 Esquemas, Llamadas y el Protocolo MCP",
@@ -2394,7 +2422,7 @@ const conceptMap = [
 
         **MCP** usa mensajes **JSON-RPC 2.0** sobre dos transportes: entrada/salida estándar (servidores locales) o HTTP (servidores remotos). El cliente descubre qué ofrece un servidor con \`tools/list\` y lo invoca con \`tools/call\`. El modelo nunca habla directamente con el servidor: siempre pasa por el cliente, que es quien aplica permisos y confirmaciones.
 
-        **Riesgo de seguridad**: el resultado de una herramienta (una web, un correo, un archivo) entra en el contexto del modelo y puede contener instrucciones maliciosas. Es la **inyección de prompts** del tema 27.`
+        **Riesgo de seguridad**: el resultado de una herramienta (una web, un correo, un archivo) entra en el contexto del modelo y puede contener instrucciones maliciosas. Es lo que se conoce como **inyección de prompts**.`
       }
     }
   },
@@ -2935,7 +2963,7 @@ const conceptMap = [
 const lessonDemos = {
   "que-es-el-pensamiento": "neurona",
   "que-es-la-ia": "eliza",
-  "como-aprende-una-maquina": "gradiente",
+  "como-aprende-una-maquina": "niebla",
   "redes-neuronales": "perceptron",
   "limite-redes-tempranas": "xor",
   "digitalizacion-de-significados": "tokenizacion",

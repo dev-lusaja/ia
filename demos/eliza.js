@@ -45,35 +45,48 @@ function answer(input) {
 
 export function mount(el) {
   el.innerHTML = `
-    <p class="demo-observe"><strong>Qué observar:</strong> debajo de cada respuesta verás la regla que usó ELIZA.
-      Parece que te escucha, pero solo busca palabras clave. Intenta que diga algo sin sentido.</p>
-    <ol class="chat-log" aria-live="polite"></ol>
-    <form class="demo-controls chat-form">
-      <input type="text" aria-label="Tu mensaje para ELIZA" placeholder="Escribe algo…" autocomplete="off">
-      <button type="submit">Enviar</button>
-    </form>
+    <p class="demo-observe">Esta ELIZA solo conoce unas pocas reglas. Por ejemplo:
+      si escribes <em>«me siento…»</em>, te pregunta por qué te sientes así; si nombras a tu <em>madre</em> o tu <em>padre</em>,
+      te pide que hables de tu familia; si dices <em>«no puedo…»</em>, te pregunta qué te lo impide.
+      Escríbele lo que quieras: debajo de cada respuesta verás qué regla usó.</p>
+    <div class="eliza">
+      <figure class="eliza-face">
+        <img src="public/img/eliza.webp" alt="Retrato dibujado de ELIZA" width="240" height="240">
+        <figcaption>ELIZA</figcaption>
+      </figure>
+      <div class="eliza-screen">
+        <ol class="eliza-log" aria-live="polite"></ol>
+        <form class="eliza-form">
+          <input type="text" aria-label="Tu mensaje para ELIZA" placeholder="Escribe algo y pulsa Enter…" autocomplete="off">
+          <button type="submit">Enviar</button>
+        </form>
+      </div>
+    </div>
     <div class="demo-controls chat-suggestions">
       <button type="button">Me siento cansado</button>
       <button type="button">Mi madre no me entiende</button>
       <button type="button">No me siento triste</button>
       <button type="button">El cielo sabe a jueves</button>
-    </div>
-    <p class="demo-reflect">🤔 Con «No me siento triste», ELIZA te pregunta por qué te sientes triste: la regla
-      «me siento …» no sabe qué significa «no». ¿Cuántas reglas harían falta para cubrir todo lo que una persona puede decir?</p>`;
+    </div>`;
 
-  const log = el.querySelector('.chat-log');
+  const log = el.querySelector('.eliza-log');
   const input = el.querySelector('input');
 
+  // Una línea de transcripción al estilo terminal: «ELIZA:  texto» / «TÚ:  texto»
   const add = (who, text, rule) => {
     const li = document.createElement('li');
-    li.className = `chat-msg chat-${who}`;
-    li.textContent = text;
+    const name = document.createElement('span');
+    name.className = 'eliza-who';
+    name.textContent = who === 'bot' ? 'ELIZA:' : 'TÚ:';
+    const body = document.createElement('span');
+    body.textContent = text;
     if (rule) {
       const small = document.createElement('small');
-      small.className = 'chat-rule';
-      small.textContent = `🔧 ${rule}`;
-      li.append(small);
+      small.className = 'eliza-rule';
+      small.textContent = `↳ ${rule}`;
+      body.append(small);
     }
+    li.append(name, body);
     log.append(li);
     log.scrollTop = log.scrollHeight;
   };
@@ -85,7 +98,7 @@ export function mount(el) {
     add('bot', reply, rule);
   };
 
-  el.querySelector('.chat-form').addEventListener('submit', e => {
+  el.querySelector('.eliza-form').addEventListener('submit', e => {
     e.preventDefault();
     send(input.value);
     input.value = '';
@@ -94,5 +107,5 @@ export function mount(el) {
     if (e.target.matches('button')) send(e.target.textContent);
   });
 
-  add('bot', 'Hola, soy ELIZA. Cuéntame qué te preocupa.', 'mensaje inicial');
+  add('bot', '¡Hola! ¿Cuál es tu problema?', 'mensaje inicial');
 }

@@ -669,6 +669,28 @@ body {
   padding: 16px 14px 14px;
 }
 
+/* "## Título": sección siempre abierta, con la misma barra que las plegables */
+.tab-content-area h2 {
+  margin-top: 16px;
+  padding: 6px 14px;
+  border-left: 5px solid var(--chapter-neon, var(--neon-cian));
+  color: var(--text-primary);
+  font-size: 1.15rem;
+  line-height: 1.35;
+}
+
+.tab-content-area h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tab-content-area h2 .viz-icon.lucide {
+  flex-shrink: 0;
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
 .tab-content-area .content-heading {
   margin-top: 8px;
   padding-left: 12px;
@@ -715,7 +737,7 @@ body {
   border: 1px solid var(--border-glass);
   border-radius: 10px;
   font-size: 0.92rem;
-  margin: 8px 0;
+  margin: 8px auto;
 }
 
 .tab-content-area th,
@@ -748,6 +770,23 @@ body {
   color: var(--text-primary);
 }
 
+/* <div class="math-split"> en data.js: cada párrafo a la izquierda, su fórmula a la derecha */
+.math-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 22px 24px;
+  align-items: center;
+}
+
+.math-split > * { margin: 0; }
+.math-split > p { grid-column: 1; }
+.math-split > .math-block { grid-column: 2; }
+
+@media (max-width: 700px) {
+  .math-split { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .math-split > .math-block { grid-column: 1; }
+}
+
 .math-inline {
   display: inline;
   color: var(--text-primary);
@@ -765,15 +804,20 @@ body {
 }
 
 /* Bloques de Citas */
+/* Cuadro de concepto: borde completo y fondo tintado, para no confundirse con los títulos (barra lateral) */
 .tab-content-area blockquote {
-  border-left: 3px solid var(--chapter-neon);
-  background: rgba(var(--chapter-neon-rgb), 0.03);
+  border: 1px solid rgba(var(--chapter-neon-rgb), 0.35);
+  background: rgba(var(--chapter-neon-rgb), 0.08);
   padding: 12px 16px;
-  border-radius: 0 8px 8px 0;
+  border-radius: 10px;
   font-style: italic;
   font-size: 0.88rem;
   color: var(--text-primary);
   margin: 8px 0;
+}
+
+.tab-content-area blockquote strong {
+  color: var(--chapter-neon);
 }
 
 /* Overlay del índice en móvil */
@@ -1510,6 +1554,14 @@ body {
   line-height: 1.2;
 }
 
+.viz-icon.lucide {
+  display: block;
+  width: 1.6rem;
+  height: 1.6rem;
+  background: var(--chapter-neon);
+  mask: var(--icon) center / contain no-repeat;
+}
+
 .viz-flow strong,
 .viz-cards strong {
   font-size: 0.95rem;
@@ -1600,12 +1652,33 @@ body {
   }
 }
 
+/* Texto a la izquierda e imagen a la derecha: <div class="media-row"><div>…</div><img></div> en data.js */
+.tab-content-area .media-row {
+  display: grid;
+  grid-template-columns: 1fr 40%;
+  gap: 20px;
+  align-items: center;
+}
+
+.media-row img {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+}
+
+@media (max-width: 640px) {
+  .tab-content-area .media-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Diagramas a medida: <figure class="viz-figure"><svg>…</svg><figcaption>…</figcaption></figure> en data.js */
 .tab-content-area .viz-figure {
   margin: 4px 0 8px;
 }
 
-.viz-figure svg {
+.viz-figure svg,
+.viz-figure img {
   display: block;
   width: 100%;
   margin: 0 auto; /* centra los diagramas con style="max-width: …" */
@@ -1735,7 +1808,7 @@ body {
   font-size: 0.95rem;
 }
 
-/* "🤔 Antes de seguir": pregunta con la respuesta plegada (<details class="predict"> en data.js) */
+/* "🤔 Antes de seguir": pregunta y respuesta en un cuadro (<div class="predict"> en data.js) */
 .tab-content-area .predict {
   padding: 14px 16px;
   border: 1px solid rgba(var(--chapter-neon-rgb), 0.3);
@@ -1743,24 +1816,9 @@ body {
   background: rgba(var(--chapter-neon-rgb), 0.05);
 }
 
-.tab-content-area .predict summary {
-  cursor: pointer;
+.tab-content-area .predict-question {
   color: var(--text-primary);
   font-weight: 600;
-}
-
-.tab-content-area .predict summary::after {
-  content: ' Ver respuesta';
-  font-size: 0.8rem;
-  color: var(--chapter-neon);
-}
-
-.tab-content-area .predict[open] summary::after {
-  content: '';
-}
-
-.tab-content-area .predict[open] summary {
-  margin-bottom: 10px;
 }
 
 /* ==========================================================================
@@ -1847,6 +1905,12 @@ body {
   outline: none;
 }
 
+.demo button:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
 .demo output,
 .demo-value {
   font-family: var(--font-mono);
@@ -1858,6 +1922,53 @@ body {
 .demo-result {
   font-size: 0.95rem;
   color: var(--text-primary);
+}
+
+/* Niebla (descenso de gradiente): botones de tasa de aprendizaje y al lado paso, automático y reinicio */
+.niebla-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 16px 28px;
+}
+
+.niebla-eta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.niebla-eta span {
+  width: 100%;
+  text-align: center;
+}
+
+.demo .niebla-eta button {
+  font-family: var(--font-mono);
+}
+
+.niebla-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.demo .niebla-actions button {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.niebla-actions .viz-icon.lucide {
+  width: 1.3rem;
+  height: 1.3rem;
+  background: currentColor;
 }
 
 /* Tokenización */
@@ -2107,6 +2218,101 @@ body {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   color: var(--text-muted);
+}
+
+/* ELIZA: retrato a la izquierda y transcripción tipo terminal, como las réplicas web del original */
+.eliza {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  border: 1px solid rgba(var(--chapter-neon-rgb), 0.6);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.eliza-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 12px;
+  background: #ffffff;
+}
+
+.eliza-face img {
+  width: 100%;
+  height: auto;
+}
+
+.eliza-face figcaption {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #333;
+}
+
+.eliza-screen {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.eliza-log {
+  flex: 1;
+  height: 240px;
+  margin: 0;
+  padding: 12px;
+  list-style: none;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.eliza-log li {
+  display: grid;
+  grid-template-columns: 7ch 1fr;
+  gap: 0.5ch;
+}
+
+.eliza-who {
+  color: var(--chapter-neon);
+}
+
+.eliza-rule {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.eliza-form {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-top: 1px solid var(--border-glass);
+}
+
+.eliza-form input {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 560px) {
+  .eliza {
+    grid-template-columns: 1fr;
+  }
+
+  .eliza-face {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 8px 12px;
+  }
+
+  .eliza-face img {
+    width: 56px;
+  }
 }
 
 /* Evaluador RLHF: dos respuestas para elegir y lo que va premiando el modelo de recompensa */

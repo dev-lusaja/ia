@@ -152,6 +152,7 @@ function normalizeSearch(text) {
 function plainText(node) {
   return [node.caption, ...Object.values(node.levels || {}).map(l => l.content)].join(' ')
     .replace(/\$\$[\s\S]*?\$\$|\$[^\n$]+?\$/g, ' ')
+    .replace(/&#36;/g, '$')
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/[*_`#>]/g, '')
     .replace(/\s+/g, ' ')
@@ -531,12 +532,14 @@ function renderDemo(node) {
   const section = document.getElementById('lesson-demo');
   const mount = document.getElementById('lesson-demo-mount');
   mount.innerHTML = '';
-  section.hidden = !node.demo;
+  // Un <div class="demo-slot"></div> en el texto coloca la demo ahí en vez de en «Pruébalo»
+  const slot = document.querySelector('#lesson-tab-content .demo-slot');
+  section.hidden = !node.demo || !!slot;
   if (!node.demo) return;
 
   const target = document.createElement('div');
   target.className = 'demo';
-  mount.append(target);
+  (slot || mount).append(target);
   import(`./demos/${node.demo}.js`)
     .then(m => { if (target.isConnected) m.mount(target); })
     .catch(() => { target.textContent = 'No se pudo cargar la demo.'; });
@@ -771,11 +774,16 @@ marked.use({
 });
 
 // Contenido de cada elemento de los bloques visuales, según sus campos "a | b | c"
+// Icono de flow/cards: un nombre de Lucide (lucide.dev, p. ej. "search") se pinta con el color del capítulo; si no, emoji
+const vizIcon = icon => /^[a-z0-9-]+$/.test(icon)
+  ? `<span class="viz-icon lucide" style="--icon: url(https://cdn.jsdelivr.net/npm/lucide-static@1.49.0/icons/${icon}.svg)" aria-hidden="true"></span>`
+  : `<span class="viz-icon">${icon}</span>`;
+
 const VIZ_ITEMS = {
   timeline: (date, title, desc = '') => `<span class="timeline-date">${date}</span>` +
     `<strong class="timeline-title">${title}</strong><span class="timeline-desc">${desc}</span>`,
-  flow: (icon, title, desc = '') => `<span class="viz-icon">${icon}</span><strong>${title}</strong><span>${desc}</span>`,
-  cards: (icon, title, desc = '') => `<span class="viz-icon">${icon}</span><strong>${title}</strong><span>${desc}</span>`,
+  flow: (icon, title, desc = '') => `${vizIcon(icon)}<strong>${title}</strong><span>${desc}</span>`,
+  cards: (icon, title, desc = '') => `${vizIcon(icon)}<strong>${title}</strong><span>${desc}</span>`,
   bars: (label, value, note = '') => `<span class="viz-bar-label">${label}</span>` +
     `<span class="viz-bar-track"><span class="viz-bar-fill" style="width: ${parseFloat(value)}%"></span></span>` +
     `<span class="viz-bar-note">${note}</span>`,
@@ -813,6 +821,8 @@ function formatMarkdown(text) {
     .replace(/<p><strong>([^<]*(?:<(?!\/strong>)[^<]*)*)<\/strong><\/p>/g,
       (m, t) => t.includes('→') ? m : `<p class="content-heading">${t}</p>`)
     .replace(/<p>%%BLOCK(\d+)%%<\/p>/g, (_, i) => blocks[i])
+    // "## icono | Título": icono Lucide delante del título de sección
+    .replace(/<h2>([a-z0-9-]+) \| /g, (_, icon) => `<h2>${vizIcon(icon)}`)
     // Cada "### Título" abre una sección plegable que llega hasta el siguiente ###, un --- o el final
     .replace(/<h3>([\s\S]*?)<\/h3>([\s\S]*?)(?:<hr>\s*|(?=<h3>)|$)/g, (_, title, body) =>
       `<details class="content-section"><summary><span class="content-section-title">${title}</span>` +
