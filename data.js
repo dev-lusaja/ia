@@ -384,19 +384,19 @@ const conceptMap = [
         <figcaption>Tras ajustar, el modelo toma otro ejemplo y repite. Cada vuelta corrige un poco el error.</figcaption>
         </figure>
 
-        **Bajar la montaña a ciegas**
+        **Disminuir el error, paso a paso**
 
         Tú subiste el 800 porque te faltaba dinero. Pero con miles de millones de parámetros, ¿cómo sabe la máquina cuál subir, cuál bajar y cuánto?
 
-        Probar todas las combinaciones de parámetros llevaría una eternidad. En su lugar, la máquina calcula la pendiente solo donde está parada. La pendiente le dice dos cosas de cada parámetro: **hacia dónde** moverlo y **cuánto**. Es como bajar una montaña de noche: no ves el fondo, pero sientes el suelo bajo tus pies. Repetir ese paso es el **descenso de gradiente**.
+        Se hace la misma pregunta con cada uno: «si muevo este número un poquito, de 800 a 801, ¿el error sube o baja?». No necesita probarlo: lo calcula con una fórmula.
 
-        - **Lejos del fondo**: la pendiente es empinada y el paso es largo. *En el 800, saltas a 1 040.*
-        - **Cerca del fondo**: la pendiente se aplana y los pasos se acortan solos. *De 1 900 pasas a 1 920.*
-        - **En el fondo**: la pendiente es cero. *En 2 000, el error ya no sube ni baja, y la máquina se detiene.*
+        Es como bajar una montaña de noche: no ves el fondo, pero sientes con los pies hacia dónde baja el suelo y qué tan empinado está. Esa pendiente, medida para todos los parámetros a la vez, se llama **gradiente**. Dar un paso hacia donde el error baja, una y otra vez, es el **descenso de gradiente**.
 
-        El largo de cada paso también depende de la **tasa de aprendizaje**, un número que eliges tú. Si es muy pequeña, la máquina tarda cientos de pasos en bajar; si es demasiado grande, salta de un lado al otro del fondo sin llegar nunca.
+        La meta es llegar al punto más bajo, donde el valor del parámetro permite obtener el **menor error posible**. El largo de cada paso depende de qué tan empinado esté el suelo y de la **tasa de aprendizaje**, un número que eliges tú. Si es muy pequeña, la máquina tarda cientos de pasos en llegar; si es demasiado grande, salta de un lado al otro del fondo sin llegar nunca.
 
         <div class="demo-slot"></div>
+
+        Por eso elegir bien la tasa de aprendizaje importa tanto. Y no existe una que sirva para todo: la que funciona con las casas puede quedarse corta o pasarse en otro problema, así que en cada caso se busca probando.
 
         Para una máquina, aprender no es entender: es corregir sus parámetros, paso a paso, hasta equivocarse lo menos posible.`
       },
@@ -418,7 +418,7 @@ const conceptMap = [
 
         $$L(\\theta) = \\frac{1}{n} \\sum_{i=1}^{n} (f(x_i; \\theta) - y_i)^2$$
 
-        El aprendizaje consiste en encontrar los parámetros óptimos que minimizan dicha pérdida: el fondo del valle.
+        El aprendizaje consiste en encontrar los parámetros óptimos que minimizan dicha pérdida.
 
         $$\\theta^* = \\arg\\min_\\theta L(\\theta)$$
 

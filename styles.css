@@ -1924,6 +1924,16 @@ body {
   color: var(--text-primary);
 }
 
+/* Niebla: bajo el gráfico, qué hace la tasa elegida */
+.niebla-note {
+  padding: 12px 14px;
+  border-left: 3px solid var(--chapter-neon);
+  border-radius: 8px;
+  background: rgba(var(--chapter-neon-rgb), 0.08);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
 /* Niebla (descenso de gradiente): botones de tasa de aprendizaje y al lado paso, automático y reinicio */
 .niebla-controls {
   display: flex;
